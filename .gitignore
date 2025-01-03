@@ -1,0 +1,13 @@
+# 忽略 Python 虚拟环境
+.venv/
+
+# 忽略编译生成的文件
+*.pyc
+*.pyo
+__pycache__/
+
+# 忽略日志文件
+*.log
+
+# 忽略 PyCharm 配置
+.idea/
