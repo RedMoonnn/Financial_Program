@@ -7,9 +7,20 @@ from datetime import datetime
 from source_data import *
 from visualize import visualize_data
 import os
+import mysql.connector
+import json
 
+# MySQL 连接配置
+db_config = {
+    'host': 'localhost',  # 数据库地址
+    'user': 'root',       # 用户名
+    'password': '',  # 密码
+    'database': 'financial_web_crawler',  # 使用的数据库
+}
 
-
+# 连接到 MySQL 数据库
+conn = mysql.connector.connect(**db_config)
+cursor = conn.cursor()
 
 def input_details(a, s):
     cnt = 0
@@ -140,3 +151,4 @@ print(file_name + "已成功生成")
 
 visualize_data(title, Day, page)
 print(title + '.png' + "已成功生成")
+
