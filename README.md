@@ -7,13 +7,15 @@
 - 生成数据可视化图片
 
 ## 项目结构
+├── A-test # 测试文件，无需查看  
+├── A-version_0_chinese # 项目的第0版，包含中文注释，存在无法构建数据库的问题，不推荐使用 
 ├── main/ # 主文件夹  
 │   ├── main_1.py # 主函数入口  
 │   ├── source_data_1.py # 数据处理所需文件  
 │   ├── visualize_1.py # 数据可视化生成函数  
 ├── data/ # 爬取数据目录  
 │   ├── 爬取数据.json # 爬取的数据文件  
-│   ├── 可视化图片.png # 数据可视化生成的图片  
+│   ├── 可视化图片.png # 数据可视化生成的图片   
 ├── README.md # 项目说明文件  
 └── requirements.txt # Python依赖库文件
 
@@ -30,7 +32,13 @@
 #### - `可视化图片.png`
 基于爬取数据生成的可视化图片，用于展示数据分析结果。
 
-### 3. `requirements.txt`
+### 3. `A-test`
+测试文件，开发过程中使用的临时代码或逻辑验证文件，无需查看。
+
+### 4. `A-version_0_chinese`
+该文件为项目的第0版，包含中文注释，但存在无法构建数据库的问题，不推荐使用。
+
+### 5. `requirements.txt`
 列出了项目所需的 Python 包。使用以下命令安装所需库：
 ```bash
 pip install -r requirements.txt
