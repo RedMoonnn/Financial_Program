@@ -29,10 +29,13 @@
 - **`title.png`**：基于爬取数据中的主力净流入净额，生成可视化图片。
 
 ### 6. `具体代码`
-- **`main.py`**：项目的主函数文件
-- **`source_data.py`**：包含数据处理的逻辑框架，供 `main.py` 调用
-- **`visualize.py`**：用于根据爬取的数据生成可视化图表，供 `main.py` 调用
 - **`auto_exe.py`**：自动化执行脚本，运行mian函数，爬取所有组合情况
+- **`detail.png`**：展示爬取过程的耗时
+- **`main.py`**：项目的主函数文件
+- **`save_to_databaes.py`**：将爬取数据保存到数据库内，供 `main.py` 调用
+- **`source_data.py`**：包含数据处理的逻辑框架，供 `main.py` 调用
+- **`visualize.py`**：根据爬取的数据生成可视化图表，供 `main.py` 调用
+
 
 ### 7. `requirements.txt`
 列出了项目所需的 Python 包。使用以下命令安装所需库：
