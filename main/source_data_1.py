@@ -22,7 +22,7 @@ market_ids = ["m:0+t:6+f:!2,m:0+t:13+f:!2,m:0+t:80+f:!2,m:1+t:2+f:!2,m:1+t:23+f:
               "m:0+t:7+f:!2"]
 
 market_names = ["All_Stocks",  # "全部股票"
-                "SH·SZ_A_Shares",  # "沪深A股"
+                "SH&SZ_A_Shares",  # "沪深A股"
                 "SH_A_Shares",  # "沪市A股"
                 "STAR_Market",  # "科创板"
                 "SZ_A_Shares",  # "深市A股"

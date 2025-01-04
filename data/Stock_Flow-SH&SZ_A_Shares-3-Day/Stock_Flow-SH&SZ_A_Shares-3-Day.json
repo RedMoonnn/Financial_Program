@@ -1,0 +1,1356 @@
+{
+    "time": "2025-01-04 13:51:51",
+    "title": "Stock_Flow-SH&SZ_A_Shares-3-Day",
+    "data": [
+        {
+            "Index": 1,
+            "Code": "603072",
+            "Name": "N天和",
+            "Latest_Price": 48.0,
+            "3-Day_Change_Percentage": 290.24,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 593695241.0,
+                "Net_Percentage": 23.28
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 141907335.0,
+                "Net_Percentage": 5.57
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 451787906.0,
+                "Net_Percentage": 17.72
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": 623010551.0,
+                "Net_Percentage": 24.43
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -1216705792.0,
+                "Net_Percentage": -47.72
+            }
+        },
+        {
+            "Index": 2,
+            "Code": "002449",
+            "Name": "国星光电",
+            "Latest_Price": 14.32,
+            "3-Day_Change_Percentage": 13.74,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 438447229.0,
+                "Net_Percentage": 5.0
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 952594304.0,
+                "Net_Percentage": 10.86
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -514147075.0,
+                "Net_Percentage": -5.86
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -348780383.0,
+                "Net_Percentage": -3.97
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -89666867.0,
+                "Net_Percentage": -1.02
+            }
+        },
+        {
+            "Index": 3,
+            "Code": "002269",
+            "Name": "美邦服饰",
+            "Latest_Price": 2.46,
+            "3-Day_Change_Percentage": 21.18,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 369344847.0,
+                "Net_Percentage": 17.24
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 414025277.0,
+                "Net_Percentage": 19.33
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -44680430.0,
+                "Net_Percentage": -2.09
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -181967325.0,
+                "Net_Percentage": -8.5
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -187377521.0,
+                "Net_Percentage": -8.75
+            }
+        },
+        {
+            "Index": 4,
+            "Code": "000882",
+            "Name": "华联股份",
+            "Latest_Price": 2.52,
+            "3-Day_Change_Percentage": 15.07,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 368390228.0,
+                "Net_Percentage": 15.31
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 459817964.0,
+                "Net_Percentage": 19.1
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -91427736.0,
+                "Net_Percentage": -3.8
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -231712756.0,
+                "Net_Percentage": -9.63
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -136677488.0,
+                "Net_Percentage": -5.68
+            }
+        },
+        {
+            "Index": 5,
+            "Code": "301581",
+            "Name": "N黄山谷",
+            "Latest_Price": 70.01,
+            "3-Day_Change_Percentage": 154.58,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 349207364.0,
+                "Net_Percentage": 26.82
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 60254321.0,
+                "Net_Percentage": 4.63
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 288953043.0,
+                "Net_Percentage": 22.2
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": 41188048.0,
+                "Net_Percentage": 3.16
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -390395424.0,
+                "Net_Percentage": -29.99
+            }
+        },
+        {
+            "Index": 6,
+            "Code": "000785",
+            "Name": "居然智家",
+            "Latest_Price": 4.17,
+            "3-Day_Change_Percentage": 11.8,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 346364157.0,
+                "Net_Percentage": 9.77
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 497145842.0,
+                "Net_Percentage": 14.03
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -150781685.0,
+                "Net_Percentage": -4.25
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -158089233.0,
+                "Net_Percentage": -4.46
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -188274899.0,
+                "Net_Percentage": -5.31
+            }
+        },
+        {
+            "Index": 7,
+            "Code": "000651",
+            "Name": "格力电器",
+            "Latest_Price": 45.74,
+            "3-Day_Change_Percentage": 0.37,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 338070428.0,
+                "Net_Percentage": 3.83
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 190190092.0,
+                "Net_Percentage": 2.16
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 147880336.0,
+                "Net_Percentage": 1.68
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -271208128.0,
+                "Net_Percentage": -3.07
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -66862304.0,
+                "Net_Percentage": -0.76
+            }
+        },
+        {
+            "Index": 8,
+            "Code": "002426",
+            "Name": "胜利精密",
+            "Latest_Price": 2.92,
+            "3-Day_Change_Percentage": 3.91,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 325787312.0,
+                "Net_Percentage": 15.65
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 356006729.0,
+                "Net_Percentage": 17.1
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -30219417.0,
+                "Net_Percentage": -1.45
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -205735474.0,
+                "Net_Percentage": -9.88
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -120051837.0,
+                "Net_Percentage": -5.77
+            }
+        },
+        {
+            "Index": 9,
+            "Code": "002184",
+            "Name": "海得控制",
+            "Latest_Price": 14.14,
+            "3-Day_Change_Percentage": 33.15,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 315385720.0,
+                "Net_Percentage": 15.6
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 384524372.0,
+                "Net_Percentage": 19.02
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -69138652.0,
+                "Net_Percentage": -3.42
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -229004014.0,
+                "Net_Percentage": -11.33
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -86381724.0,
+                "Net_Percentage": -4.27
+            }
+        },
+        {
+            "Index": 10,
+            "Code": "002245",
+            "Name": "蔚蓝锂芯",
+            "Latest_Price": 11.65,
+            "3-Day_Change_Percentage": 5.05,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 314254383.0,
+                "Net_Percentage": 6.38
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 432117431.0,
+                "Net_Percentage": 8.78
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -117863048.0,
+                "Net_Percentage": -2.39
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -98453953.0,
+                "Net_Percentage": -2.0
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -215800419.0,
+                "Net_Percentage": -4.38
+            }
+        },
+        {
+            "Index": 11,
+            "Code": "002733",
+            "Name": "雄韬股份",
+            "Latest_Price": 15.55,
+            "3-Day_Change_Percentage": 19.43,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 294778485.0,
+                "Net_Percentage": 12.92
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 303816720.0,
+                "Net_Percentage": 13.31
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -9038235.0,
+                "Net_Percentage": -0.4
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -147851031.0,
+                "Net_Percentage": -6.48
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -146927446.0,
+                "Net_Percentage": -6.44
+            }
+        },
+        {
+            "Index": 12,
+            "Code": "688660",
+            "Name": "电气风电",
+            "Latest_Price": 9.5,
+            "3-Day_Change_Percentage": 26.67,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 240934040.0,
+                "Net_Percentage": 8.22
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -13514581.0,
+                "Net_Percentage": -0.46
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 254448621.0,
+                "Net_Percentage": 8.68
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -137874893.0,
+                "Net_Percentage": -4.7
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -103059149.0,
+                "Net_Percentage": -3.52
+            }
+        },
+        {
+            "Index": 13,
+            "Code": "002693",
+            "Name": "双成药业",
+            "Latest_Price": 18.14,
+            "3-Day_Change_Percentage": 5.1,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 236340747.0,
+                "Net_Percentage": 7.47
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 240453199.0,
+                "Net_Percentage": 7.6
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -4112452.0,
+                "Net_Percentage": -0.13
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -31537258.0,
+                "Net_Percentage": -1.0
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -204803457.0,
+                "Net_Percentage": -6.47
+            }
+        },
+        {
+            "Index": 14,
+            "Code": "000786",
+            "Name": "北新建材",
+            "Latest_Price": 32.49,
+            "3-Day_Change_Percentage": 6.52,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 229645962.0,
+                "Net_Percentage": 7.61
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 32167031.0,
+                "Net_Percentage": 1.07
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 197478931.0,
+                "Net_Percentage": 6.54
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -63284019.0,
+                "Net_Percentage": -2.1
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -166361938.0,
+                "Net_Percentage": -5.51
+            }
+        },
+        {
+            "Index": 15,
+            "Code": "601011",
+            "Name": "宝泰隆",
+            "Latest_Price": 3.0,
+            "3-Day_Change_Percentage": 9.49,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 218598148.0,
+                "Net_Percentage": 11.29
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 272010151.0,
+                "Net_Percentage": 14.05
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -53412003.0,
+                "Net_Percentage": -2.76
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -108883270.0,
+                "Net_Percentage": -5.62
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -109714880.0,
+                "Net_Percentage": -5.67
+            }
+        },
+        {
+            "Index": 16,
+            "Code": "003015",
+            "Name": "日久光电",
+            "Latest_Price": 15.28,
+            "3-Day_Change_Percentage": 1.53,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 208942168.0,
+                "Net_Percentage": 10.98
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 309841292.0,
+                "Net_Percentage": 16.28
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -100899124.0,
+                "Net_Percentage": -5.3
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -88429564.0,
+                "Net_Percentage": -4.65
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -120512602.0,
+                "Net_Percentage": -6.33
+            }
+        },
+        {
+            "Index": 17,
+            "Code": "600172",
+            "Name": "黄河旋风",
+            "Latest_Price": 4.33,
+            "3-Day_Change_Percentage": 11.89,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 206166826.0,
+                "Net_Percentage": 7.98
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 209302663.0,
+                "Net_Percentage": 8.1
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -3135837.0,
+                "Net_Percentage": -0.12
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -118233527.0,
+                "Net_Percentage": -4.58
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -87933278.0,
+                "Net_Percentage": -3.4
+            }
+        },
+        {
+            "Index": 18,
+            "Code": "000725",
+            "Name": "京东方Ａ",
+            "Latest_Price": 4.2,
+            "3-Day_Change_Percentage": -5.62,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 203593488.0,
+                "Net_Percentage": 2.4
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 398006112.0,
+                "Net_Percentage": 4.7
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -194412624.0,
+                "Net_Percentage": -2.3
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -71540448.0,
+                "Net_Percentage": -0.84
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -132053040.0,
+                "Net_Percentage": -1.56
+            }
+        },
+        {
+            "Index": 19,
+            "Code": "002155",
+            "Name": "湖南黄金",
+            "Latest_Price": 16.66,
+            "3-Day_Change_Percentage": 3.22,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 201934990.0,
+                "Net_Percentage": 7.47
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 94739588.0,
+                "Net_Percentage": 3.5
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 107195402.0,
+                "Net_Percentage": 3.97
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -34913480.0,
+                "Net_Percentage": -1.29
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -167021510.0,
+                "Net_Percentage": -6.18
+            }
+        },
+        {
+            "Index": 20,
+            "Code": "000716",
+            "Name": "黑芝麻",
+            "Latest_Price": 7.66,
+            "3-Day_Change_Percentage": 14.67,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 201262340.0,
+                "Net_Percentage": 7.25
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 240380020.0,
+                "Net_Percentage": 8.65
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -39117680.0,
+                "Net_Percentage": -1.41
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -125514687.0,
+                "Net_Percentage": -4.52
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -75747641.0,
+                "Net_Percentage": -2.73
+            }
+        },
+        {
+            "Index": 21,
+            "Code": "002213",
+            "Name": "大为股份",
+            "Latest_Price": 14.25,
+            "3-Day_Change_Percentage": 8.04,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 195138662.0,
+                "Net_Percentage": 17.15
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 227285557.0,
+                "Net_Percentage": 19.98
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -32146895.0,
+                "Net_Percentage": -2.83
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -86758461.0,
+                "Net_Percentage": -7.62
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -108380202.0,
+                "Net_Percentage": -9.53
+            }
+        },
+        {
+            "Index": 22,
+            "Code": "000981",
+            "Name": "山子高科",
+            "Latest_Price": 2.42,
+            "3-Day_Change_Percentage": 16.91,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 188335405.0,
+                "Net_Percentage": 13.54
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 254177085.0,
+                "Net_Percentage": 18.27
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -65841680.0,
+                "Net_Percentage": -4.73
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -84971465.0,
+                "Net_Percentage": -6.11
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -103363943.0,
+                "Net_Percentage": -7.43
+            }
+        },
+        {
+            "Index": 23,
+            "Code": "601985",
+            "Name": "中国核电",
+            "Latest_Price": 10.02,
+            "3-Day_Change_Percentage": -2.43,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 184998462.0,
+                "Net_Percentage": 3.63
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 250193710.0,
+                "Net_Percentage": 4.91
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -65195248.0,
+                "Net_Percentage": -1.28
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -7525184.0,
+                "Net_Percentage": -0.15
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -177473248.0,
+                "Net_Percentage": -3.48
+            }
+        },
+        {
+            "Index": 24,
+            "Code": "600789",
+            "Name": "鲁抗医药",
+            "Latest_Price": 10.57,
+            "3-Day_Change_Percentage": 7.09,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 179265572.0,
+                "Net_Percentage": 4.84
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 315435698.0,
+                "Net_Percentage": 8.51
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -136170126.0,
+                "Net_Percentage": -3.68
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -96874405.0,
+                "Net_Percentage": -2.61
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -82391155.0,
+                "Net_Percentage": -2.22
+            }
+        },
+        {
+            "Index": 25,
+            "Code": "000933",
+            "Name": "神火股份",
+            "Latest_Price": 17.57,
+            "3-Day_Change_Percentage": 3.29,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 178607098.0,
+                "Net_Percentage": 7.0
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 70839379.0,
+                "Net_Percentage": 2.77
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 107767719.0,
+                "Net_Percentage": 4.22
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -12538920.0,
+                "Net_Percentage": -0.49
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -166068181.0,
+                "Net_Percentage": -6.5
+            }
+        },
+        {
+            "Index": 26,
+            "Code": "600547",
+            "Name": "山东黄金",
+            "Latest_Price": 24.12,
+            "3-Day_Change_Percentage": 5.01,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 175123643.0,
+                "Net_Percentage": 5.58
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 50253243.0,
+                "Net_Percentage": 1.6
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 124870400.0,
+                "Net_Percentage": 3.98
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -36094915.0,
+                "Net_Percentage": -1.15
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -139028751.0,
+                "Net_Percentage": -4.43
+            }
+        },
+        {
+            "Index": 27,
+            "Code": "002648",
+            "Name": "卫星化学",
+            "Latest_Price": 18.66,
+            "3-Day_Change_Percentage": -1.63,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 173395058.0,
+                "Net_Percentage": 7.26
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 41545230.0,
+                "Net_Percentage": 1.74
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 131849828.0,
+                "Net_Percentage": 5.52
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -86160489.0,
+                "Net_Percentage": -3.61
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -87234548.0,
+                "Net_Percentage": -3.65
+            }
+        },
+        {
+            "Index": 28,
+            "Code": "002027",
+            "Name": "分众传媒",
+            "Latest_Price": 6.76,
+            "3-Day_Change_Percentage": -2.45,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 168480482.0,
+                "Net_Percentage": 5.57
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -38125811.0,
+                "Net_Percentage": -1.26
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 206606293.0,
+                "Net_Percentage": 6.84
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -70830836.0,
+                "Net_Percentage": -2.34
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -97649657.0,
+                "Net_Percentage": -3.23
+            }
+        },
+        {
+            "Index": 29,
+            "Code": "002952",
+            "Name": "亚世光电",
+            "Latest_Price": 28.16,
+            "3-Day_Change_Percentage": 0.64,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 167376477.0,
+                "Net_Percentage": 14.13
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 215476724.0,
+                "Net_Percentage": 18.2
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -48100247.0,
+                "Net_Percentage": -4.06
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -127345490.0,
+                "Net_Percentage": -10.75
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -40030987.0,
+                "Net_Percentage": -3.38
+            }
+        },
+        {
+            "Index": 30,
+            "Code": "002218",
+            "Name": "拓日新能",
+            "Latest_Price": 4.06,
+            "3-Day_Change_Percentage": 12.47,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 161503175.0,
+                "Net_Percentage": 9.83
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 168930525.0,
+                "Net_Percentage": 10.28
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -7427350.0,
+                "Net_Percentage": -0.45
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -88350020.0,
+                "Net_Percentage": -5.38
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -73153151.0,
+                "Net_Percentage": -4.45
+            }
+        },
+        {
+            "Index": 31,
+            "Code": "002112",
+            "Name": "三变科技",
+            "Latest_Price": 11.84,
+            "3-Day_Change_Percentage": 4.32,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 158817009.0,
+                "Net_Percentage": 10.56
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 194936144.0,
+                "Net_Percentage": 12.97
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -36119135.0,
+                "Net_Percentage": -2.4
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -104618601.0,
+                "Net_Percentage": -6.96
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -54198405.0,
+                "Net_Percentage": -3.61
+            }
+        },
+        {
+            "Index": 32,
+            "Code": "603719",
+            "Name": "良品铺子",
+            "Latest_Price": 15.29,
+            "3-Day_Change_Percentage": 4.87,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 152371096.0,
+                "Net_Percentage": 9.88
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 153294450.0,
+                "Net_Percentage": 9.94
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -923354.0,
+                "Net_Percentage": -0.06
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -125734791.0,
+                "Net_Percentage": -8.15
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -26636314.0,
+                "Net_Percentage": -1.73
+            }
+        },
+        {
+            "Index": 33,
+            "Code": "603215",
+            "Name": "比依股份",
+            "Latest_Price": 20.59,
+            "3-Day_Change_Percentage": 21.33,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 150830537.0,
+                "Net_Percentage": 16.1
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 190262916.0,
+                "Net_Percentage": 20.31
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -39432379.0,
+                "Net_Percentage": -4.21
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -66744639.0,
+                "Net_Percentage": -7.12
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -84085899.0,
+                "Net_Percentage": -8.98
+            }
+        },
+        {
+            "Index": 34,
+            "Code": "000737",
+            "Name": "北方铜业",
+            "Latest_Price": 8.37,
+            "3-Day_Change_Percentage": 3.59,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 149056700.0,
+                "Net_Percentage": 17.05
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 183636374.0,
+                "Net_Percentage": 21.01
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -34579674.0,
+                "Net_Percentage": -3.96
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -91620689.0,
+                "Net_Percentage": -10.48
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -57436011.0,
+                "Net_Percentage": -6.57
+            }
+        },
+        {
+            "Index": 35,
+            "Code": "000756",
+            "Name": "新华制药",
+            "Latest_Price": 16.75,
+            "3-Day_Change_Percentage": 1.76,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 147594523.0,
+                "Net_Percentage": 14.08
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 224066122.0,
+                "Net_Percentage": 21.37
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -76471599.0,
+                "Net_Percentage": -7.29
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -112867962.0,
+                "Net_Percentage": -10.76
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -34726559.0,
+                "Net_Percentage": -3.31
+            }
+        },
+        {
+            "Index": 36,
+            "Code": "600288",
+            "Name": "大恒科技",
+            "Latest_Price": 9.48,
+            "3-Day_Change_Percentage": 4.87,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 145725576.0,
+                "Net_Percentage": 15.54
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 137118367.0,
+                "Net_Percentage": 14.62
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 8607209.0,
+                "Net_Percentage": 0.92
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -80911973.0,
+                "Net_Percentage": -8.63
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -64813605.0,
+                "Net_Percentage": -6.91
+            }
+        },
+        {
+            "Index": 37,
+            "Code": "000995",
+            "Name": "皇台酒业",
+            "Latest_Price": 16.95,
+            "3-Day_Change_Percentage": 13.0,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 145381397.0,
+                "Net_Percentage": 7.71
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 188675414.0,
+                "Net_Percentage": 10.01
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -43294017.0,
+                "Net_Percentage": -2.3
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -119834659.0,
+                "Net_Percentage": -6.36
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -25546726.0,
+                "Net_Percentage": -1.35
+            }
+        },
+        {
+            "Index": 38,
+            "Code": "600664",
+            "Name": "哈药股份",
+            "Latest_Price": 4.3,
+            "3-Day_Change_Percentage": 6.7,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 144824758.0,
+                "Net_Percentage": 7.37
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 88795144.0,
+                "Net_Percentage": 4.52
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 56029614.0,
+                "Net_Percentage": 2.85
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -1443110.0,
+                "Net_Percentage": -0.07
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -143381665.0,
+                "Net_Percentage": -7.3
+            }
+        },
+        {
+            "Index": 39,
+            "Code": "600398",
+            "Name": "海澜之家",
+            "Latest_Price": 7.48,
+            "3-Day_Change_Percentage": 4.47,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 144545518.0,
+                "Net_Percentage": 2.87
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1476719.0,
+                "Net_Percentage": -0.03
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 146022237.0,
+                "Net_Percentage": 2.9
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": 85041472.0,
+                "Net_Percentage": 1.69
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -229587008.0,
+                "Net_Percentage": -4.56
+            }
+        },
+        {
+            "Index": 40,
+            "Code": "002127",
+            "Name": "南极电商",
+            "Latest_Price": 4.5,
+            "3-Day_Change_Percentage": 2.97,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 139044936.0,
+                "Net_Percentage": 5.12
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 83297150.0,
+                "Net_Percentage": 3.07
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 55747786.0,
+                "Net_Percentage": 2.05
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -12462963.0,
+                "Net_Percentage": -0.46
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -126581962.0,
+                "Net_Percentage": -4.66
+            }
+        },
+        {
+            "Index": 41,
+            "Code": "603662",
+            "Name": "柯力传感",
+            "Latest_Price": 67.62,
+            "3-Day_Change_Percentage": 0.61,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 133737611.0,
+                "Net_Percentage": 1.82
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 253841627.0,
+                "Net_Percentage": 3.45
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -120104016.0,
+                "Net_Percentage": -1.63
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": 121808.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -133859408.0,
+                "Net_Percentage": -1.82
+            }
+        },
+        {
+            "Index": 42,
+            "Code": "002881",
+            "Name": "美格智能",
+            "Latest_Price": 31.5,
+            "3-Day_Change_Percentage": 3.28,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 128389426.0,
+                "Net_Percentage": 6.34
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 101300067.0,
+                "Net_Percentage": 5.0
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 27089359.0,
+                "Net_Percentage": 1.34
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -23278255.0,
+                "Net_Percentage": -1.15
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -105111163.0,
+                "Net_Percentage": -5.19
+            }
+        },
+        {
+            "Index": 43,
+            "Code": "300323",
+            "Name": "华灿光电",
+            "Latest_Price": 10.26,
+            "3-Day_Change_Percentage": 28.89,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 128294014.0,
+                "Net_Percentage": 1.93
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 327909358.0,
+                "Net_Percentage": 4.93
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -199615344.0,
+                "Net_Percentage": -3.0
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -143110736.0,
+                "Net_Percentage": -2.15
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": 14816704.0,
+                "Net_Percentage": 0.22
+            }
+        },
+        {
+            "Index": 44,
+            "Code": "002418",
+            "Name": "康盛股份",
+            "Latest_Price": 2.53,
+            "3-Day_Change_Percentage": 2.43,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 124747931.0,
+                "Net_Percentage": 12.67
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 111262593.0,
+                "Net_Percentage": 11.3
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 13485338.0,
+                "Net_Percentage": 1.37
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -34882313.0,
+                "Net_Percentage": -3.54
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -89865617.0,
+                "Net_Percentage": -9.13
+            }
+        },
+        {
+            "Index": 45,
+            "Code": "002369",
+            "Name": "卓翼科技",
+            "Latest_Price": 6.85,
+            "3-Day_Change_Percentage": -2.0,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 124410147.0,
+                "Net_Percentage": 5.93
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 168458346.0,
+                "Net_Percentage": 8.03
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -44048199.0,
+                "Net_Percentage": -2.1
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -115017746.0,
+                "Net_Percentage": -5.48
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -9392396.0,
+                "Net_Percentage": -0.45
+            }
+        },
+        {
+            "Index": 46,
+            "Code": "301568",
+            "Name": "思泰克",
+            "Latest_Price": 40.32,
+            "3-Day_Change_Percentage": 11.69,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 124032307.0,
+                "Net_Percentage": 12.86
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 200146491.0,
+                "Net_Percentage": 20.75
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -76114184.0,
+                "Net_Percentage": -7.89
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -98454377.0,
+                "Net_Percentage": -10.21
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -25577936.0,
+                "Net_Percentage": -2.65
+            }
+        },
+        {
+            "Index": 47,
+            "Code": "000852",
+            "Name": "石化机械",
+            "Latest_Price": 7.48,
+            "3-Day_Change_Percentage": 14.55,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 123893466.0,
+                "Net_Percentage": 7.4
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 152240311.0,
+                "Net_Percentage": 9.09
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -28346845.0,
+                "Net_Percentage": -1.69
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -62075999.0,
+                "Net_Percentage": -3.71
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -61817468.0,
+                "Net_Percentage": -3.69
+            }
+        },
+        {
+            "Index": 48,
+            "Code": "600690",
+            "Name": "海尔智家",
+            "Latest_Price": 27.6,
+            "3-Day_Change_Percentage": -2.27,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 123844368.0,
+                "Net_Percentage": 3.19
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 89865226.0,
+                "Net_Percentage": 2.31
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 33979142.0,
+                "Net_Percentage": 0.87
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -146577568.0,
+                "Net_Percentage": -3.77
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": 22733184.0,
+                "Net_Percentage": 0.59
+            }
+        },
+        {
+            "Index": 49,
+            "Code": "002918",
+            "Name": "蒙娜丽莎",
+            "Latest_Price": 11.41,
+            "3-Day_Change_Percentage": 0.53,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 116199115.0,
+                "Net_Percentage": 9.1
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 183015219.0,
+                "Net_Percentage": 14.33
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": -66816104.0,
+                "Net_Percentage": -5.23
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -118560461.0,
+                "Net_Percentage": -9.28
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": 2361347.0,
+                "Net_Percentage": 0.18
+            }
+        },
+        {
+            "Index": 50,
+            "Code": "300857",
+            "Name": "协创数据",
+            "Latest_Price": 101.59,
+            "3-Day_Change_Percentage": -4.92,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 115471675.0,
+                "Net_Percentage": 3.22
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -8311461.0,
+                "Net_Percentage": -0.23
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 123783136.0,
+                "Net_Percentage": 3.45
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": 12392279.0,
+                "Net_Percentage": 0.35
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -127863936.0,
+                "Net_Percentage": -3.56
+            }
+        }
+    ]
+}

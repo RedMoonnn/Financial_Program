@@ -1,0 +1,1356 @@
+{
+    "time": "2025-01-04 13:53:16",
+    "title": "Sector_Flow-Industry_Flow-10-Day",
+    "data": [
+        {
+            "Index": 1,
+            "Code": "BK0732",
+            "Name": "贵金属",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -0.17,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -106735134.0,
+                "Net_Percentage": -0.26
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -292252414.0,
+                "Net_Percentage": -0.72
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": 185517280.0,
+                "Net_Percentage": 0.46
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -200642304.0,
+                "Net_Percentage": -0.5
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 307377440.0,
+                "Net_Percentage": 0.76
+            }
+        },
+        {
+            "Index": 2,
+            "Code": "BK0734",
+            "Name": "珠宝首饰",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -6.89,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -232897971.0,
+                "Net_Percentage": -1.29
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 14813714.0,
+                "Net_Percentage": 0.08
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -247711685.0,
+                "Net_Percentage": -1.37
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 107432768.0,
+                "Net_Percentage": 0.59
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 125465184.0,
+                "Net_Percentage": 0.69
+            }
+        },
+        {
+            "Index": 3,
+            "Code": "BK1016",
+            "Name": "汽车服务",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -13.09,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -363457170.0,
+                "Net_Percentage": -2.43
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -188830689.0,
+                "Net_Percentage": -1.26
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -174626481.0,
+                "Net_Percentage": -1.17
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 19561488.0,
+                "Net_Percentage": 0.13
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 325050800.0,
+                "Net_Percentage": 2.17
+            }
+        },
+        {
+            "Index": 4,
+            "Code": "BK0476",
+            "Name": "装修建材",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -11.34,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -478645405.0,
+                "Net_Percentage": -0.68
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -13801005.0,
+                "Net_Percentage": -0.02
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -464844400.0,
+                "Net_Percentage": -0.66
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -256101584.0,
+                "Net_Percentage": -0.36
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 734747040.0,
+                "Net_Percentage": 1.04
+            }
+        },
+        {
+            "Index": 5,
+            "Code": "BK1017",
+            "Name": "采掘行业",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -8.67,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -510634829.0,
+                "Net_Percentage": -2.19
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -362723805.0,
+                "Net_Percentage": -1.55
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -147911024.0,
+                "Net_Percentage": -0.63
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -165329488.0,
+                "Net_Percentage": -0.71
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 597523552.0,
+                "Net_Percentage": 2.56
+            }
+        },
+        {
+            "Index": 6,
+            "Code": "BK0450",
+            "Name": "航运港口",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -4.76,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -528281744.0,
+                "Net_Percentage": -0.85
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 20869936.0,
+                "Net_Percentage": 0.03
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -549151680.0,
+                "Net_Percentage": -0.89
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -785911440.0,
+                "Net_Percentage": -1.27
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1271252464.0,
+                "Net_Percentage": 2.05
+            }
+        },
+        {
+            "Index": 7,
+            "Code": "BK0427",
+            "Name": "公用事业",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -8.24,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -633032875.0,
+                "Net_Percentage": -3.0
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -198004955.0,
+                "Net_Percentage": -0.94
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -435027920.0,
+                "Net_Percentage": -2.06
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -118659792.0,
+                "Net_Percentage": -0.56
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 751692672.0,
+                "Net_Percentage": 3.56
+            }
+        },
+        {
+            "Index": 8,
+            "Code": "BK1028",
+            "Name": "燃气",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -3.37,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -654062904.0,
+                "Net_Percentage": -2.23
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -177942440.0,
+                "Net_Percentage": -0.61
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -476120464.0,
+                "Net_Percentage": -1.63
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -195779776.0,
+                "Net_Percentage": -0.67
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 838573904.0,
+                "Net_Percentage": 2.86
+            }
+        },
+        {
+            "Index": 9,
+            "Code": "BK0725",
+            "Name": "装修装饰",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -12.97,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -691080902.0,
+                "Net_Percentage": -2.21
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -59710678.0,
+                "Net_Percentage": -0.19
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -631370224.0,
+                "Net_Percentage": -2.02
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 41107632.0,
+                "Net_Percentage": 0.13
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 738037600.0,
+                "Net_Percentage": 2.36
+            }
+        },
+        {
+            "Index": 10,
+            "Code": "BK1032",
+            "Name": "风电设备",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.94,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -740282646.0,
+                "Net_Percentage": -1.51
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -321613558.0,
+                "Net_Percentage": -0.65
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -418669088.0,
+                "Net_Percentage": -0.85
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -228423328.0,
+                "Net_Percentage": -0.46
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 968705984.0,
+                "Net_Percentage": 1.97
+            }
+        },
+        {
+            "Index": 11,
+            "Code": "BK1045",
+            "Name": "房地产服务",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -11.87,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -904729606.0,
+                "Net_Percentage": -3.49
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -103909590.0,
+                "Net_Percentage": -0.4
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -800820016.0,
+                "Net_Percentage": -3.09
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -146015776.0,
+                "Net_Percentage": -0.56
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1050745376.0,
+                "Net_Percentage": 4.06
+            }
+        },
+        {
+            "Index": 12,
+            "Code": "BK0733",
+            "Name": "包装材料",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.82,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -923825273.0,
+                "Net_Percentage": -3.69
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -350524585.0,
+                "Net_Percentage": -1.4
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -573300688.0,
+                "Net_Percentage": -2.29
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 79118368.0,
+                "Net_Percentage": 0.32
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 817874144.0,
+                "Net_Percentage": 3.26
+            }
+        },
+        {
+            "Index": 13,
+            "Code": "BK0464",
+            "Name": "石油行业",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -6.2,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -968056224.0,
+                "Net_Percentage": -1.48
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -657047136.0,
+                "Net_Percentage": -1.01
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -311009088.0,
+                "Net_Percentage": -0.48
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -177858368.0,
+                "Net_Percentage": -0.27
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1145914592.0,
+                "Net_Percentage": 1.75
+            }
+        },
+        {
+            "Index": 14,
+            "Code": "BK1018",
+            "Name": "橡胶制品",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -7.97,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1022031426.0,
+                "Net_Percentage": -2.13
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -278399714.0,
+                "Net_Percentage": -0.58
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -743631712.0,
+                "Net_Percentage": -1.55
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 74441872.0,
+                "Net_Percentage": 0.16
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 779056192.0,
+                "Net_Percentage": 1.63
+            }
+        },
+        {
+            "Index": 15,
+            "Code": "BK0546",
+            "Name": "玻璃玻纤",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -12.36,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1042075337.0,
+                "Net_Percentage": -3.32
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -585551273.0,
+                "Net_Percentage": -1.87
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -456524064.0,
+                "Net_Percentage": -1.46
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 32942096.0,
+                "Net_Percentage": 0.11
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 949865504.0,
+                "Net_Percentage": 3.03
+            }
+        },
+        {
+            "Index": 16,
+            "Code": "BK0730",
+            "Name": "农药兽药",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.4,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1046897535.0,
+                "Net_Percentage": -3.2
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -630964671.0,
+                "Net_Percentage": -1.93
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -415932864.0,
+                "Net_Percentage": -1.27
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 221161376.0,
+                "Net_Percentage": 0.68
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 706633488.0,
+                "Net_Percentage": 2.16
+            }
+        },
+        {
+            "Index": 17,
+            "Code": "BK1035",
+            "Name": "美容护理",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.18,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1122718394.0,
+                "Net_Percentage": -2.77
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -328220282.0,
+                "Net_Percentage": -0.81
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -794498112.0,
+                "Net_Percentage": -1.96
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -152206240.0,
+                "Net_Percentage": -0.38
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1274924608.0,
+                "Net_Percentage": 3.15
+            }
+        },
+        {
+            "Index": 18,
+            "Code": "BK0421",
+            "Name": "铁路公路",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -5.5,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1191179793.0,
+                "Net_Percentage": -2.59
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -455802689.0,
+                "Net_Percentage": -0.99
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -735377104.0,
+                "Net_Percentage": -1.6
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -322682432.0,
+                "Net_Percentage": -0.7
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1513862208.0,
+                "Net_Percentage": 3.3
+            }
+        },
+        {
+            "Index": 19,
+            "Code": "BK1043",
+            "Name": "专业服务",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -12.11,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1211371966.0,
+                "Net_Percentage": -4.1
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -335517854.0,
+                "Net_Percentage": -1.14
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -875854112.0,
+                "Net_Percentage": -2.97
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -28732848.0,
+                "Net_Percentage": -0.1
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1066063536.0,
+                "Net_Percentage": 3.61
+            }
+        },
+        {
+            "Index": 20,
+            "Code": "BK0726",
+            "Name": "工程咨询服务",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -12.74,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1274035539.0,
+                "Net_Percentage": -3.08
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -568089747.0,
+                "Net_Percentage": -1.37
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -705945792.0,
+                "Net_Percentage": -1.71
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 330976448.0,
+                "Net_Percentage": 0.8
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 903828768.0,
+                "Net_Percentage": 2.18
+            }
+        },
+        {
+            "Index": 21,
+            "Code": "BK0440",
+            "Name": "家用轻工",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.74,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1337843505.0,
+                "Net_Percentage": -2.74
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -152518321.0,
+                "Net_Percentage": -0.31
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1185325184.0,
+                "Net_Percentage": -2.43
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -483286112.0,
+                "Net_Percentage": -0.99
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1789729312.0,
+                "Net_Percentage": 3.67
+            }
+        },
+        {
+            "Index": 22,
+            "Code": "BK0739",
+            "Name": "工程机械",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -3.77,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1385415264.0,
+                "Net_Percentage": -1.53
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -106636560.0,
+                "Net_Percentage": -0.12
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1278778704.0,
+                "Net_Percentage": -1.41
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 137080064.0,
+                "Net_Percentage": 0.15
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1045607664.0,
+                "Net_Percentage": 1.15
+            }
+        },
+        {
+            "Index": 23,
+            "Code": "BK0471",
+            "Name": "化纤行业",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -8.87,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1390804565.0,
+                "Net_Percentage": -2.31
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -290378117.0,
+                "Net_Percentage": -0.48
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1100426448.0,
+                "Net_Percentage": -1.83
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -352003696.0,
+                "Net_Percentage": -0.58
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1700445248.0,
+                "Net_Percentage": 2.82
+            }
+        },
+        {
+            "Index": 24,
+            "Code": "BK0420",
+            "Name": "航空机场",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -6.13,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1396711808.0,
+                "Net_Percentage": -2.95
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -686402256.0,
+                "Net_Percentage": -1.45
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -710309552.0,
+                "Net_Percentage": -1.5
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -233063408.0,
+                "Net_Percentage": -0.49
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1629775152.0,
+                "Net_Percentage": 3.45
+            }
+        },
+        {
+            "Index": 25,
+            "Code": "BK1042",
+            "Name": "医药商业",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -11.58,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1623989702.0,
+                "Net_Percentage": -4.27
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -721509222.0,
+                "Net_Percentage": -1.9
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -902480480.0,
+                "Net_Percentage": -2.37
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 211357872.0,
+                "Net_Percentage": 0.56
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1412631856.0,
+                "Net_Percentage": 3.71
+            }
+        },
+        {
+            "Index": 26,
+            "Code": "BK0424",
+            "Name": "水泥建材",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -12.36,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1810960382.0,
+                "Net_Percentage": -4.31
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -938752798.0,
+                "Net_Percentage": -2.23
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -872207584.0,
+                "Net_Percentage": -2.07
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 279655648.0,
+                "Net_Percentage": 0.67
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1531304800.0,
+                "Net_Percentage": 3.64
+            }
+        },
+        {
+            "Index": 27,
+            "Code": "BK0422",
+            "Name": "物流行业",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.37,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1946556576.0,
+                "Net_Percentage": -2.18
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1440010704.0,
+                "Net_Percentage": -1.61
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -506545872.0,
+                "Net_Percentage": -0.57
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 1494246736.0,
+                "Net_Percentage": 1.68
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 439629024.0,
+                "Net_Percentage": 0.49
+            }
+        },
+        {
+            "Index": 28,
+            "Code": "BK0479",
+            "Name": "钢铁行业",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.24,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2003673520.0,
+                "Net_Percentage": -2.75
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1294994768.0,
+                "Net_Percentage": -1.78
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -708678752.0,
+                "Net_Percentage": -0.97
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 388120288.0,
+                "Net_Percentage": 0.53
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1585150944.0,
+                "Net_Percentage": 2.18
+            }
+        },
+        {
+            "Index": 29,
+            "Code": "BK0539",
+            "Name": "综合行业",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -13.14,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2069721168.0,
+                "Net_Percentage": -4.38
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -563318304.0,
+                "Net_Percentage": -1.19
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1506402864.0,
+                "Net_Percentage": -3.19
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -568573072.0,
+                "Net_Percentage": -1.2
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2638294304.0,
+                "Net_Percentage": 5.58
+            }
+        },
+        {
+            "Index": 30,
+            "Code": "BK0729",
+            "Name": "船舶制造",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.78,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2094452908.0,
+                "Net_Percentage": -5.59
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1390650092.0,
+                "Net_Percentage": -3.71
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -703802816.0,
+                "Net_Percentage": -1.88
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 139559952.0,
+                "Net_Percentage": 0.37
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1954892960.0,
+                "Net_Percentage": 5.21
+            }
+        },
+        {
+            "Index": 31,
+            "Code": "BK1015",
+            "Name": "能源金属",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.02,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2351235792.0,
+                "Net_Percentage": -5.53
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1155768944.0,
+                "Net_Percentage": -2.72
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1195466848.0,
+                "Net_Percentage": -2.81
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -237138544.0,
+                "Net_Percentage": -0.56
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2588374352.0,
+                "Net_Percentage": 6.09
+            }
+        },
+        {
+            "Index": 32,
+            "Code": "BK1044",
+            "Name": "生物制品",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -7.7,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2413459472.0,
+                "Net_Percentage": -2.99
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -969974160.0,
+                "Net_Percentage": -1.2
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1443485312.0,
+                "Net_Percentage": -1.79
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 345118432.0,
+                "Net_Percentage": 0.43
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1934902144.0,
+                "Net_Percentage": 2.39
+            }
+        },
+        {
+            "Index": 33,
+            "Code": "BK1030",
+            "Name": "电机",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.12,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2441186639.0,
+                "Net_Percentage": -2.9
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -620144863.0,
+                "Net_Percentage": -0.74
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1821041776.0,
+                "Net_Percentage": -2.16
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 248780416.0,
+                "Net_Percentage": 0.3
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2073055024.0,
+                "Net_Percentage": 2.46
+            }
+        },
+        {
+            "Index": 34,
+            "Code": "BK0436",
+            "Name": "纺织服装",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.26,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2513218096.0,
+                "Net_Percentage": -2.42
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -453594176.0,
+                "Net_Percentage": -0.44
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -2059623920.0,
+                "Net_Percentage": -1.99
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -262420000.0,
+                "Net_Percentage": -0.25
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2743158816.0,
+                "Net_Percentage": 2.64
+            }
+        },
+        {
+            "Index": 35,
+            "Code": "BK0437",
+            "Name": "煤炭行业",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -3.7,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2570696144.0,
+                "Net_Percentage": -3.14
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -971419792.0,
+                "Net_Percentage": -1.19
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1599276352.0,
+                "Net_Percentage": -1.96
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 42738496.0,
+                "Net_Percentage": 0.05
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2527957680.0,
+                "Net_Percentage": 3.09
+            }
+        },
+        {
+            "Index": 36,
+            "Code": "BK0731",
+            "Name": "化肥行业",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.12,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2580553053.0,
+                "Net_Percentage": -4.86
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1248021485.0,
+                "Net_Percentage": -2.35
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1332531568.0,
+                "Net_Percentage": -2.51
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -269231632.0,
+                "Net_Percentage": -0.51
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2849784688.0,
+                "Net_Percentage": 5.37
+            }
+        },
+        {
+            "Index": 37,
+            "Code": "BK0738",
+            "Name": "多元金融",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -12.51,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2662631866.0,
+                "Net_Percentage": -5.83
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1547965818.0,
+                "Net_Percentage": -3.39
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1114666048.0,
+                "Net_Percentage": -2.44
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 331784352.0,
+                "Net_Percentage": 0.73
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2330847456.0,
+                "Net_Percentage": 5.11
+            }
+        },
+        {
+            "Index": 38,
+            "Code": "BK1041",
+            "Name": "医疗器械",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.58,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2732777856.0,
+                "Net_Percentage": -2.44
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1270817680.0,
+                "Net_Percentage": -1.14
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1461960176.0,
+                "Net_Percentage": -1.31
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 601565600.0,
+                "Net_Percentage": 0.54
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2036298512.0,
+                "Net_Percentage": 1.82
+            }
+        },
+        {
+            "Index": 39,
+            "Code": "BK0474",
+            "Name": "保险",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -7.19,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2744432672.0,
+                "Net_Percentage": -3.87
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -657642160.0,
+                "Net_Percentage": -0.93
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -2086790512.0,
+                "Net_Percentage": -2.94
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 936658080.0,
+                "Net_Percentage": 1.32
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1807774624.0,
+                "Net_Percentage": 2.55
+            }
+        },
+        {
+            "Index": 40,
+            "Code": "BK1020",
+            "Name": "非金属材料",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -6.65,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2747112928.0,
+                "Net_Percentage": -2.42
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1425176368.0,
+                "Net_Percentage": -1.26
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1321936560.0,
+                "Net_Percentage": -1.17
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -565642816.0,
+                "Net_Percentage": -0.5
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 3323395440.0,
+                "Net_Percentage": 2.93
+            }
+        },
+        {
+            "Index": 41,
+            "Code": "BK1034",
+            "Name": "电源设备",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -6.48,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2777110192.0,
+                "Net_Percentage": -2.1
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -208434048.0,
+                "Net_Percentage": -0.16
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -2568676144.0,
+                "Net_Percentage": -1.94
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -700055040.0,
+                "Net_Percentage": -0.53
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 3477165296.0,
+                "Net_Percentage": 2.63
+            }
+        },
+        {
+            "Index": 42,
+            "Code": "BK0470",
+            "Name": "造纸印刷",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.93,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2804919792.0,
+                "Net_Percentage": -4.09
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -852007440.0,
+                "Net_Percentage": -1.24
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1952912352.0,
+                "Net_Percentage": -2.85
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -116769328.0,
+                "Net_Percentage": -0.17
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2833984208.0,
+                "Net_Percentage": 4.13
+            }
+        },
+        {
+            "Index": 43,
+            "Code": "BK1027",
+            "Name": "小金属",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.02,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2923184560.0,
+                "Net_Percentage": -3.3
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1562997568.0,
+                "Net_Percentage": -1.76
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1360186992.0,
+                "Net_Percentage": -1.53
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -42884656.0,
+                "Net_Percentage": -0.05
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2966069152.0,
+                "Net_Percentage": 3.35
+            }
+        },
+        {
+            "Index": 44,
+            "Code": "BK0454",
+            "Name": "塑料制品",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.84,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2997318442.0,
+                "Net_Percentage": -3.54
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1031575594.0,
+                "Net_Percentage": -1.22
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1965742848.0,
+                "Net_Percentage": -2.32
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 258779728.0,
+                "Net_Percentage": 0.31
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2572347904.0,
+                "Net_Percentage": 3.04
+            }
+        },
+        {
+            "Index": 45,
+            "Code": "BK0740",
+            "Name": "教育",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -19.65,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -3072541981.0,
+                "Net_Percentage": -5.74
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1543709389.0,
+                "Net_Percentage": -2.88
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1528832592.0,
+                "Net_Percentage": -2.85
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -97126224.0,
+                "Net_Percentage": -0.18
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 3169668224.0,
+                "Net_Percentage": 5.92
+            }
+        },
+        {
+            "Index": 46,
+            "Code": "BK0433",
+            "Name": "农牧饲渔",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.3,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -3117700384.0,
+                "Net_Percentage": -2.39
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -708871232.0,
+                "Net_Percentage": -0.54
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -2408829152.0,
+                "Net_Percentage": -1.85
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -581631008.0,
+                "Net_Percentage": -0.45
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 3587918464.0,
+                "Net_Percentage": 2.75
+            }
+        },
+        {
+            "Index": 47,
+            "Code": "BK0485",
+            "Name": "旅游酒店",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -12.23,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -3163570448.0,
+                "Net_Percentage": -4.36
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1619780256.0,
+                "Net_Percentage": -2.23
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1543790192.0,
+                "Net_Percentage": -2.13
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 723466816.0,
+                "Net_Percentage": 1.0
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2440103616.0,
+                "Net_Percentage": 3.36
+            }
+        },
+        {
+            "Index": 48,
+            "Code": "BK0458",
+            "Name": "仪器仪表",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -12.72,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -3193335248.0,
+                "Net_Percentage": -3.31
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1247851808.0,
+                "Net_Percentage": -1.29
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1945483440.0,
+                "Net_Percentage": -2.02
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 210123040.0,
+                "Net_Percentage": 0.22
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2822384032.0,
+                "Net_Percentage": 2.93
+            }
+        },
+        {
+            "Index": 49,
+            "Code": "BK0484",
+            "Name": "贸易行业",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -11.26,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -3206931920.0,
+                "Net_Percentage": -3.39
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1335061280.0,
+                "Net_Percentage": -1.41
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1871870640.0,
+                "Net_Percentage": -1.98
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 76078640.0,
+                "Net_Percentage": 0.08
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 3053831120.0,
+                "Net_Percentage": 3.23
+            }
+        },
+        {
+            "Index": 50,
+            "Code": "BK0429",
+            "Name": "交运设备",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.18,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -3263122448.0,
+                "Net_Percentage": -3.45
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1114140624.0,
+                "Net_Percentage": -1.18
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -2148981824.0,
+                "Net_Percentage": -2.27
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 50808256.0,
+                "Net_Percentage": 0.05
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 3116941040.0,
+                "Net_Percentage": 3.29
+            }
+        }
+    ]
+}

@@ -1,0 +1,843 @@
+{
+    "time": "2025-01-04 13:53:34",
+    "title": "Sector_Flow-Regional_Flow-10-Day",
+    "data": [
+        {
+            "Index": 1,
+            "Code": "BK0163",
+            "Name": "青海板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -6.09,
+            "10-Day_Main_Flow": {
+                "Net_Amount": 114079273.0,
+                "Net_Percentage": 0.55
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 88421129.0,
+                "Net_Percentage": 0.42
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": 25658144.0,
+                "Net_Percentage": 0.12
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -306446640.0,
+                "Net_Percentage": -1.46
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 192367392.0,
+                "Net_Percentage": 0.92
+            }
+        },
+        {
+            "Index": 2,
+            "Code": "BK0162",
+            "Name": "宁夏板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -7.01,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -730904719.0,
+                "Net_Percentage": -2.4
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -78959119.0,
+                "Net_Percentage": -0.26
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -651945600.0,
+                "Net_Percentage": -2.14
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -174526560.0,
+                "Net_Percentage": -0.57
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 855682896.0,
+                "Net_Percentage": 2.81
+            }
+        },
+        {
+            "Index": 3,
+            "Code": "BK0152",
+            "Name": "甘肃板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.32,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -1421357531.0,
+                "Net_Percentage": -2.24
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -138413467.0,
+                "Net_Percentage": -0.22
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1282944064.0,
+                "Net_Percentage": -2.02
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -493440960.0,
+                "Net_Percentage": -0.78
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1914798496.0,
+                "Net_Percentage": 3.02
+            }
+        },
+        {
+            "Index": 4,
+            "Code": "BK0154",
+            "Name": "广西板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.71,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2054773680.0,
+                "Net_Percentage": -2.66
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -660252848.0,
+                "Net_Percentage": -0.85
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1394520832.0,
+                "Net_Percentage": -1.8
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -493230464.0,
+                "Net_Percentage": -0.64
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2460579600.0,
+                "Net_Percentage": 3.18
+            }
+        },
+        {
+            "Index": 5,
+            "Code": "BK0146",
+            "Name": "黑龙江",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -11.05,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2387783808.0,
+                "Net_Percentage": -3.13
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -939818736.0,
+                "Net_Percentage": -1.23
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1447965072.0,
+                "Net_Percentage": -1.9
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -177632768.0,
+                "Net_Percentage": -0.23
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2565416576.0,
+                "Net_Percentage": 3.37
+            }
+        },
+        {
+            "Index": 6,
+            "Code": "BK0175",
+            "Name": "内蒙古",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -8.0,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2537645696.0,
+                "Net_Percentage": -3.04
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -2429757440.0,
+                "Net_Percentage": -2.91
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -107888256.0,
+                "Net_Percentage": -0.13
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 443690816.0,
+                "Net_Percentage": 0.53
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2025105264.0,
+                "Net_Percentage": 2.42
+            }
+        },
+        {
+            "Index": 7,
+            "Code": "BK0176",
+            "Name": "海南板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -11.44,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2765271168.0,
+                "Net_Percentage": -3.28
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1302087072.0,
+                "Net_Percentage": -1.54
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1463184096.0,
+                "Net_Percentage": -1.73
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -595410880.0,
+                "Net_Percentage": -0.71
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 3360682032.0,
+                "Net_Percentage": 3.98
+            }
+        },
+        {
+            "Index": 8,
+            "Code": "BK0167",
+            "Name": "山西板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.22,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -2986809744.0,
+                "Net_Percentage": -3.37
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1295032736.0,
+                "Net_Percentage": -1.46
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1691777008.0,
+                "Net_Percentage": -1.91
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -255025392.0,
+                "Net_Percentage": -0.29
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 3139067696.0,
+                "Net_Percentage": 3.54
+            }
+        },
+        {
+            "Index": 9,
+            "Code": "BK0148",
+            "Name": "吉林板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -12.51,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -3087078496.0,
+                "Net_Percentage": -4.39
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1519094768.0,
+                "Net_Percentage": -2.16
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1567983728.0,
+                "Net_Percentage": -2.23
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 262571488.0,
+                "Net_Percentage": 0.37
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2771127456.0,
+                "Net_Percentage": 3.94
+            }
+        },
+        {
+            "Index": 10,
+            "Code": "BK0174",
+            "Name": "西藏板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -13.86,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -3366441970.0,
+                "Net_Percentage": -6.09
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1748741634.0,
+                "Net_Percentage": -3.16
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -1617700336.0,
+                "Net_Percentage": -2.92
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 653224928.0,
+                "Net_Percentage": 1.18
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 2713217024.0,
+                "Net_Percentage": 4.9
+            }
+        },
+        {
+            "Index": 11,
+            "Code": "BK0147",
+            "Name": "新疆板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.88,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -3753357328.0,
+                "Net_Percentage": -3.52
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1121261424.0,
+                "Net_Percentage": -1.05
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -2632095904.0,
+                "Net_Percentage": -2.47
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 71536512.0,
+                "Net_Percentage": 0.07
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 3653640576.0,
+                "Net_Percentage": 3.42
+            }
+        },
+        {
+            "Index": 12,
+            "Code": "BK0173",
+            "Name": "贵州板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.85,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -4215910320.0,
+                "Net_Percentage": -4.5
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -2213821792.0,
+                "Net_Percentage": -2.36
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -2002088528.0,
+                "Net_Percentage": -2.14
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 2720289056.0,
+                "Net_Percentage": 2.9
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 1449467360.0,
+                "Net_Percentage": 1.55
+            }
+        },
+        {
+            "Index": 13,
+            "Code": "BK0160",
+            "Name": "江西板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.49,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -4515161856.0,
+                "Net_Percentage": -2.79
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1453783184.0,
+                "Net_Percentage": -0.9
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -3061378672.0,
+                "Net_Percentage": -1.89
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -404958720.0,
+                "Net_Percentage": -0.25
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 4825972224.0,
+                "Net_Percentage": 2.98
+            }
+        },
+        {
+            "Index": 14,
+            "Code": "BK0171",
+            "Name": "云南板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.41,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -5656543344.0,
+                "Net_Percentage": -5.25
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -2752737728.0,
+                "Net_Percentage": -2.55
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -2903805616.0,
+                "Net_Percentage": -2.69
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 576168208.0,
+                "Net_Percentage": 0.53
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 5051782288.0,
+                "Net_Percentage": 4.68
+            }
+        },
+        {
+            "Index": 15,
+            "Code": "BK0156",
+            "Name": "河南板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.44,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -6605321968.0,
+                "Net_Percentage": -2.99
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -2709364896.0,
+                "Net_Percentage": -1.23
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -3895957072.0,
+                "Net_Percentage": -1.76
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -86445824.0,
+                "Net_Percentage": -0.04
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 6477268736.0,
+                "Net_Percentage": 2.93
+            }
+        },
+        {
+            "Index": 16,
+            "Code": "BK0161",
+            "Name": "辽宁板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -12.17,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -6609541440.0,
+                "Net_Percentage": -4.0
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -2497462208.0,
+                "Net_Percentage": -1.51
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -4112079232.0,
+                "Net_Percentage": -2.49
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -297132800.0,
+                "Net_Percentage": -0.18
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 6782403328.0,
+                "Net_Percentage": 4.11
+            }
+        },
+        {
+            "Index": 17,
+            "Code": "BK0170",
+            "Name": "重庆板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.2,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -7288247616.0,
+                "Net_Percentage": -4.32
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -3760475728.0,
+                "Net_Percentage": -2.23
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -3527771888.0,
+                "Net_Percentage": -2.09
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 756544000.0,
+                "Net_Percentage": 0.45
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 6416472896.0,
+                "Net_Percentage": 3.8
+            }
+        },
+        {
+            "Index": 18,
+            "Code": "BK0165",
+            "Name": "陕西板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.26,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -7426719856.0,
+                "Net_Percentage": -3.97
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -3314086240.0,
+                "Net_Percentage": -1.77
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -4112633616.0,
+                "Net_Percentage": -2.2
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 402297344.0,
+                "Net_Percentage": 0.22
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 6742879232.0,
+                "Net_Percentage": 3.6
+            }
+        },
+        {
+            "Index": 19,
+            "Code": "BK0155",
+            "Name": "河北板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.84,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -8545415968.0,
+                "Net_Percentage": -4.59
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -4332753360.0,
+                "Net_Percentage": -2.33
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -4212662608.0,
+                "Net_Percentage": -2.26
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -530830336.0,
+                "Net_Percentage": -0.29
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 8786856704.0,
+                "Net_Percentage": 4.72
+            }
+        },
+        {
+            "Index": 20,
+            "Code": "BK0166",
+            "Name": "天津板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.76,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -10144837808.0,
+                "Net_Percentage": -4.13
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -6869640624.0,
+                "Net_Percentage": -2.8
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -3275197184.0,
+                "Net_Percentage": -1.33
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 624886272.0,
+                "Net_Percentage": 0.25
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 9456259840.0,
+                "Net_Percentage": 3.85
+            }
+        },
+        {
+            "Index": 21,
+            "Code": "BK0158",
+            "Name": "湖南板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.53,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -10918516656.0,
+                "Net_Percentage": -3.86
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -5148872112.0,
+                "Net_Percentage": -1.82
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -5769644544.0,
+                "Net_Percentage": -2.04
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 1198720512.0,
+                "Net_Percentage": 0.42
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 9555714816.0,
+                "Net_Percentage": 3.38
+            }
+        },
+        {
+            "Index": 22,
+            "Code": "BK0151",
+            "Name": "福建板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.92,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -14447110240.0,
+                "Net_Percentage": -2.86
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -5990534752.0,
+                "Net_Percentage": -1.19
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -8456575488.0,
+                "Net_Percentage": -1.67
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -104975872.0,
+                "Net_Percentage": -0.02
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 14458576384.0,
+                "Net_Percentage": 2.86
+            }
+        },
+        {
+            "Index": 23,
+            "Code": "BK0157",
+            "Name": "湖北板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.97,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -14869310816.0,
+                "Net_Percentage": -3.63
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -5239225440.0,
+                "Net_Percentage": -1.28
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -9630085376.0,
+                "Net_Percentage": -2.35
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -576873472.0,
+                "Net_Percentage": -0.14
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 15183225088.0,
+                "Net_Percentage": 3.7
+            }
+        },
+        {
+            "Index": 24,
+            "Code": "BK0164",
+            "Name": "山东板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -8.87,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -16849603840.0,
+                "Net_Percentage": -2.76
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -7748079872.0,
+                "Net_Percentage": -1.27
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -9101523968.0,
+                "Net_Percentage": -1.49
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -1538558720.0,
+                "Net_Percentage": -0.25
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 18211599104.0,
+                "Net_Percentage": 2.98
+            }
+        },
+        {
+            "Index": 25,
+            "Code": "BK0169",
+            "Name": "四川板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.53,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -17958135008.0,
+                "Net_Percentage": -3.86
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -7098651872.0,
+                "Net_Percentage": -1.52
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -10859483136.0,
+                "Net_Percentage": -2.33
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -1467388928.0,
+                "Net_Percentage": -0.32
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 19189569280.0,
+                "Net_Percentage": 4.12
+            }
+        },
+        {
+            "Index": 26,
+            "Code": "BK0149",
+            "Name": "安徽板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.62,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -18450176144.0,
+                "Net_Percentage": -4.36
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -9607003792.0,
+                "Net_Percentage": -2.27
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -8843172352.0,
+                "Net_Percentage": -2.09
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 2123484160.0,
+                "Net_Percentage": 0.5
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 16176034560.0,
+                "Net_Percentage": 3.82
+            }
+        },
+        {
+            "Index": 27,
+            "Code": "BK0159",
+            "Name": "江苏板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.27,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -43179397120.0,
+                "Net_Percentage": -3.12
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -16751501824.0,
+                "Net_Percentage": -1.21
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -26427895296.0,
+                "Net_Percentage": -1.91
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 719354112.0,
+                "Net_Percentage": 0.05
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 41144063744.0,
+                "Net_Percentage": 2.97
+            }
+        },
+        {
+            "Index": 28,
+            "Code": "BK0145",
+            "Name": "上海板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -10.61,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -46723984128.0,
+                "Net_Percentage": -3.42
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -22421978112.0,
+                "Net_Percentage": -1.64
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -24302006016.0,
+                "Net_Percentage": -1.78
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 2547191296.0,
+                "Net_Percentage": 0.19
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 43873195776.0,
+                "Net_Percentage": 3.21
+            }
+        },
+        {
+            "Index": 29,
+            "Code": "BK0172",
+            "Name": "浙江板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -9.58,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -51017762560.0,
+                "Net_Percentage": -3.49
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -21317847040.0,
+                "Net_Percentage": -1.46
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -29699915520.0,
+                "Net_Percentage": -2.03
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 2238066432.0,
+                "Net_Percentage": 0.15
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 47953965312.0,
+                "Net_Percentage": 3.28
+            }
+        },
+        {
+            "Index": 30,
+            "Code": "BK0150",
+            "Name": "北京板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -12.2,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -60878720256.0,
+                "Net_Percentage": -3.68
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -29317419776.0,
+                "Net_Percentage": -1.77
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -31561300480.0,
+                "Net_Percentage": -1.91
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": 6298308864.0,
+                "Net_Percentage": 0.38
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 53813900032.0,
+                "Net_Percentage": 3.25
+            }
+        },
+        {
+            "Index": 31,
+            "Code": "BK0153",
+            "Name": "广东板块",
+            "Latest_Price": "N/A",
+            "10-Day_Change_Percentage": -11.58,
+            "10-Day_Main_Flow": {
+                "Net_Amount": -97504934912.0,
+                "Net_Percentage": -3.53
+            },
+            "10-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -36676300288.0,
+                "Net_Percentage": -1.33
+            },
+            "10-Day_Large_Order_Flow": {
+                "Net_Amount": -60828634624.0,
+                "Net_Percentage": -2.2
+            },
+            "10-Day_Medium_Order_Flow": {
+                "Net_Amount": -1982136320.0,
+                "Net_Percentage": -0.07
+            },
+            "10-Day_Small_Order_Flow": {
+                "Net_Amount": 98834046976.0,
+                "Net_Percentage": 3.58
+            }
+        }
+    ]
+}

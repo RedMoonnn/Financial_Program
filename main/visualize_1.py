@@ -15,7 +15,7 @@ def visualize_data(title, day, page):
     rcParams['font.family'] = font_prop.get_name()
 
     # 读取数据
-    json_file_path = '../data/'+title+'/'+title+'.json'
+    json_file_path = '../data/' + title + '/' + title + '.json'
 
     with open(json_file_path, 'r', encoding='utf-8') as f:
         json_loaded = json.load(f)
@@ -24,7 +24,18 @@ def visualize_data(title, day, page):
 
     # 提取数据
     names = [item["Name"] for item in data]
-    prices = [item[day + "_Main_Flow"]["Net_Amount"] / 100000000 for item in data]  # 转为数值
+    # print(data[0][day + "_Main_Flow"]["Net_Amount"])
+    # print(type(data[0][day + "_Main_Flow"]["Net_Amount"]))
+
+    prices = [
+        float(item[day + "_Main_Flow"]["Net_Amount"]) / 100000000
+        if isinstance(item[day + "_Main_Flow"]["Net_Amount"], (int, float)) or
+           (isinstance(item[day + "_Main_Flow"]["Net_Amount"], str) and
+            item[day + "_Main_Flow"]["Net_Amount"].replace(".", "", 1).isdigit())
+        else 0
+        for item in data
+    ]
+
     # print(names)
     # print(prices)
 

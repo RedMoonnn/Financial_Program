@@ -1,0 +1,1167 @@
+{
+    "time": "2025-01-04 13:52:54",
+    "title": "Stock_Flow-SH_B_Shares-5-Day",
+    "data": [
+        {
+            "Index": 1,
+            "Code": "900948",
+            "Name": "伊泰Ｂ股",
+            "Latest_Price": 2.006,
+            "5-Day_Change_Percentage": -0.55,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 893567.0,
+                "Net_Percentage": 4.32
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 53189.0,
+                "Net_Percentage": 0.26
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 840378.0,
+                "Net_Percentage": 4.06
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -806947.0,
+                "Net_Percentage": -3.9
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": -86624.0,
+                "Net_Percentage": -0.42
+            }
+        },
+        {
+            "Index": 2,
+            "Code": "900915",
+            "Name": "中路Ｂ股",
+            "Latest_Price": 0.455,
+            "5-Day_Change_Percentage": -7.14,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 88437.0,
+                "Net_Percentage": 16.62
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 88437.0,
+                "Net_Percentage": 16.62
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -156797.0,
+                "Net_Percentage": -29.47
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 68361.0,
+                "Net_Percentage": 12.85
+            }
+        },
+        {
+            "Index": 3,
+            "Code": "900946",
+            "Name": "天雁B股",
+            "Latest_Price": 0.168,
+            "5-Day_Change_Percentage": -0.59,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 87211.0,
+                "Net_Percentage": 7.46
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 87211.0,
+                "Net_Percentage": 7.46
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -113599.0,
+                "Net_Percentage": -9.72
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 26388.0,
+                "Net_Percentage": 2.26
+            }
+        },
+        {
+            "Index": 4,
+            "Code": "900908",
+            "Name": "氯碱Ｂ股",
+            "Latest_Price": 0.607,
+            "5-Day_Change_Percentage": 0.17,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 43360.0,
+                "Net_Percentage": 0.73
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 46.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 43314.0,
+                "Net_Percentage": 0.73
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -230544.0,
+                "Net_Percentage": -3.9
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 187183.0,
+                "Net_Percentage": 3.16
+            }
+        },
+        {
+            "Index": 5,
+            "Code": "900952",
+            "Name": "ST锦港Ｂ",
+            "Latest_Price": 0.103,
+            "5-Day_Change_Percentage": -0.96,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 40258.0,
+                "Net_Percentage": 18.81
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 40258.0,
+                "Net_Percentage": 18.81
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -13308.0,
+                "Net_Percentage": -6.22
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": -26949.0,
+                "Net_Percentage": -12.59
+            }
+        },
+        {
+            "Index": 6,
+            "Code": "900910",
+            "Name": "海立Ｂ股",
+            "Latest_Price": 0.384,
+            "5-Day_Change_Percentage": -5.42,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 28175.0,
+                "Net_Percentage": 1.0
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1800.0,
+                "Net_Percentage": -0.06
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 29975.0,
+                "Net_Percentage": 1.07
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -423626.0,
+                "Net_Percentage": -15.07
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 395453.0,
+                "Net_Percentage": 14.07
+            }
+        },
+        {
+            "Index": 7,
+            "Code": "900921",
+            "Name": "丹科B股",
+            "Latest_Price": 0.129,
+            "5-Day_Change_Percentage": -3.01,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 9747.0,
+                "Net_Percentage": 1.51
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -3531.0,
+                "Net_Percentage": -0.55
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 13278.0,
+                "Net_Percentage": 2.06
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -44020.0,
+                "Net_Percentage": -6.82
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 34271.0,
+                "Net_Percentage": 5.31
+            }
+        },
+        {
+            "Index": 8,
+            "Code": "900957",
+            "Name": "凌云Ｂ股",
+            "Latest_Price": 0.303,
+            "5-Day_Change_Percentage": -7.06,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 5194.0,
+                "Net_Percentage": 0.43
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -365.0,
+                "Net_Percentage": -0.03
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 5559.0,
+                "Net_Percentage": 0.46
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -131986.0,
+                "Net_Percentage": -10.81
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 126791.0,
+                "Net_Percentage": 10.38
+            }
+        },
+        {
+            "Index": 9,
+            "Code": "900929",
+            "Name": "锦旅Ｂ股",
+            "Latest_Price": 1.219,
+            "5-Day_Change_Percentage": -4.09,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -36433.0,
+                "Net_Percentage": -4.81
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 36433.0,
+                "Net_Percentage": 4.81
+            }
+        },
+        {
+            "Index": 10,
+            "Code": "900928",
+            "Name": "临港B股",
+            "Latest_Price": 0.608,
+            "5-Day_Change_Percentage": -3.18,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -14905.0,
+                "Net_Percentage": -4.3
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 14906.0,
+                "Net_Percentage": 4.3
+            }
+        },
+        {
+            "Index": 11,
+            "Code": "900922",
+            "Name": "三毛B股",
+            "Latest_Price": 0.472,
+            "5-Day_Change_Percentage": -4.65,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -40823.0,
+                "Net_Percentage": -13.38
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 40824.0,
+                "Net_Percentage": 13.38
+            }
+        },
+        {
+            "Index": 12,
+            "Code": "900911",
+            "Name": "金桥Ｂ股",
+            "Latest_Price": 0.826,
+            "5-Day_Change_Percentage": -1.78,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -173229.0,
+                "Net_Percentage": -13.86
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 173229.0,
+                "Net_Percentage": 13.86
+            }
+        },
+        {
+            "Index": 13,
+            "Code": "900904",
+            "Name": "神奇B股",
+            "Latest_Price": 0.567,
+            "5-Day_Change_Percentage": -1.56,
+            "5-Day_Main_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": 6384.0,
+                "Net_Percentage": 1.51
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": -6383.0,
+                "Net_Percentage": -1.51
+            }
+        },
+        {
+            "Index": 14,
+            "Code": "900905",
+            "Name": "老凤祥Ｂ",
+            "Latest_Price": 3.543,
+            "5-Day_Change_Percentage": 0.28,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -387.0,
+                "Net_Percentage": -0.01
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -387.0,
+                "Net_Percentage": -0.01
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -518172.0,
+                "Net_Percentage": -9.71
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 518559.0,
+                "Net_Percentage": 9.72
+            }
+        },
+        {
+            "Index": 15,
+            "Code": "900942",
+            "Name": "黄山Ｂ股",
+            "Latest_Price": 0.754,
+            "5-Day_Change_Percentage": -2.33,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -525.0,
+                "Net_Percentage": -0.04
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -525.0,
+                "Net_Percentage": -0.04
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -107583.0,
+                "Net_Percentage": -7.79
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 108107.0,
+                "Net_Percentage": 7.82
+            }
+        },
+        {
+            "Index": 16,
+            "Code": "900940",
+            "Name": "大名城B",
+            "Latest_Price": 0.235,
+            "5-Day_Change_Percentage": -8.2,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -12487.0,
+                "Net_Percentage": -5.48
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -12487.0,
+                "Net_Percentage": -5.48
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -45481.0,
+                "Net_Percentage": -19.96
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 57970.0,
+                "Net_Percentage": 25.45
+            }
+        },
+        {
+            "Index": 17,
+            "Code": "900918",
+            "Name": "耀皮Ｂ股",
+            "Latest_Price": 0.342,
+            "5-Day_Change_Percentage": -10.0,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -23716.0,
+                "Net_Percentage": -3.02
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -23716.0,
+                "Net_Percentage": -3.02
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -125832.0,
+                "Net_Percentage": -16.05
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 149549.0,
+                "Net_Percentage": 19.07
+            }
+        },
+        {
+            "Index": 18,
+            "Code": "900938",
+            "Name": "海科B",
+            "Latest_Price": 0.171,
+            "5-Day_Change_Percentage": -7.07,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -30836.0,
+                "Net_Percentage": -4.92
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -40472.0,
+                "Net_Percentage": -6.45
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": 9636.0,
+                "Net_Percentage": 1.54
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -53537.0,
+                "Net_Percentage": -8.54
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 84371.0,
+                "Net_Percentage": 13.45
+            }
+        },
+        {
+            "Index": 19,
+            "Code": "900920",
+            "Name": "动力Ｂ股",
+            "Latest_Price": 0.193,
+            "5-Day_Change_Percentage": -9.81,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -36772.0,
+                "Net_Percentage": -4.43
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -5596.0,
+                "Net_Percentage": -0.67
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -31176.0,
+                "Net_Percentage": -3.76
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -167250.0,
+                "Net_Percentage": -20.15
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 204024.0,
+                "Net_Percentage": 24.58
+            }
+        },
+        {
+            "Index": 20,
+            "Code": "900914",
+            "Name": "锦在线B",
+            "Latest_Price": 0.56,
+            "5-Day_Change_Percentage": -9.82,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -52997.0,
+                "Net_Percentage": -2.74
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -882.0,
+                "Net_Percentage": -0.05
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -52115.0,
+                "Net_Percentage": -2.7
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -434944.0,
+                "Net_Percentage": -22.5
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 487942.0,
+                "Net_Percentage": 25.24
+            }
+        },
+        {
+            "Index": 21,
+            "Code": "900939",
+            "Name": "汇丽B",
+            "Latest_Price": 0.5,
+            "5-Day_Change_Percentage": -3.85,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -53261.0,
+                "Net_Percentage": -3.91
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -53261.0,
+                "Net_Percentage": -3.91
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -12830.0,
+                "Net_Percentage": -0.94
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 66092.0,
+                "Net_Percentage": 4.85
+            }
+        },
+        {
+            "Index": 22,
+            "Code": "900912",
+            "Name": "外高Ｂ股",
+            "Latest_Price": 0.749,
+            "5-Day_Change_Percentage": -3.35,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -79763.0,
+                "Net_Percentage": -11.48
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -79763.0,
+                "Net_Percentage": -11.48
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -88506.0,
+                "Net_Percentage": -12.74
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 168268.0,
+                "Net_Percentage": 24.22
+            }
+        },
+        {
+            "Index": 23,
+            "Code": "900927",
+            "Name": "物贸Ｂ股",
+            "Latest_Price": 0.41,
+            "5-Day_Change_Percentage": -9.29,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -79989.0,
+                "Net_Percentage": -8.69
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -6643.0,
+                "Net_Percentage": -0.72
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -73346.0,
+                "Net_Percentage": -7.97
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -135498.0,
+                "Net_Percentage": -14.72
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 215487.0,
+                "Net_Percentage": 23.42
+            }
+        },
+        {
+            "Index": 24,
+            "Code": "900943",
+            "Name": "开开Ｂ股",
+            "Latest_Price": 0.517,
+            "5-Day_Change_Percentage": -5.66,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -85342.0,
+                "Net_Percentage": -6.09
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -85342.0,
+                "Net_Percentage": -6.09
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -52427.0,
+                "Net_Percentage": -3.74
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 137769.0,
+                "Net_Percentage": 9.83
+            }
+        },
+        {
+            "Index": 25,
+            "Code": "900916",
+            "Name": "凤凰B股",
+            "Latest_Price": 0.355,
+            "5-Day_Change_Percentage": -8.03,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -88107.0,
+                "Net_Percentage": -6.25
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -88107.0,
+                "Net_Percentage": -6.25
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -299060.0,
+                "Net_Percentage": -21.23
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 387170.0,
+                "Net_Percentage": 27.48
+            }
+        },
+        {
+            "Index": 26,
+            "Code": "900906",
+            "Name": "中毅达B",
+            "Latest_Price": 0.217,
+            "5-Day_Change_Percentage": -15.56,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -90588.0,
+                "Net_Percentage": -3.0
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -84839.0,
+                "Net_Percentage": -2.81
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -5749.0,
+                "Net_Percentage": -0.19
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -306325.0,
+                "Net_Percentage": -10.15
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 396915.0,
+                "Net_Percentage": 13.15
+            }
+        },
+        {
+            "Index": 27,
+            "Code": "900934",
+            "Name": "锦江Ｂ股",
+            "Latest_Price": 1.496,
+            "5-Day_Change_Percentage": -0.8,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -94340.0,
+                "Net_Percentage": -5.98
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -94340.0,
+                "Net_Percentage": -5.98
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -202011.0,
+                "Net_Percentage": -12.82
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 296353.0,
+                "Net_Percentage": 18.8
+            }
+        },
+        {
+            "Index": 28,
+            "Code": "900917",
+            "Name": "海欣Ｂ股",
+            "Latest_Price": 0.276,
+            "5-Day_Change_Percentage": -4.5,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -101285.0,
+                "Net_Percentage": -11.94
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -7405.0,
+                "Net_Percentage": -0.87
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -93880.0,
+                "Net_Percentage": -11.07
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -48246.0,
+                "Net_Percentage": -5.69
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 149533.0,
+                "Net_Percentage": 17.63
+            }
+        },
+        {
+            "Index": 29,
+            "Code": "900923",
+            "Name": "百联Ｂ股",
+            "Latest_Price": 0.658,
+            "5-Day_Change_Percentage": -5.87,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -109739.0,
+                "Net_Percentage": -3.08
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -5070.0,
+                "Net_Percentage": -0.14
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -104669.0,
+                "Net_Percentage": -2.94
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -452174.0,
+                "Net_Percentage": -12.7
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 561915.0,
+                "Net_Percentage": 15.79
+            }
+        },
+        {
+            "Index": 30,
+            "Code": "900902",
+            "Name": "市北B股",
+            "Latest_Price": 0.167,
+            "5-Day_Change_Percentage": -9.24,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -111954.0,
+                "Net_Percentage": -9.18
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -2416.0,
+                "Net_Percentage": -0.2
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -109538.0,
+                "Net_Percentage": -8.98
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -108393.0,
+                "Net_Percentage": -8.89
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 220347.0,
+                "Net_Percentage": 18.07
+            }
+        },
+        {
+            "Index": 31,
+            "Code": "900936",
+            "Name": "鄂资Ｂ股",
+            "Latest_Price": 0.87,
+            "5-Day_Change_Percentage": -1.25,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -122245.0,
+                "Net_Percentage": -5.8
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -4002.0,
+                "Net_Percentage": -0.19
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -118243.0,
+                "Net_Percentage": -5.61
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -149922.0,
+                "Net_Percentage": -7.11
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 272170.0,
+                "Net_Percentage": 12.91
+            }
+        },
+        {
+            "Index": 32,
+            "Code": "900913",
+            "Name": "国新B股",
+            "Latest_Price": 0.244,
+            "5-Day_Change_Percentage": -2.79,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -164801.0,
+                "Net_Percentage": -22.01
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -30087.0,
+                "Net_Percentage": -4.02
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -134714.0,
+                "Net_Percentage": -17.99
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": 91103.0,
+                "Net_Percentage": 12.17
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 73697.0,
+                "Net_Percentage": 9.84
+            }
+        },
+        {
+            "Index": 33,
+            "Code": "900947",
+            "Name": "振华Ｂ股",
+            "Latest_Price": 0.228,
+            "5-Day_Change_Percentage": -2.98,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -220580.0,
+                "Net_Percentage": -17.59
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -15146.0,
+                "Net_Percentage": -1.21
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -205434.0,
+                "Net_Percentage": -16.39
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -129199.0,
+                "Net_Percentage": -10.31
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 349780.0,
+                "Net_Percentage": 27.9
+            }
+        },
+        {
+            "Index": 34,
+            "Code": "900925",
+            "Name": "机电Ｂ股",
+            "Latest_Price": 1.057,
+            "5-Day_Change_Percentage": -5.96,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -226569.0,
+                "Net_Percentage": -6.62
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -57500.0,
+                "Net_Percentage": -1.68
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -169069.0,
+                "Net_Percentage": -4.94
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -457830.0,
+                "Net_Percentage": -13.38
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 684400.0,
+                "Net_Percentage": 20.0
+            }
+        },
+        {
+            "Index": 35,
+            "Code": "900909",
+            "Name": "华谊B股",
+            "Latest_Price": 0.515,
+            "5-Day_Change_Percentage": -4.81,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -226960.0,
+                "Net_Percentage": -15.6
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -4982.0,
+                "Net_Percentage": -0.34
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -221978.0,
+                "Net_Percentage": -15.26
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": 101081.0,
+                "Net_Percentage": 6.95
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 125881.0,
+                "Net_Percentage": 8.65
+            }
+        },
+        {
+            "Index": 36,
+            "Code": "900903",
+            "Name": "大众Ｂ股",
+            "Latest_Price": 0.217,
+            "5-Day_Change_Percentage": -3.56,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -235304.0,
+                "Net_Percentage": -10.35
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -34146.0,
+                "Net_Percentage": -1.5
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -201158.0,
+                "Net_Percentage": -8.85
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": 329675.0,
+                "Net_Percentage": 14.5
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": -94369.0,
+                "Net_Percentage": -4.15
+            }
+        },
+        {
+            "Index": 37,
+            "Code": "900926",
+            "Name": "宝信Ｂ",
+            "Latest_Price": 1.562,
+            "5-Day_Change_Percentage": -3.52,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -245072.0,
+                "Net_Percentage": -3.17
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -92845.0,
+                "Net_Percentage": -1.2
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -152227.0,
+                "Net_Percentage": -1.97
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -773672.0,
+                "Net_Percentage": -10.02
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 1018743.0,
+                "Net_Percentage": 13.19
+            }
+        },
+        {
+            "Index": 38,
+            "Code": "900945",
+            "Name": "海控B股",
+            "Latest_Price": 0.291,
+            "5-Day_Change_Percentage": -10.46,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -252671.0,
+                "Net_Percentage": -6.85
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -11624.0,
+                "Net_Percentage": -0.32
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -241047.0,
+                "Net_Percentage": -6.54
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": 183847.0,
+                "Net_Percentage": 4.99
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 68826.0,
+                "Net_Percentage": 1.87
+            }
+        },
+        {
+            "Index": 39,
+            "Code": "900937",
+            "Name": "华电B股",
+            "Latest_Price": 0.169,
+            "5-Day_Change_Percentage": -5.06,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -257609.0,
+                "Net_Percentage": -21.66
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -1483.0,
+                "Net_Percentage": -0.12
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -256126.0,
+                "Net_Percentage": -21.54
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": 114113.0,
+                "Net_Percentage": 9.59
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 143500.0,
+                "Net_Percentage": 12.07
+            }
+        },
+        {
+            "Index": 40,
+            "Code": "900941",
+            "Name": "东信Ｂ股",
+            "Latest_Price": 0.373,
+            "5-Day_Change_Percentage": -10.12,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -265115.0,
+                "Net_Percentage": -14.41
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -11479.0,
+                "Net_Percentage": -0.62
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -253636.0,
+                "Net_Percentage": -13.79
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -193720.0,
+                "Net_Percentage": -10.53
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 458836.0,
+                "Net_Percentage": 24.94
+            }
+        },
+        {
+            "Index": 41,
+            "Code": "900932",
+            "Name": "陆家Ｂ股",
+            "Latest_Price": 0.483,
+            "5-Day_Change_Percentage": -4.92,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -275750.0,
+                "Net_Percentage": -12.94
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -29538.0,
+                "Net_Percentage": -1.39
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -246212.0,
+                "Net_Percentage": -11.55
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -169426.0,
+                "Net_Percentage": -7.95
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 445179.0,
+                "Net_Percentage": 20.89
+            }
+        },
+        {
+            "Index": 42,
+            "Code": "900901",
+            "Name": "云赛Ｂ股",
+            "Latest_Price": 0.631,
+            "5-Day_Change_Percentage": -3.52,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -347698.0,
+                "Net_Percentage": -2.94
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -25192.0,
+                "Net_Percentage": -0.21
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -322506.0,
+                "Net_Percentage": -2.72
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -499472.0,
+                "Net_Percentage": -4.22
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 847172.0,
+                "Net_Percentage": 7.16
+            }
+        },
+        {
+            "Index": 43,
+            "Code": "900924",
+            "Name": "上工Ｂ股",
+            "Latest_Price": 0.356,
+            "5-Day_Change_Percentage": -11.44,
+            "5-Day_Main_Flow": {
+                "Net_Amount": -412684.0,
+                "Net_Percentage": -16.27
+            },
+            "5-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": -68846.0,
+                "Net_Percentage": -2.71
+            },
+            "5-Day_Large_Order_Flow": {
+                "Net_Amount": -343838.0,
+                "Net_Percentage": -13.56
+            },
+            "5-Day_Medium_Order_Flow": {
+                "Net_Amount": -249902.0,
+                "Net_Percentage": -9.85
+            },
+            "5-Day_Small_Order_Flow": {
+                "Net_Amount": 662589.0,
+                "Net_Percentage": 26.13
+            }
+        }
+    ]
+}
