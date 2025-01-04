@@ -1,3 +1,4 @@
+import os
 import mysql.connector
 from datetime import datetime
 
@@ -48,10 +49,10 @@ def database_operations(db_config, table_name, data):
 def main():
     # MySQL 连接配置
     db_config = {
-        'host': 'localhost',
-        'user': 'root',
-        'password': '',
-        'database': 'financial_web_crawler',
+        'host': 'localhost',  # 数据库地址
+        'user': 'root',  # 用户名
+        'password': os.getenv('MYSQL_PASSWORD'),  # 从环境变量读取密码
+        'database': 'financial_web_crawler',  # 使用的数据库
     }
 
     # 动态表名和插入的数据
@@ -75,4 +76,5 @@ def main():
 
 
 if __name__ == "__main__":
+    print(os.getenv('MYSQL_PASSWORD'))
     main()

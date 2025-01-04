@@ -1,4 +1,4 @@
-import os
+# 保持热爱 奔赴山海
 import subprocess
 import time
 
@@ -15,7 +15,7 @@ stock_types_2 = ["1", "2", "3"]  # 3 种股票类型
 ranking_durations_2 = ["1", "2", "3"]  # 3 种排名时长
 
 # 定义 Python 脚本路径
-script_path = r"D:\Desktop\Py_Practice\Web_Crawler\Specific_Case\EastMoney_Crawler\main\main_1.py"
+script_path = r"D:\Desktop\Py_Practice\Web_Crawler\Specific_Case\EastMoney_Crawler\main\main_2.py"
 python_executable = r"D:\Desktop\Py_Practice\Web_Crawler\Specific_Case\EastMoney_Crawler\.venv\Scripts\python.exe"
 
 # 定义计数器，打印到输出窗口
@@ -87,8 +87,9 @@ for category in categories_2:
                 # 捕获异常并打印错误信息
                 print(f"运行脚本时出错: {e}")
 
-# 打印总的运行时间
+# 打印总的运行时间和平均时间
 total_time = time.time() - start_time
 print(f"\nTotal run time: {total_time:.2f} seconds")
+print(f"Average run time: {total_time / 41:.2f} seconds")
 # 打印成功输出率
 print(f"Success rate: {(counter / 41) * 100:.2f}%")

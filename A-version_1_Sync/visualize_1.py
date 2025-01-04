@@ -7,7 +7,6 @@ import numpy as np
 from matplotlib import rcParams
 from matplotlib.font_manager import FontProperties
 
-
 def visualize_data(title, day, page):
     # 设置中文字体
     font_path = "C:/Windows/Fonts/msyh.ttc"  # 根据操作系统修改字体路径
