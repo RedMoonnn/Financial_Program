@@ -46,7 +46,7 @@ def visualize_data(title, day, page):
     x_positions = np.arange(len(names)) * 2
 
     # 可视化
-    plt.figure(figsize=(10 * int(page), 6), dpi=300)  # 设置图表大小与分辨率
+    plt.figure(figsize=(10 * int(page), 6), dpi=240)  # 设置图表大小与分辨率
     plt.bar(x_positions, prices, color='skyblue', width=0.8)  # 设置宽度并对齐
 
     # 添加标题和标签

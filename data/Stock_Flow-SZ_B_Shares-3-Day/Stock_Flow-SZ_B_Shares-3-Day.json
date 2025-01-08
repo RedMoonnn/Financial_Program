@@ -1,175 +1,175 @@
 {
-    "time": "2025-01-04 15:51:34",
+    "time": "2025-01-09 04:19:05",
     "title": "Stock_Flow-SZ_B_Shares-3-Day",
     "data": [
         {
             "Index": 1,
-            "Code": "200581",
-            "Name": "苏威孚Ｂ",
-            "Latest_Price": 12.52,
-            "3-Day_Change_Percentage": -1.34,
+            "Code": "200725",
+            "Name": "京东方Ｂ",
+            "Latest_Price": 2.73,
+            "3-Day_Change_Percentage": 3.8,
             "3-Day_Main_Flow": {
-                "Net_Amount": 726279.0,
-                "Net_Percentage": 8.02
+                "Net_Amount": 1442062.0,
+                "Net_Percentage": 17.52
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": 726279.0,
-                "Net_Percentage": 8.02
+                "Net_Amount": 1442062.0,
+                "Net_Percentage": 17.52
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 215220.0,
-                "Net_Percentage": 2.38
+                "Net_Amount": -877436.0,
+                "Net_Percentage": -10.66
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": -941499.0,
-                "Net_Percentage": -10.39
+                "Net_Amount": -564626.0,
+                "Net_Percentage": -6.86
             }
         },
         {
             "Index": 2,
-            "Code": "200541",
-            "Name": "粤照明Ｂ",
-            "Latest_Price": 2.6,
-            "3-Day_Change_Percentage": -1.14,
+            "Code": "200869",
+            "Name": "张  裕Ｂ",
+            "Latest_Price": 8.3,
+            "3-Day_Change_Percentage": 0.0,
             "3-Day_Main_Flow": {
-                "Net_Amount": 82278.0,
-                "Net_Percentage": 1.58
+                "Net_Amount": 426274.0,
+                "Net_Percentage": 13.44
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": 82278.0,
-                "Net_Percentage": 1.58
+                "Net_Amount": 426274.0,
+                "Net_Percentage": 13.44
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -486851.0,
-                "Net_Percentage": -9.37
+                "Net_Amount": -652092.0,
+                "Net_Percentage": -20.56
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 404576.0,
-                "Net_Percentage": 7.79
+                "Net_Amount": 225819.0,
+                "Net_Percentage": 7.12
             }
         },
         {
             "Index": 3,
-            "Code": "200761",
-            "Name": "本钢板Ｂ",
-            "Latest_Price": 1.39,
-            "3-Day_Change_Percentage": -1.42,
+            "Code": "201872",
+            "Name": "招港B",
+            "Latest_Price": 12.42,
+            "3-Day_Change_Percentage": 0.57,
             "3-Day_Main_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
+                "Net_Amount": 180220.0,
+                "Net_Percentage": 2.2
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
+                "Net_Amount": 180220.0,
+                "Net_Percentage": 2.2
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 86634.0,
-                "Net_Percentage": 9.82
+                "Net_Amount": -649696.0,
+                "Net_Percentage": -7.93
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": -86634.0,
-                "Net_Percentage": -9.82
+                "Net_Amount": 469476.0,
+                "Net_Percentage": 5.73
             }
         },
         {
             "Index": 4,
-            "Code": "200706",
-            "Name": "瓦轴B",
-            "Latest_Price": 2.51,
-            "3-Day_Change_Percentage": -8.73,
+            "Code": "200505",
+            "Name": "京粮B",
+            "Latest_Price": 2.16,
+            "3-Day_Change_Percentage": 0.0,
             "3-Day_Main_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
+                "Net_Amount": 127972.0,
+                "Net_Percentage": 8.11
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
+                "Net_Amount": 127972.0,
+                "Net_Percentage": 8.11
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -32948.0,
-                "Net_Percentage": -4.96
+                "Net_Amount": -348154.0,
+                "Net_Percentage": -22.07
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 32948.0,
-                "Net_Percentage": 4.96
+                "Net_Amount": 220182.0,
+                "Net_Percentage": 13.96
             }
         },
         {
             "Index": 5,
-            "Code": "200553",
-            "Name": "安道麦B",
-            "Latest_Price": 2.67,
-            "3-Day_Change_Percentage": -1.11,
+            "Code": "200541",
+            "Name": "粤照明Ｂ",
+            "Latest_Price": 2.61,
+            "3-Day_Change_Percentage": 0.38,
             "3-Day_Main_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
+                "Net_Amount": 119700.0,
+                "Net_Percentage": 3.47
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
+                "Net_Amount": 119700.0,
+                "Net_Percentage": 3.47
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -72421.0,
-                "Net_Percentage": -3.65
+                "Net_Amount": -235003.0,
+                "Net_Percentage": -6.81
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 72421.0,
-                "Net_Percentage": 3.65
+                "Net_Amount": 115303.0,
+                "Net_Percentage": 3.34
             }
         },
         {
             "Index": 6,
-            "Code": "200512",
-            "Name": "闽灿坤Ｂ",
-            "Latest_Price": 3.6,
-            "3-Day_Change_Percentage": -3.74,
+            "Code": "200521",
+            "Name": "虹美菱B",
+            "Latest_Price": 4.59,
+            "3-Day_Change_Percentage": 2.91,
             "3-Day_Main_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
+                "Net_Amount": 55261.0,
+                "Net_Percentage": 1.06
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
+                "Net_Amount": 55261.0,
+                "Net_Percentage": 1.06
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -252616.0,
-                "Net_Percentage": -8.22
+                "Net_Amount": 411029.0,
+                "Net_Percentage": 7.87
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 252615.0,
-                "Net_Percentage": 8.22
+                "Net_Amount": -466290.0,
+                "Net_Percentage": -8.93
             }
         },
         {
             "Index": 7,
-            "Code": "200505",
-            "Name": "京粮B",
-            "Latest_Price": 2.16,
-            "3-Day_Change_Percentage": -3.14,
+            "Code": "200992",
+            "Name": "中  鲁Ｂ",
+            "Latest_Price": 2.12,
+            "3-Day_Change_Percentage": 1.44,
             "3-Day_Main_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
@@ -183,20 +183,20 @@
                 "Net_Percentage": 0.0
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 31384.0,
-                "Net_Percentage": 5.74
+                "Net_Amount": 163067.0,
+                "Net_Percentage": 17.35
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": -31382.0,
-                "Net_Percentage": -5.74
+                "Net_Amount": -163067.0,
+                "Net_Percentage": -17.35
             }
         },
         {
             "Index": 8,
-            "Code": "200056",
-            "Name": "皇庭B",
-            "Latest_Price": 1.29,
-            "3-Day_Change_Percentage": -2.27,
+            "Code": "200726",
+            "Name": "鲁  泰Ｂ",
+            "Latest_Price": 4.18,
+            "3-Day_Change_Percentage": 0.0,
             "3-Day_Main_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
@@ -210,20 +210,20 @@
                 "Net_Percentage": 0.0
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -29472.0,
-                "Net_Percentage": -4.84
+                "Net_Amount": -251206.0,
+                "Net_Percentage": -44.01
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 29472.0,
-                "Net_Percentage": 4.84
+                "Net_Amount": 251207.0,
+                "Net_Percentage": 44.01
             }
         },
         {
             "Index": 9,
-            "Code": "200055",
-            "Name": "方大Ｂ",
-            "Latest_Price": 1.68,
-            "3-Day_Change_Percentage": -2.33,
+            "Code": "200706",
+            "Name": "瓦轴B",
+            "Latest_Price": 2.41,
+            "3-Day_Change_Percentage": -3.98,
             "3-Day_Main_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
@@ -237,20 +237,20 @@
                 "Net_Percentage": 0.0
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 150197.0,
-                "Net_Percentage": 9.86
+                "Net_Amount": -201843.0,
+                "Net_Percentage": -52.12
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": -150196.0,
-                "Net_Percentage": -9.86
+                "Net_Amount": 201843.0,
+                "Net_Percentage": 52.12
             }
         },
         {
             "Index": 10,
-            "Code": "200045",
-            "Name": "深纺织Ｂ",
-            "Latest_Price": 4.34,
-            "3-Day_Change_Percentage": -1.81,
+            "Code": "200530",
+            "Name": "冰山B",
+            "Latest_Price": 1.66,
+            "3-Day_Change_Percentage": 1.22,
             "3-Day_Main_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
@@ -264,20 +264,20 @@
                 "Net_Percentage": 0.0
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -80546.0,
-                "Net_Percentage": -9.75
+                "Net_Amount": -113520.0,
+                "Net_Percentage": -9.38
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 80546.0,
-                "Net_Percentage": 9.75
+                "Net_Amount": 113520.0,
+                "Net_Percentage": 9.38
             }
         },
         {
             "Index": 11,
-            "Code": "200030",
-            "Name": "富奥B",
-            "Latest_Price": 3.4,
-            "3-Day_Change_Percentage": -2.58,
+            "Code": "200512",
+            "Name": "闽灿坤Ｂ",
+            "Latest_Price": 3.64,
+            "3-Day_Change_Percentage": 1.11,
             "3-Day_Main_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
@@ -291,20 +291,20 @@
                 "Net_Percentage": 0.0
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 78888.0,
-                "Net_Percentage": 7.04
+                "Net_Amount": 226659.0,
+                "Net_Percentage": 13.93
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": -78888.0,
-                "Net_Percentage": -7.04
+                "Net_Amount": -226659.0,
+                "Net_Percentage": -13.93
             }
         },
         {
             "Index": 12,
-            "Code": "200029",
-            "Name": "深深房Ｂ",
-            "Latest_Price": 2.79,
-            "3-Day_Change_Percentage": -1.06,
+            "Code": "200058",
+            "Name": "深赛格B",
+            "Latest_Price": 1.84,
+            "3-Day_Change_Percentage": 2.22,
             "3-Day_Main_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
@@ -318,20 +318,20 @@
                 "Net_Percentage": 0.0
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 2400.0,
-                "Net_Percentage": 0.17
+                "Net_Amount": -11097.0,
+                "Net_Percentage": -0.99
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": -2400.0,
-                "Net_Percentage": -0.17
+                "Net_Amount": 11097.0,
+                "Net_Percentage": 0.99
             }
         },
         {
             "Index": 13,
-            "Code": "200026",
-            "Name": "飞亚达Ｂ",
-            "Latest_Price": 6.8,
-            "3-Day_Change_Percentage": -1.16,
+            "Code": "200056",
+            "Name": "皇庭B",
+            "Latest_Price": 1.3,
+            "3-Day_Change_Percentage": 0.78,
             "3-Day_Main_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
@@ -345,20 +345,20 @@
                 "Net_Percentage": 0.0
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 4739.0,
-                "Net_Percentage": 1.47
+                "Net_Amount": 25298.0,
+                "Net_Percentage": 4.92
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": -4739.0,
-                "Net_Percentage": -1.47
+                "Net_Amount": -25298.0,
+                "Net_Percentage": -4.92
             }
         },
         {
             "Index": 14,
-            "Code": "200025",
-            "Name": "特  力Ｂ",
-            "Latest_Price": 4.7,
-            "3-Day_Change_Percentage": -3.49,
+            "Code": "200045",
+            "Name": "深纺织Ｂ",
+            "Latest_Price": 4.3,
+            "3-Day_Change_Percentage": -0.92,
             "3-Day_Main_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
@@ -372,20 +372,20 @@
                 "Net_Percentage": 0.0
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -14185.0,
-                "Net_Percentage": -2.07
+                "Net_Amount": -16475.0,
+                "Net_Percentage": -2.41
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 14185.0,
-                "Net_Percentage": 2.07
+                "Net_Amount": 16475.0,
+                "Net_Percentage": 2.41
             }
         },
         {
             "Index": 15,
-            "Code": "200020",
-            "Name": "深华发Ｂ",
-            "Latest_Price": 2.54,
-            "3-Day_Change_Percentage": -1.93,
+            "Code": "200037",
+            "Name": "深南电B",
+            "Latest_Price": 1.83,
+            "3-Day_Change_Percentage": -0.54,
             "3-Day_Main_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
@@ -399,20 +399,20 @@
                 "Net_Percentage": 0.0
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -95359.0,
-                "Net_Percentage": -39.44
+                "Net_Amount": -102013.0,
+                "Net_Percentage": -22.44
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 95359.0,
-                "Net_Percentage": 39.44
+                "Net_Amount": 102013.0,
+                "Net_Percentage": 22.44
             }
         },
         {
             "Index": 16,
-            "Code": "200019",
-            "Name": "深粮B",
-            "Latest_Price": 3.38,
-            "3-Day_Change_Percentage": -0.59,
+            "Code": "200029",
+            "Name": "深深房Ｂ",
+            "Latest_Price": 2.79,
+            "3-Day_Change_Percentage": 0.0,
             "3-Day_Main_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
@@ -426,16 +426,124 @@
                 "Net_Percentage": 0.0
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -322731.0,
-                "Net_Percentage": -40.73
+                "Net_Amount": 216368.0,
+                "Net_Percentage": 42.47
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 322732.0,
-                "Net_Percentage": 40.73
+                "Net_Amount": -216368.0,
+                "Net_Percentage": -42.47
             }
         },
         {
             "Index": 17,
+            "Code": "200025",
+            "Name": "特  力Ｂ",
+            "Latest_Price": 4.69,
+            "3-Day_Change_Percentage": -0.21,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": -51143.0,
+                "Net_Percentage": -10.16
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": 51144.0,
+                "Net_Percentage": 10.16
+            }
+        },
+        {
+            "Index": 18,
+            "Code": "200020",
+            "Name": "深华发Ｂ",
+            "Latest_Price": 2.56,
+            "3-Day_Change_Percentage": 0.79,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            }
+        },
+        {
+            "Index": 19,
+            "Code": "200019",
+            "Name": "深粮B",
+            "Latest_Price": 3.37,
+            "3-Day_Change_Percentage": -0.3,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": 62301.0,
+                "Net_Percentage": 19.31
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -62301.0,
+                "Net_Percentage": -19.31
+            }
+        },
+        {
+            "Index": 20,
+            "Code": "200017",
+            "Name": "深中华B",
+            "Latest_Price": 1.76,
+            "3-Day_Change_Percentage": 2.92,
+            "3-Day_Main_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Extra_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Large_Order_Flow": {
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
+            },
+            "3-Day_Medium_Order_Flow": {
+                "Net_Amount": 114243.0,
+                "Net_Percentage": 10.6
+            },
+            "3-Day_Small_Order_Flow": {
+                "Net_Amount": -114243.0,
+                "Net_Percentage": -10.6
+            }
+        },
+        {
+            "Index": 21,
             "Code": "200016",
             "Name": "深康佳Ｂ",
             "Latest_Price": "-",
@@ -462,597 +570,489 @@
             }
         },
         {
-            "Index": 18,
-            "Code": "200725",
-            "Name": "京东方Ｂ",
-            "Latest_Price": 2.63,
-            "3-Day_Change_Percentage": -3.31,
-            "3-Day_Main_Flow": {
-                "Net_Amount": -12443.0,
-                "Net_Percentage": -0.18
-            },
-            "3-Day_Extra_Large_Order_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
-            },
-            "3-Day_Large_Order_Flow": {
-                "Net_Amount": -12443.0,
-                "Net_Percentage": -0.18
-            },
-            "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -866788.0,
-                "Net_Percentage": -12.85
-            },
-            "3-Day_Small_Order_Flow": {
-                "Net_Amount": 879232.0,
-                "Net_Percentage": 13.03
-            }
-        },
-        {
-            "Index": 19,
-            "Code": "200017",
-            "Name": "深中华B",
-            "Latest_Price": 1.71,
-            "3-Day_Change_Percentage": 2.4,
-            "3-Day_Main_Flow": {
-                "Net_Amount": -41888.0,
-                "Net_Percentage": -1.59
-            },
-            "3-Day_Extra_Large_Order_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
-            },
-            "3-Day_Large_Order_Flow": {
-                "Net_Amount": -41888.0,
-                "Net_Percentage": -1.59
-            },
-            "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 113220.0,
-                "Net_Percentage": 4.29
-            },
-            "3-Day_Small_Order_Flow": {
-                "Net_Amount": -71332.0,
-                "Net_Percentage": -2.7
-            }
-        },
-        {
-            "Index": 20,
-            "Code": "200037",
-            "Name": "深南电B",
-            "Latest_Price": 1.84,
-            "3-Day_Change_Percentage": -6.6,
-            "3-Day_Main_Flow": {
-                "Net_Amount": -58173.0,
-                "Net_Percentage": -2.4
-            },
-            "3-Day_Extra_Large_Order_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
-            },
-            "3-Day_Large_Order_Flow": {
-                "Net_Amount": -58173.0,
-                "Net_Percentage": -2.4
-            },
-            "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -734038.0,
-                "Net_Percentage": -30.28
-            },
-            "3-Day_Small_Order_Flow": {
-                "Net_Amount": 792212.0,
-                "Net_Percentage": 32.68
-            }
-        },
-        {
-            "Index": 21,
-            "Code": "200468",
-            "Name": "宁通信B",
-            "Latest_Price": 3.4,
-            "3-Day_Change_Percentage": -10.29,
-            "3-Day_Main_Flow": {
-                "Net_Amount": -121795.0,
-                "Net_Percentage": -2.43
-            },
-            "3-Day_Extra_Large_Order_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
-            },
-            "3-Day_Large_Order_Flow": {
-                "Net_Amount": -121795.0,
-                "Net_Percentage": -2.43
-            },
-            "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -639675.0,
-                "Net_Percentage": -12.78
-            },
-            "3-Day_Small_Order_Flow": {
-                "Net_Amount": 761470.0,
-                "Net_Percentage": 15.21
-            }
-        },
-        {
             "Index": 22,
-            "Code": "200992",
-            "Name": "中  鲁Ｂ",
-            "Latest_Price": 2.09,
-            "3-Day_Change_Percentage": -7.11,
+            "Code": "200011",
+            "Name": "深物业B",
+            "Latest_Price": 3.77,
+            "3-Day_Change_Percentage": 1.89,
             "3-Day_Main_Flow": {
-                "Net_Amount": -137990.0,
-                "Net_Percentage": -5.59
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -137990.0,
-                "Net_Percentage": -5.59
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -85763.0,
-                "Net_Percentage": -3.48
+                "Net_Amount": -43782.0,
+                "Net_Percentage": -19.79
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 223753.0,
-                "Net_Percentage": 9.07
+                "Net_Amount": 43782.0,
+                "Net_Percentage": 19.79
             }
         },
         {
             "Index": 23,
-            "Code": "200011",
-            "Name": "深物业B",
-            "Latest_Price": 3.7,
-            "3-Day_Change_Percentage": -4.64,
+            "Code": "200570",
+            "Name": "苏常柴Ｂ",
+            "Latest_Price": 1.89,
+            "3-Day_Change_Percentage": -1.56,
             "3-Day_Main_Flow": {
-                "Net_Amount": -269312.0,
-                "Net_Percentage": -19.44
+                "Net_Amount": -955.0,
+                "Net_Percentage": -0.11
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -269312.0,
-                "Net_Percentage": -19.44
+                "Net_Amount": -955.0,
+                "Net_Percentage": -0.11
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -25840.0,
-                "Net_Percentage": -1.87
+                "Net_Amount": -345204.0,
+                "Net_Percentage": -40.28
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 295153.0,
-                "Net_Percentage": 21.31
+                "Net_Amount": 346159.0,
+                "Net_Percentage": 40.39
             }
         },
         {
             "Index": 24,
-            "Code": "200429",
-            "Name": "粤高速Ｂ",
-            "Latest_Price": 8.04,
-            "3-Day_Change_Percentage": 0.12,
+            "Code": "200030",
+            "Name": "富奥B",
+            "Latest_Price": 3.41,
+            "3-Day_Change_Percentage": 0.29,
             "3-Day_Main_Flow": {
-                "Net_Amount": -287564.0,
-                "Net_Percentage": -0.58
+                "Net_Amount": -2599.0,
+                "Net_Percentage": -0.4
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -287564.0,
-                "Net_Percentage": -0.58
+                "Net_Amount": -2599.0,
+                "Net_Percentage": -0.4
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -1706492.0,
-                "Net_Percentage": -3.42
+                "Net_Amount": 134178.0,
+                "Net_Percentage": 20.59
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 1994057.0,
-                "Net_Percentage": 3.99
+                "Net_Amount": -131579.0,
+                "Net_Percentage": -20.19
             }
         },
         {
             "Index": 25,
-            "Code": "200521",
-            "Name": "虹美菱B",
-            "Latest_Price": 4.46,
-            "3-Day_Change_Percentage": -2.41,
+            "Code": "200553",
+            "Name": "安道麦B",
+            "Latest_Price": 2.41,
+            "3-Day_Change_Percentage": -9.74,
             "3-Day_Main_Flow": {
-                "Net_Amount": -318640.0,
-                "Net_Percentage": -4.71
+                "Net_Amount": -48700.0,
+                "Net_Percentage": -2.04
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -318640.0,
-                "Net_Percentage": -4.71
+                "Net_Amount": -48700.0,
+                "Net_Percentage": -2.04
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 317346.0,
-                "Net_Percentage": 4.69
+                "Net_Amount": -950128.0,
+                "Net_Percentage": -39.79
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 1293.0,
-                "Net_Percentage": 0.02
+                "Net_Amount": 998828.0,
+                "Net_Percentage": 41.83
             }
         },
         {
             "Index": 26,
-            "Code": "200550",
-            "Name": "江  铃Ｂ",
-            "Latest_Price": 10.36,
-            "3-Day_Change_Percentage": -2.08,
+            "Code": "200055",
+            "Name": "方大Ｂ",
+            "Latest_Price": 1.7,
+            "3-Day_Change_Percentage": 1.19,
             "3-Day_Main_Flow": {
-                "Net_Amount": -319782.0,
-                "Net_Percentage": -5.33
+                "Net_Amount": -79261.0,
+                "Net_Percentage": -9.69
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -319782.0,
-                "Net_Percentage": -5.33
+                "Net_Amount": -79261.0,
+                "Net_Percentage": -9.69
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -1012870.0,
-                "Net_Percentage": -16.87
+                "Net_Amount": 352217.0,
+                "Net_Percentage": 43.07
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 1332654.0,
-                "Net_Percentage": 22.19
+                "Net_Amount": -272956.0,
+                "Net_Percentage": -33.37
             }
         },
         {
             "Index": 27,
-            "Code": "200530",
-            "Name": "冰山B",
-            "Latest_Price": 1.64,
-            "3-Day_Change_Percentage": -5.75,
+            "Code": "200468",
+            "Name": "宁通信B",
+            "Latest_Price": 3.55,
+            "3-Day_Change_Percentage": 4.41,
             "3-Day_Main_Flow": {
-                "Net_Amount": -396140.0,
-                "Net_Percentage": -7.18
+                "Net_Amount": -172252.0,
+                "Net_Percentage": -2.53
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -396140.0,
-                "Net_Percentage": -7.18
+                "Net_Amount": -172252.0,
+                "Net_Percentage": -2.53
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 298735.0,
-                "Net_Percentage": 5.42
+                "Net_Amount": 778970.0,
+                "Net_Percentage": 11.46
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 97404.0,
-                "Net_Percentage": 1.77
+                "Net_Amount": -606718.0,
+                "Net_Percentage": -8.93
             }
         },
         {
             "Index": 28,
-            "Code": "200028",
-            "Name": "一致Ｂ",
-            "Latest_Price": 13.98,
-            "3-Day_Change_Percentage": -2.92,
+            "Code": "200026",
+            "Name": "飞亚达Ｂ",
+            "Latest_Price": 6.64,
+            "3-Day_Change_Percentage": -2.35,
             "3-Day_Main_Flow": {
-                "Net_Amount": -440084.0,
-                "Net_Percentage": -5.45
+                "Net_Amount": -254423.0,
+                "Net_Percentage": -56.58
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -440084.0,
-                "Net_Percentage": -5.45
+                "Net_Amount": -254423.0,
+                "Net_Percentage": -56.58
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 513886.0,
-                "Net_Percentage": 6.37
+                "Net_Amount": -37030.0,
+                "Net_Percentage": -8.23
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": -73802.0,
-                "Net_Percentage": -0.91
+                "Net_Amount": 291453.0,
+                "Net_Percentage": 64.81
             }
         },
         {
             "Index": 29,
-            "Code": "200869",
-            "Name": "张  裕Ｂ",
-            "Latest_Price": 8.3,
-            "3-Day_Change_Percentage": -0.12,
+            "Code": "200761",
+            "Name": "本钢板Ｂ",
+            "Latest_Price": 1.38,
+            "3-Day_Change_Percentage": -0.72,
             "3-Day_Main_Flow": {
-                "Net_Amount": -444350.0,
-                "Net_Percentage": -6.17
+                "Net_Amount": -273253.0,
+                "Net_Percentage": -24.38
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -444350.0,
-                "Net_Percentage": -6.17
+                "Net_Amount": -273253.0,
+                "Net_Percentage": -24.38
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 107270.0,
-                "Net_Percentage": 1.49
+                "Net_Amount": 178364.0,
+                "Net_Percentage": 15.91
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 337080.0,
-                "Net_Percentage": 4.68
+                "Net_Amount": 94889.0,
+                "Net_Percentage": 8.47
             }
         },
         {
             "Index": 30,
-            "Code": "201872",
-            "Name": "招港B",
-            "Latest_Price": 12.35,
-            "3-Day_Change_Percentage": 0.49,
+            "Code": "200550",
+            "Name": "江  铃Ｂ",
+            "Latest_Price": 10.1,
+            "3-Day_Change_Percentage": -2.51,
             "3-Day_Main_Flow": {
-                "Net_Amount": -531620.0,
-                "Net_Percentage": -3.74
+                "Net_Amount": -536075.0,
+                "Net_Percentage": -11.46
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -531620.0,
-                "Net_Percentage": -3.74
+                "Net_Amount": -536075.0,
+                "Net_Percentage": -11.46
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 67009.0,
-                "Net_Percentage": 0.47
+                "Net_Amount": -581395.0,
+                "Net_Percentage": -12.42
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 464613.0,
-                "Net_Percentage": 3.27
+                "Net_Amount": 1117470.0,
+                "Net_Percentage": 23.88
             }
         },
         {
             "Index": 31,
-            "Code": "200058",
-            "Name": "深赛格B",
-            "Latest_Price": 1.8,
-            "3-Day_Change_Percentage": -6.74,
+            "Code": "200488",
+            "Name": "晨  鸣Ｂ",
+            "Latest_Price": 1.0,
+            "3-Day_Change_Percentage": -2.91,
             "3-Day_Main_Flow": {
-                "Net_Amount": -541710.0,
-                "Net_Percentage": -23.47
+                "Net_Amount": -610564.0,
+                "Net_Percentage": -11.28
             },
             "3-Day_Extra_Large_Order_Flow": {
-                "Net_Amount": 0.0,
-                "Net_Percentage": 0.0
+                "Net_Amount": -581000.0,
+                "Net_Percentage": -10.74
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -541710.0,
-                "Net_Percentage": -23.47
+                "Net_Amount": -29564.0,
+                "Net_Percentage": -0.55
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -475070.0,
-                "Net_Percentage": -20.58
+                "Net_Amount": 368193.0,
+                "Net_Percentage": 6.8
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 1016781.0,
-                "Net_Percentage": 44.05
+                "Net_Amount": 242373.0,
+                "Net_Percentage": 4.48
             }
         },
         {
             "Index": 32,
-            "Code": "200570",
-            "Name": "苏常柴Ｂ",
-            "Latest_Price": 1.92,
-            "3-Day_Change_Percentage": -1.54,
+            "Code": "200581",
+            "Name": "苏威孚Ｂ",
+            "Latest_Price": 12.54,
+            "3-Day_Change_Percentage": 0.16,
             "3-Day_Main_Flow": {
-                "Net_Amount": -615593.0,
-                "Net_Percentage": -48.28
+                "Net_Amount": -737223.0,
+                "Net_Percentage": -12.88
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -615593.0,
-                "Net_Percentage": -48.28
+                "Net_Amount": -737223.0,
+                "Net_Percentage": -12.88
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 451528.0,
-                "Net_Percentage": 35.41
+                "Net_Amount": 11509.0,
+                "Net_Percentage": 0.2
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 164066.0,
-                "Net_Percentage": 12.87
+                "Net_Amount": 725714.0,
+                "Net_Percentage": 12.68
             }
         },
         {
             "Index": 33,
-            "Code": "200726",
-            "Name": "鲁  泰Ｂ",
-            "Latest_Price": 4.18,
-            "3-Day_Change_Percentage": -1.65,
+            "Code": "200771",
+            "Name": "杭汽轮Ｂ",
+            "Latest_Price": 9.65,
+            "3-Day_Change_Percentage": -1.83,
             "3-Day_Main_Flow": {
-                "Net_Amount": -672432.0,
-                "Net_Percentage": -44.73
+                "Net_Amount": -829121.0,
+                "Net_Percentage": -4.02
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -672432.0,
-                "Net_Percentage": -44.73
+                "Net_Amount": -829121.0,
+                "Net_Percentage": -4.02
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 362720.0,
-                "Net_Percentage": 24.13
+                "Net_Amount": 1191004.0,
+                "Net_Percentage": 5.78
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 309712.0,
-                "Net_Percentage": 20.6
+                "Net_Amount": -361884.0,
+                "Net_Percentage": -1.76
             }
         },
         {
             "Index": 34,
-            "Code": "200012",
-            "Name": "南  玻Ｂ",
-            "Latest_Price": 2.26,
-            "3-Day_Change_Percentage": -1.74,
+            "Code": "200625",
+            "Name": "长  安Ｂ",
+            "Latest_Price": 3.55,
+            "3-Day_Change_Percentage": 0.28,
             "3-Day_Main_Flow": {
-                "Net_Amount": -837276.0,
-                "Net_Percentage": -15.38
+                "Net_Amount": -905303.0,
+                "Net_Percentage": -5.85
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -837276.0,
-                "Net_Percentage": -15.38
+                "Net_Amount": -905303.0,
+                "Net_Percentage": -5.85
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -943980.0,
-                "Net_Percentage": -17.34
+                "Net_Amount": 351429.0,
+                "Net_Percentage": 2.27
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 1781257.0,
-                "Net_Percentage": 32.72
+                "Net_Amount": 553876.0,
+                "Net_Percentage": 3.58
             }
         },
         {
             "Index": 35,
-            "Code": "200488",
-            "Name": "晨  鸣Ｂ",
-            "Latest_Price": 1.03,
-            "3-Day_Change_Percentage": -2.83,
+            "Code": "200012",
+            "Name": "南  玻Ｂ",
+            "Latest_Price": 2.25,
+            "3-Day_Change_Percentage": -0.44,
             "3-Day_Main_Flow": {
-                "Net_Amount": -1476566.0,
-                "Net_Percentage": -23.98
+                "Net_Amount": -926118.0,
+                "Net_Percentage": -18.8
             },
             "3-Day_Extra_Large_Order_Flow": {
                 "Net_Amount": 0.0,
                 "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -1476566.0,
-                "Net_Percentage": -23.98
+                "Net_Amount": -926118.0,
+                "Net_Percentage": -18.8
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 665139.0,
-                "Net_Percentage": 10.8
+                "Net_Amount": 415064.0,
+                "Net_Percentage": 8.43
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 811428.0,
-                "Net_Percentage": 13.18
+                "Net_Amount": 511055.0,
+                "Net_Percentage": 10.38
             }
         },
         {
             "Index": 36,
-            "Code": "200539",
-            "Name": "粤电力Ｂ",
-            "Latest_Price": 1.99,
-            "3-Day_Change_Percentage": -1.49,
+            "Code": "200028",
+            "Name": "一致Ｂ",
+            "Latest_Price": 13.56,
+            "3-Day_Change_Percentage": -3.0,
             "3-Day_Main_Flow": {
-                "Net_Amount": -1892691.0,
-                "Net_Percentage": -36.36
+                "Net_Amount": -953958.0,
+                "Net_Percentage": -11.09
             },
             "3-Day_Extra_Large_Order_Flow": {
-                "Net_Amount": -1132233.0,
-                "Net_Percentage": -21.75
+                "Net_Amount": 0.0,
+                "Net_Percentage": 0.0
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -760458.0,
-                "Net_Percentage": -14.61
+                "Net_Amount": -953958.0,
+                "Net_Percentage": -11.09
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 1117976.0,
-                "Net_Percentage": 21.48
+                "Net_Amount": 8358.0,
+                "Net_Percentage": 0.1
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 774715.0,
-                "Net_Percentage": 14.88
+                "Net_Amount": 945600.0,
+                "Net_Percentage": 10.99
             }
         },
         {
             "Index": 37,
             "Code": "200596",
             "Name": "古井贡Ｂ",
-            "Latest_Price": 111.77,
-            "3-Day_Change_Percentage": 0.74,
+            "Latest_Price": 109.37,
+            "3-Day_Change_Percentage": -2.15,
             "3-Day_Main_Flow": {
-                "Net_Amount": -2306702.0,
-                "Net_Percentage": -7.14
+                "Net_Amount": -1671201.0,
+                "Net_Percentage": -7.76
             },
             "3-Day_Extra_Large_Order_Flow": {
-                "Net_Amount": -4175269.0,
-                "Net_Percentage": -12.92
+                "Net_Amount": -194455.0,
+                "Net_Percentage": -0.9
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": 1868567.0,
-                "Net_Percentage": 5.78
+                "Net_Amount": -1476746.0,
+                "Net_Percentage": -6.86
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": -2219593.0,
-                "Net_Percentage": -6.87
+                "Net_Amount": -1865109.0,
+                "Net_Percentage": -8.66
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 4526298.0,
-                "Net_Percentage": 14.01
+                "Net_Amount": 3536312.0,
+                "Net_Percentage": 16.43
             }
         },
         {
             "Index": 38,
-            "Code": "200771",
-            "Name": "杭汽轮Ｂ",
-            "Latest_Price": 9.83,
-            "3-Day_Change_Percentage": -5.66,
+            "Code": "200539",
+            "Name": "粤电力Ｂ",
+            "Latest_Price": 1.99,
+            "3-Day_Change_Percentage": 0.0,
             "3-Day_Main_Flow": {
-                "Net_Amount": -3567432.0,
-                "Net_Percentage": -12.47
+                "Net_Amount": -1864606.0,
+                "Net_Percentage": -37.41
             },
             "3-Day_Extra_Large_Order_Flow": {
-                "Net_Amount": -806705.0,
-                "Net_Percentage": -2.82
+                "Net_Amount": -1777064.0,
+                "Net_Percentage": -35.65
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -2760727.0,
-                "Net_Percentage": -9.65
+                "Net_Amount": -87542.0,
+                "Net_Percentage": -1.76
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 3768311.0,
-                "Net_Percentage": 13.17
+                "Net_Amount": 1134447.0,
+                "Net_Percentage": 22.76
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": -200877.0,
-                "Net_Percentage": -0.7
+                "Net_Amount": 730159.0,
+                "Net_Percentage": 14.65
             }
         },
         {
             "Index": 39,
-            "Code": "200625",
-            "Name": "长  安Ｂ",
-            "Latest_Price": 3.54,
-            "3-Day_Change_Percentage": -2.48,
+            "Code": "200429",
+            "Name": "粤高速Ｂ",
+            "Latest_Price": 8.15,
+            "3-Day_Change_Percentage": 1.37,
             "3-Day_Main_Flow": {
-                "Net_Amount": -4789136.0,
-                "Net_Percentage": -15.44
+                "Net_Amount": -2302063.0,
+                "Net_Percentage": -11.79
             },
             "3-Day_Extra_Large_Order_Flow": {
-                "Net_Amount": -1071000.0,
-                "Net_Percentage": -3.45
+                "Net_Amount": -1118450.0,
+                "Net_Percentage": -5.73
             },
             "3-Day_Large_Order_Flow": {
-                "Net_Amount": -3718136.0,
-                "Net_Percentage": -11.99
+                "Net_Amount": -1183613.0,
+                "Net_Percentage": -6.06
             },
             "3-Day_Medium_Order_Flow": {
-                "Net_Amount": 155569.0,
-                "Net_Percentage": 0.5
+                "Net_Amount": -587548.0,
+                "Net_Percentage": -3.01
             },
             "3-Day_Small_Order_Flow": {
-                "Net_Amount": 4633570.0,
-                "Net_Percentage": 14.94
+                "Net_Amount": 2889612.0,
+                "Net_Percentage": 14.8
             }
         }
     ]

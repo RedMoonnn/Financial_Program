@@ -28,7 +28,7 @@ async def visualize_data(title, day, page):
     # 提取数据
     names = [item["Name"] for item in data]
     prices = [
-        float(item[day + "_Main_Flow"]["Net_Amount"]) / 100000000
+        float(item[day + "_Main_Flow"]["Net_Amount"]) / 1000000
         if isinstance(item[day + "_Main_Flow"]["Net_Amount"], (int, float)) or
            (isinstance(item[day + "_Main_Flow"]["Net_Amount"], str) and
             item[day + "_Main_Flow"]["Net_Amount"].replace(".", "", 1).isdigit())
@@ -37,8 +37,8 @@ async def visualize_data(title, day, page):
     ]
 
     # 获取时间信息，若无则使用默认值
-    time_str = json_loaded.get("time", "时间: 无数据")
-    time_text = f"时间: {time_str}"
+    time_str = json_loaded.get("time", "None")
+    time_text = f"time: {time_str}"
 
     # 创建x轴的坐标位置，并增加柱子间距
     x_positions = np.arange(len(names)) * 2
@@ -54,8 +54,8 @@ def plot_and_save(title, time_text, x_positions, names, prices, page):
 
     # 添加标题和标签
     plt.title(f'{title}-Main_Flow_Net_Amount', fontsize=18, fontweight='bold', color=(0.1, 0.3, 0.7))
-    plt.xlabel('股票名称', fontsize=14)
-    plt.ylabel('净流入金额（亿）', fontsize=14)
+    plt.xlabel('Stock Name', fontsize=14)
+    plt.ylabel('Net inflow amount (in millions)', fontsize=14)
 
     # 添加y轴虚线网格线
     plt.grid(axis='y', linestyle='--', alpha=0.7)

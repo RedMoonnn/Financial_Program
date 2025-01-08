@@ -11,3 +11,5 @@ __pycache__/
 
 # 忽略 PyCharm 配置
 .idea/
+
+data/
