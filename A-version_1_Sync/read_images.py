@@ -18,7 +18,7 @@ conn = mysql.connector.connect(**db_config)
 cursor = conn.cursor()
 
 # 选择要读取的表和图像ID
-title = "Stock_Flow-All_Stocks-3-Day"
+title = "Stock_Flow-SH&SZ_A_Shares-10-Day"
 
 # 从数据库读取图片数据
 cursor.execute(f"SELECT Image_data FROM `Images_data` WHERE `Title` = %s", (title,))

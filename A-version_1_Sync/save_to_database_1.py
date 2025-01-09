@@ -128,7 +128,7 @@ def store_data_to_db(data, title, day_name):
         })
 
     # 图片文件路径
-    image_path = f"D:/Desktop/Py_Practice/Web_Crawler/Specific_Case/EastMoney_Crawler/data/{title}/{title}.png"
+    image_path = f"../data/{title}/{title}.png"
 
     # 确保图片文件存在
     if not os.path.exists(image_path):
