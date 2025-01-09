@@ -3,8 +3,16 @@
 import json
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import rcParams
+from matplotlib.font_manager import FontProperties
+
 
 def visualize_data(title, day, page):
+    # 设置中文字体
+    font_path = "C:/Windows/Fonts/msyh.ttc"  # 根据操作系统修改字体路径
+    font_prop = FontProperties(fname=font_path)
+    rcParams['font.family'] = font_prop.get_name()
+
     # 读取数据
     json_file_path = '../data/' + title + '/' + title + '.json'
 
