@@ -22,9 +22,9 @@ def store_data_to_db(data, title, day_name):
 
     # MySQL 连接配置
     db_config = {
-        'host': 'localhost',  # 数据库地址
+        'host': ' 127.0.0.1',  # 数据库地址
         'user': 'root',  # 用户名
-        'password': os.getenv('MYSQL_PASSWORD'),  # 密码
+        'password': '',  # 密码
         'database': 'financial_web_crawler',  # 使用的数据库
     }
 

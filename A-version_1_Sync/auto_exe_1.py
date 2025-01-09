@@ -14,8 +14,8 @@ stock_types_2 = ["1", "2", "3"]  # 3 种股票类型
 ranking_durations_2 = ["1", "2", "3"]  # 3 种排名时长
 
 # 定义 Python 脚本路径
-script_path = r"D:\Desktop\Py_Practice\Web_Crawler\Specific_Case\EastMoney_Crawler\A-version_1_Sync\main_1.py"
-python_executable = r"D:\Desktop\Py_Practice\Web_Crawler\Specific_Case\EastMoney_Crawler\.venv\Scripts\python.exe"
+script_path = "/root/DongFangCaifu/A-version_1_Sync/main_1.py"
+python_executable = "/root/DongFangCaifu/.venv/bin/python"
 
 # 定义计数器，打印到输出窗口
 counter = 0

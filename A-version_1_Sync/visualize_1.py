@@ -8,11 +8,17 @@ from matplotlib.font_manager import FontProperties
 
 
 def visualize_data(title, day, page):
-    # 设置中文字体
-    font_path = "C:/Windows/Fonts/msyh.ttc"  # 根据操作系统修改字体路径
-    font_prop = FontProperties(fname=font_path)
-    rcParams['font.family'] = font_prop.get_name()
 
+    # 指定字体文件路径
+    font_path = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc"  # 文泉驿微米黑
+    font_prop = FontProperties(fname=font_path)
+
+    # 设置全局字体
+    rcParams['font.family'] = font_prop.get_name()
+    rcParams['axes.unicode_minus'] = False  # 避免负号显示为方块
+
+
+  
     # 读取数据
     json_file_path = '../data/' + title + '/' + title + '.json'
 

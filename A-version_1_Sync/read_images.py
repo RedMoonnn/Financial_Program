@@ -9,7 +9,7 @@ from io import BytesIO
 db_config = {
     'host': 'localhost',  # 数据库地址
     'user': 'root',  # 用户名
-    'password': os.getenv('MYSQL_PASSWORD'),  # 密码（需要设置环境变量）
+    'password': "",  # 密码（需要设置环境变量）
     'database': 'financial_web_crawler',  # 使用的数据库
 }
 
