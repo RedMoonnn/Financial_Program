@@ -4,7 +4,6 @@ import json
 import os
 from datetime import datetime
 import requests
-
 from source_data_1 import *
 from save_to_database_1 import *
 from visualize_1 import visualize_data
@@ -110,9 +109,9 @@ output_data = {
     "data": data
 }
 file_name = f"{title}.json"
-os.makedirs(f'../data/{title}', exist_ok=True)
+os.makedirs(f'./data/{title}', exist_ok=True)
 
-with open(f'../data/{title}/{file_name}', 'w', encoding='utf-8') as file:
+with open(f'./data/{title}/{file_name}', 'w', encoding='utf-8') as file:
     json.dump(output_data, file, ensure_ascii=False, indent=4)
 
 print(f"{file_name} has been successfully generated.")

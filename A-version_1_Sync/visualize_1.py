@@ -14,7 +14,7 @@ def visualize_data(title, day, page):
     rcParams['font.family'] = font_prop.get_name()
 
     # 读取数据
-    json_file_path = '../data/' + title + '/' + title + '.json'
+    json_file_path = './data/' + title + '/' + title + '.json'
 
     with open(json_file_path, 'r', encoding='utf-8') as f:
         json_loaded = json.load(f)
@@ -61,6 +61,6 @@ def visualize_data(title, day, page):
 
     # 保存图表
     output_path = f"{title}.png"
-    plt.savefig('../data/' + title + '/' + output_path)
+    plt.savefig('./data/' + title + '/' + output_path)
 
     print(f"{title}.png has been successfully generated.")
