@@ -6,12 +6,29 @@ import numpy as np
 from matplotlib import rcParams
 from matplotlib.font_manager import FontProperties
 
-
 def visualize_data(title, day, page):
     # 设置中文字体
+
+    try:
+        # 方案1：使用系统预装中文字体（推荐）
+        rcParams['font.family'] = 'WenQuanYi Micro Hei'  # 文泉驿微米黑
+        
+        # 方案2：指定具体字体文件路径
+        # font_path = "/usr/share/fonts/wenquanyi/wqy-microhei/wqy-microhei.ttc"  # 常见路径
+        # font_prop = FontProperties(fname=font_path)
+        # rcParams['font.family'] = font_prop.get_name()
+        
+    except Exception as e:
+        print(f"字体加载失败: {e}")
+        rcParams['font.family'] = 'sans-serif'  # 回退到系统默认字体
+    
+    '''
+    Windows下代码:
     font_path = "C:/Windows/Fonts/msyh.ttc"  # 根据操作系统修改字体路径
     font_prop = FontProperties(fname=font_path)
     rcParams['font.family'] = font_prop.get_name()
+    '''
+
 
     # 读取数据
     json_file_path = './data/' + title + '/' + title + '.json'

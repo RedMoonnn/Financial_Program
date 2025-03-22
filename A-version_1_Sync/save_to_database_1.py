@@ -1,8 +1,9 @@
 # 保持热爱 奔赴山海
+from dotenv import load_dotenv
 import os
-
 import mysql.connector
 
+load_dotenv()  # 加载.env文件中的环境变量
 
 def store_data_to_db(data, title, day_name):
     """
@@ -23,7 +24,7 @@ def store_data_to_db(data, title, day_name):
     # MySQL 连接配置
     db_config = {
         'host': 'localhost',  # 数据库地址
-        'user': 'root',  # 用户名
+        'user': 'chy_ubuntu',  # 用户名
         'password': os.getenv('MYSQL_PASSWORD'),  # 密码
         'database': 'financial_web_crawler',  # 使用的数据库
     }
