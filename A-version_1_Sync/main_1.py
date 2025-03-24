@@ -6,8 +6,9 @@ from datetime import datetime
 import requests
 from source_data_1 import *
 from save_to_database_1 import *
+from save_to_minio import *
 from visualize_1 import visualize_data
-
+import time
 
 def input_details(options, prompt):
     """打印用户可选项"""
@@ -98,6 +99,9 @@ def get_data():
     return data_results, title, pages, day_name
 
 
+# 记录开始运行时间
+start_time = time.time()
+
 # 主程序调用
 data, title, pages, day_name = get_data()
 current_time = get_current_time()
@@ -113,13 +117,18 @@ os.makedirs(f'./data/{title}', exist_ok=True)
 
 with open(f'./data/{title}/{file_name}', 'w', encoding='utf-8') as file:
     json.dump(output_data, file, ensure_ascii=False, indent=4)
-
-print(f"{file_name} has been successfully generated.")
+    
+end_time = time.time() - start_time
+# 1print(f"{file_name} has been successfully generated.")
+print(f"Main\t: {end_time} seconds")
 
 # 调用绘图函数
 visualize_data(title, day_name, pages)
 
-# 调用存储函数
+# 调用存储函数,存储至mysql
 store_data_to_db(data, title, day_name)
+
+# 调用存储函数,存储至MinIO
+store_data_to_minio(title)
 
 

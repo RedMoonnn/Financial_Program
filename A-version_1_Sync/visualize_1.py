@@ -5,10 +5,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import rcParams
 from matplotlib.font_manager import FontProperties
+import time
 
 def visualize_data(title, day, page):
+    
+    # 记录运行时间
+    start_time = time.time()
+    
+    
     # 设置中文字体
-
     try:
         # 方案1：使用系统预装中文字体（推荐）
         rcParams['font.family'] = 'WenQuanYi Micro Hei'  # 文泉驿微米黑
@@ -80,4 +85,8 @@ def visualize_data(title, day, page):
     output_path = f"{title}.png"
     plt.savefig('./data/' + title + '/' + output_path)
 
-    print(f"{title}.png has been successfully generated.")
+    # 计算运行时间，输出结果
+    end_time = time.time() - start_time
+    # print(f"{title}.png has been successfully generated.")
+
+    print(f"Picture\t: {end_time} seconds")

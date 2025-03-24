@@ -2,6 +2,7 @@
 from dotenv import load_dotenv
 import os
 import mysql.connector
+import time
 
 load_dotenv()  # 加载.env文件中的环境变量
 
@@ -20,6 +21,9 @@ def store_data_to_db(data, title, day_name):
             return True
         except ValueError:
             return False
+
+    # 记录运行时间
+    start_time = time.time()
 
     # MySQL 连接配置
     db_config = {
@@ -167,8 +171,15 @@ def store_data_to_db(data, title, day_name):
 
     conn.commit()
 
-    print(f"Table `{table1_name}` has been successfully updated.")
-    print(f"Table `{table2_name}` has been successfully updated.")
+    # 记录运行时间
+    end_time = time.time()-start_time
+
+    # print(f"MySQL: Table `{table1_name}` has been successfully updated.")
+    # print(f"MySQL: Table `{table2_name}` has been successfully updated.")
+    
+    print(f"MySQL\t: {end_time} seconds")
+    # MySQL: Time taken: 0.49565935134887695 seconds
+
 
     # 关闭游标
     cursor.close()
