@@ -70,3 +70,6 @@ def store_data_to_minio(title):
 
     except S3Error as e:
         print(f"Error uploading image to MinIO: {e}")
+
+endpoint = os.getenv("MINIO_ENDPOINT")
+print(f"Endpoint value: [{endpoint}]")
