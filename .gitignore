@@ -15,3 +15,6 @@ __pycache__/
 data/
 
 .env
+
+A-version_0_Chinese/
+A-version_2_Async/
