@@ -119,7 +119,7 @@ with open(f'./data/{title}/{file_name}', 'w', encoding='utf-8') as file:
     json.dump(output_data, file, ensure_ascii=False, indent=4)
     
 end_time = time.time() - start_time
-# 1print(f"{file_name} has been successfully generated.")
+# print(f"{file_name} has been successfully generated.")
 print(f"Main\t: {end_time} seconds")
 
 # 调用绘图函数
@@ -130,5 +130,3 @@ store_data_to_db(data, title, day_name)
 
 # 调用存储函数,存储至MinIO
 store_data_to_minio(title)
-
-
