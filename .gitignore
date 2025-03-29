@@ -16,6 +16,4 @@ data/
 
 .env
 
-A-test
-A-version_0_Chinese/
-A-version_2_Async/
+frontend/
