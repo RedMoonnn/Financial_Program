@@ -1,10 +1,11 @@
-from fastapi import FastAPI, Request, Query, Body, HTTPException
+from fastapi import FastAPI, Request, Query, Body, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from services.services import TaskService, FlowDataService, FlowImageService, CacheService, init_db
+from services.services import TaskService, FlowDataService, FlowImageService, CacheService, init_db, ChatService, ReportService
 from crawler.crawler import fetch_flow_data
 from api.health import health_bp
 from ai.deepseek import DeepseekAgent
 from typing import Optional
+from api.auth import router as auth_router, get_current_user
 
 app = FastAPI(title="东方财富数据采集与分析平台API", docs_url="/docs", redoc_url="/redoc")
 
@@ -19,6 +20,9 @@ app.add_middleware(
 
 # 注册健康检查蓝图
 app.include_router(health_bp)
+
+# 注册auth路由
+app.include_router(auth_router)
 
 # 初始化数据库
 init_db()
@@ -102,15 +106,38 @@ async def ai_advice(
     code: str = Body(...),
     style: str = Body("专业"),
     message: Optional[str] = Body(None),
-    history: Optional[list] = Body([]),
-    sector_flow_data: Optional[dict] = Body(None)
+    sector_flow_data: Optional[dict] = Body(None),
+    user=Depends(get_current_user)
 ):
     try:
         flow_data = FlowDataService.get_latest_flow_data(code, flow_type, market_type, period)
+        history = ChatService.get_history(user.id)
         result = DeepseekAgent.analyze(flow_data, sector_flow_data, style, message, history)
+        # 追加本轮对话到历史
+        history.append({"question": message, "answer": result})
+        ChatService.save_history(user.id, history)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail={"error": str(e)})
+
+@app.get("/api/report/list")
+def report_list(user=Depends(get_current_user)):
+    reports = ReportService.list_reports(user.id)
+    return [{
+        "id": r.id,
+        "type": r.report_type,
+        "file_url": r.file_url,
+        "file_name": r.file_name,
+        "created_at": str(r.created_at)
+    } for r in reports]
+
+@app.get("/api/report/download")
+def report_download(report_id: int, user=Depends(get_current_user)):
+    reports = ReportService.list_reports(user.id)
+    for r in reports:
+        if r.id == report_id:
+            return {"file_url": r.file_url, "file_name": r.file_name}
+    raise HTTPException(status_code=404, detail="报告不存在")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True) 

@@ -13,3 +13,8 @@ hypercorn>=0.14.0
 fastapi>=0.100.0
 openai
 cryptography
+apscheduler>=3.10.0
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+markdown>=3.4.0
+email-validator

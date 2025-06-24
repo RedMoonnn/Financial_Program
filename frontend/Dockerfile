@@ -1,10 +1,9 @@
-FROM node:18
+FROM node:20.19.3
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
-
 COPY . .
 
-CMD ["npm", "start"] 
+ENV NODE_ENV=development
+
+CMD ["npx", "vite", "--host", "0.0.0.0"] 

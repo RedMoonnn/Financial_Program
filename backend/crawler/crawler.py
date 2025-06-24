@@ -1,5 +1,6 @@
 import requests
-from backend.utils.utils import get_now
+import json
+from utils.utils import get_now
 
 # 东方财富API参数配置（可根据实际需求扩展）
 BASE_URL = "https://push2.eastmoney.com/api/qt/clist/get"
@@ -59,7 +60,7 @@ def fetch_flow_data(flow_type, market_type, period, pages=1):
         start_index = data.find('(') + 1
         end_index = data.rfind(')')
         json_str = data[start_index:end_index]
-        parsed_data = requests.utils.json.loads(json_str)
+        parsed_data = json.loads(json_str)
         diff_list = parsed_data['data']['diff']
         for diff in diff_list:
             item = {

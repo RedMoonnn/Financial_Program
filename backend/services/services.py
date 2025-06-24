@@ -1,11 +1,23 @@
-from backend.models.models import Base, FlowTask, FlowData, FlowImage, TaskStatus
-from backend.cache.cache import redis_cache
-from backend.storage.storage import minio_storage
-from backend.utils.utils import get_now
+from models.models import Base, FlowTask, FlowData, FlowImage, TaskStatus, User, Report
+from cache.cache import redis_cache
+from storage.storage import minio_storage
+from utils.utils import get_now
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import json
 import os
+from sqlalchemy.exc import IntegrityError, OperationalError
+from passlib.hash import bcrypt
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
+import redis
+import random
+import string
+from apscheduler.schedulers.background import BackgroundScheduler
+from ai.deepseek import DeepseekAgent
+import tempfile
+import time
 
 # 创建数据库引擎和会话工厂
 engine = create_engine(
@@ -15,8 +27,16 @@ engine = create_engine(
 SessionLocal = sessionmaker(bind=engine)
 
 # 初始化数据库（如首次运行需建表）
-def init_db():
-    Base.metadata.create_all(engine)
+def init_db(max_retries=30, delay=2):
+    for i in range(max_retries):
+        try:
+            Base.metadata.create_all(engine)
+            print("数据库连接成功！")
+            return
+        except OperationalError as e:
+            print(f"数据库连接失败，第{i+1}次重试，错误信息：{e}")
+            time.sleep(delay)
+    raise Exception("多次重试后仍无法连接数据库，请检查 MySQL 服务！")
 
 # 1. 采集任务相关服务
 class TaskService:
@@ -159,4 +179,151 @@ class CacheService:
     @staticmethod
     def get_cached_image_url(code, flow_type, market_type, period):
         key = f"flowimg:{code}:{flow_type}:{market_type}:{period}"
-        return redis_cache.get(key) 
+        return redis_cache.get(key)
+
+# Redis连接（假设和cache一致）
+redis_client = redis.Redis(host=os.getenv('REDIS_HOST', 'localhost'), port=int(os.getenv('REDIS_PORT', 6379)), db=0, decode_responses=True)
+
+class UserService:
+    @staticmethod
+    def register(email, password):
+        session = SessionLocal()
+        if session.query(User).filter_by(email=email).first():
+            session.close()
+            raise Exception('邮箱已注册')
+        password_hash = bcrypt.hash(password)
+        user = User(email=email, password_hash=password_hash)
+        session.add(user)
+        session.commit()
+        session.close()
+        return True
+
+    @staticmethod
+    def verify_password(email, password):
+        session = SessionLocal()
+        user = session.query(User).filter_by(email=email).first()
+        session.close()
+        if not user:
+            return False
+        return bcrypt.verify(password, user.password_hash)
+
+    @staticmethod
+    def get_user(email):
+        session = SessionLocal()
+        user = session.query(User).filter_by(email=email).first()
+        session.close()
+        return user
+
+    @staticmethod
+    def set_password(email, new_password):
+        session = SessionLocal()
+        user = session.query(User).filter_by(email=email).first()
+        if not user:
+            session.close()
+            raise Exception('用户不存在')
+        user.password_hash = bcrypt.hash(new_password)
+        session.commit()
+        session.close()
+        return True
+
+class EmailService:
+    @staticmethod
+    def send_code(email, code):
+        smtp_server = os.getenv('SMTP_SERVER')
+        smtp_port = int(os.getenv('SMTP_PORT', 587))
+        smtp_user = os.getenv('SMTP_USER')
+        smtp_password = os.getenv('SMTP_PASSWORD')
+        msg = MIMEText(f'您的验证码是：{code}，5分钟内有效。', 'plain', 'utf-8')
+        msg['From'] = smtp_user
+        msg['To'] = email
+        msg['Subject'] = Header('注册/重置密码验证码', 'utf-8')
+        try:
+            server = smtplib.SMTP(smtp_server, smtp_port)
+            server.starttls()
+            server.login(smtp_user, smtp_password)
+            server.sendmail(smtp_user, [email], msg.as_string())
+            server.quit()
+        except Exception as e:
+            raise Exception(f'邮件发送失败: {e}')
+
+    @staticmethod
+    def gen_and_store_code(email):
+        code = ''.join(random.choices(string.digits, k=6))
+        redis_client.setex(f'email:code:{email}', 300, code)
+        return code
+
+    @staticmethod
+    def verify_code(email, code):
+        real_code = redis_client.get(f'email:code:{email}')
+        return real_code == code
+
+class ReportService:
+    @staticmethod
+    def add_report(user_id, report_type, file_url, file_name):
+        session = SessionLocal()
+        report = Report(user_id=user_id, report_type=report_type, file_url=file_url, file_name=file_name)
+        session.add(report)
+        session.commit()
+        session.close()
+        return True
+
+    @staticmethod
+    def list_reports(user_id):
+        session = SessionLocal()
+        reports = session.query(Report).filter_by(user_id=user_id).order_by(Report.created_at.desc()).all()
+        session.close()
+        return reports
+
+class ChatService:
+    @staticmethod
+    def save_history(user_id, history):
+        redis_client.setex(f'chat:history:{user_id}', 7*24*3600, json.dumps(history))
+
+    @staticmethod
+    def get_history(user_id):
+        data = redis_client.get(f'chat:history:{user_id}')
+        if data:
+            return json.loads(data)
+        return []
+
+    @staticmethod
+    def clear_history(user_id):
+        redis_client.delete(f'chat:history:{user_id}')
+
+def generate_daily_reports():
+    session = SessionLocal()
+    users = session.query(User).all()
+    for user in users:
+        # 获取业务数据（如今日flow数据）
+        flow_data = []  # TODO: 获取用户相关数据
+        # 标准化prompt
+        prompt = f"""
+你是一个专业的金融智能分析助手。请根据以下业务数据，为用户生成一份结构化、详实、专业的每日金融分析报告，内容包括但不限于：市场综述、个股表现、主力资金流向、风险提示、投资建议等。请以Markdown格式输出完整报告，内容条理清晰、数据准确、图表丰富，适合直接给用户在线预览或下载。
+
+【业务数据】
+{json.dumps(flow_data, ensure_ascii=False)}
+
+【要求】
+- 报告格式：Markdown
+- 报告内容：包含市场综述、个股表现、主力资金流向、风险提示、投资建议等
+- 图表：如有必要可用Markdown语法插入图片或表格
+- 语言：中文
+- 结构：有目录、分章节、图文并茂
+- 输出：返回完整Markdown文本
+
+请直接生成并返回Markdown格式的完整报告内容。
+"""
+        advice = DeepseekAgent.analyze(flow_data, style="专业", user_message=prompt)
+        # 生成Markdown
+        md_content = f"# {user.email} 每日分析报告\n\n{advice}"
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.md') as f:
+            f.write(md_content.encode('utf-8'))
+            md_path = f.name
+        md_url = minio_storage.upload_image(md_path)
+        # 写入MySQL
+        ReportService.add_report(user.id, 'markdown', md_url, md_path.split('/')[-1])
+    session.close()
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(generate_daily_reports, 'cron', hour=0, minute=0)
+scheduler.start() 

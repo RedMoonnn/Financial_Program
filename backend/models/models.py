@@ -66,4 +66,24 @@ class FlowImage(Base):
     task = relationship('FlowTask', back_populates='flow_images')
     __table_args__ = (
         Index('idx_img_code_type_period_task', 'code', 'flow_type', 'market_type', 'period', 'task_id', unique=True),
-    ) 
+    )
+
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    email = Column(String(128), unique=True, nullable=False, index=True)
+    password_hash = Column(String(256), nullable=False)
+    is_active = Column(Integer, default=1)  # 1=激活，0=未激活
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    # 可扩展字段：昵称、头像、角色等
+    # 反向引用：用户的报告、任务等
+
+class Report(Base):
+    __tablename__ = 'report'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    report_type = Column(String(32), nullable=False)  # pdf/markdown
+    file_url = Column(String(256), nullable=False)    # MinIO URL
+    file_name = Column(String(128), nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    # 可扩展字段：摘要、状态等 
