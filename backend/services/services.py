@@ -1,4 +1,3 @@
-from backend.config import Config
 from backend.models.models import Base, FlowTask, FlowData, FlowImage, TaskStatus
 from backend.cache.cache import redis_cache
 from backend.storage.storage import minio_storage
@@ -6,10 +5,11 @@ from backend.utils.utils import get_now
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import json
+import os
 
 # 创建数据库引擎和会话工厂
 engine = create_engine(
-    f"mysql+pymysql://{Config.MYSQL_USER}:{Config.MYSQL_PASSWORD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.MYSQL_DB}?charset=utf8mb4",
+    f"mysql+pymysql://{os.getenv('MYSQL_USER','root')}:{os.getenv('MYSQL_PASSWORD','')}@{os.getenv('MYSQL_HOST','localhost')}:{os.getenv('MYSQL_PORT','3306')}/{os.getenv('MYSQL_DATABASE','test')}?charset=utf8mb4",
     echo=False
 )
 SessionLocal = sessionmaker(bind=engine)

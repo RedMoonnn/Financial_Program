@@ -53,9 +53,8 @@ pip install -r requirements.txt
 ### 启动后端服务
 ```bash
 python run.py
-# 或使用docker-compose一键启动
-# docker-compose up -d
 ```
+> 注意：请确保已正确配置.env文件中的数据库、Redis、MinIO等环境变量，否则可能导致连接失败。
 
 ### 启动前端服务
 - 直接用浏览器打开`frontend/public/index.html`（静态部署）

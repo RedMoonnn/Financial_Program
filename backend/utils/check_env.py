@@ -2,58 +2,99 @@ import os
 from dotenv import load_dotenv
 import redis
 from minio import Minio
-import requests
+import socket
+import pymysql
+from openai import OpenAI
+import cryptography
 
+# 加载.env
 load_dotenv()
 
-def check_redis():
+# 本地端口映射（与docker-compose.yml保持一致）
+LOCAL_SERVICES = {
+    'redis':    {'host': '127.0.0.1', 'port': 6379},
+    'minio':    {'host': '127.0.0.1', 'port': 9002},  # API端口
+    'minio_ui': {'host': '127.0.0.1', 'port': 9001},  # 控制台
+    'mysql':    {'host': '127.0.0.1', 'port': 3307},
+}
+
+# 环境变量
+MINIO_ACCESS_KEY = os.getenv('MINIO_ACCESS_KEY', 'admin')
+MINIO_SECRET_KEY = os.getenv('MINIO_SECRET_KEY', 'admin123')
+MINIO_BUCKET = os.getenv('MINIO_BUCKET', 'data_financial_agent')
+MINIO_SECURE = os.getenv('MINIO_SECURE', 'False').lower() in ['true', '1', 't']
+REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', '')
+MYSQL_USER = os.getenv('MYSQL_USER', 'root')
+MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD', '')
+MYSQL_DATABASE = os.getenv('MYSQL_DATABASE', 'mydb')
+DEEPSEEK_BASE_URL = os.getenv('DEEPSEEK_BASE_URL', 'https://api.deepseek.com')
+DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY', '')
+
+def check_socket(host, port, name):
     try:
-        r = redis.Redis(
-            host=os.getenv('REDIS_HOST', 'localhost'),
-            port=int(os.getenv('REDIS_PORT', 6379)),
-            db=int(os.getenv('REDIS_DB', 0)),
-            password=os.getenv('REDIS_PASSWORD', None),
-            socket_connect_timeout=3
-        )
+        s = socket.create_connection((host, int(port)), timeout=3)
+        s.close()
+        print(f"[OK] {name} {host}:{port} 端口连通")
+        return True
+    except Exception as e:
+        print(f"[FAIL] {name} {host}:{port} 端口无法连接: {e}")
+        return False
+
+def check_redis():
+    host, port = LOCAL_SERVICES['redis']['host'], LOCAL_SERVICES['redis']['port']
+    if not check_socket(host, port, 'Redis'):
+        return
+    try:
+        r = redis.Redis(host=host, port=port, password=REDIS_PASSWORD, socket_connect_timeout=3)
         r.ping()
         print("[OK] Redis连接成功")
     except Exception as e:
         print(f"[FAIL] Redis连接失败: {e}")
 
 def check_minio():
+    host, port = LOCAL_SERVICES['minio']['host'], LOCAL_SERVICES['minio']['port']
+    if not check_socket(host, port, 'MinIO API'):
+        return
     try:
-        client = Minio(
-            os.getenv('MINIO_ENDPOINT', 'localhost:9000'),
-            access_key=os.getenv('MINIO_ACCESS_KEY', 'minioadmin'),
-            secret_key=os.getenv('MINIO_SECRET_KEY', 'minioadmin'),
-            secure=os.getenv('MINIO_SECURE', 'False').lower() in ['true', '1', 't']
-        )
+        client = Minio(f"{host}:{port}", access_key=MINIO_ACCESS_KEY, secret_key=MINIO_SECRET_KEY, secure=MINIO_SECURE)
         buckets = client.list_buckets()
-        print("[OK] MinIO连接成功，已存在桶:", [b.name for b in buckets])
+        print(f"[OK] MinIO连接成功，已存在桶: {[b.name for b in buckets]}")
     except Exception as e:
         print(f"[FAIL] MinIO连接失败: {e}")
+    # 检查WebUI端口
+    host_ui, port_ui = LOCAL_SERVICES['minio_ui']['host'], LOCAL_SERVICES['minio_ui']['port']
+    check_socket(host_ui, port_ui, 'MinIO 控制台')
+
+def check_mysql():
+    host, port = LOCAL_SERVICES['mysql']['host'], LOCAL_SERVICES['mysql']['port']
+    if not check_socket(host, port, 'MySQL'):
+        return
+    try:
+        conn = pymysql.connect(host=host, port=port, user=MYSQL_USER, password=MYSQL_PASSWORD, database=MYSQL_DATABASE, connect_timeout=3)
+        print("[OK] MySQL连接成功")
+        conn.close()
+    except Exception as e:
+        print(f"[FAIL] MySQL连接失败: {e}")
 
 def check_deepseek():
     try:
-        url = os.getenv('DEEPSEEK_BASE_URL', 'https://api.deepseek.com') + '/v1/finance/advice'  # 假设API路径
-        headers = {
-            'Authorization': f"Bearer {os.getenv('DEEPSEEK_API_KEY', '')}",
-            'Content-Type': 'application/json'
-        }
-        payload = {
-            'model': 'deepseek-finance',
-            'messages': [{"role": "user", "content": "测试连通性"}]
-        }
-        resp = requests.post(url, json=payload, headers=headers, timeout=10)
-        if resp.status_code == 200:
-            print("[OK] Deepseek API连通性正常")
-        else:
-            print(f"[FAIL] Deepseek API返回异常: {resp.status_code} {resp.text}")
+        client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
+        response = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant"},
+                {"role": "user", "content": "Hello"},
+            ],
+            stream=False
+        )
+        content = response.choices[0].message.content
+        print(f"[OK] Deepseek API连通性正常，返回内容: {content}")
     except Exception as e:
         print(f"[FAIL] Deepseek API连接失败: {e}")
 
 if __name__ == "__main__":
-    print("==== 环境变量检测 ====")
+    print("==== 本地端口与服务连通性检测 ====")
     check_redis()
     check_minio()
+    check_mysql()
     check_deepseek() 

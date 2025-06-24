@@ -1,5 +1,5 @@
 import requests
-from program.utils.utils import get_now
+from backend.utils.utils import get_now
 
 # 东方财富API参数配置（可根据实际需求扩展）
 BASE_URL = "https://push2.eastmoney.com/api/qt/clist/get"
@@ -17,7 +17,30 @@ FIELD_MAP = {
         'm': 'f78', 'm_pct': 'f81',
         's': 'f84', 's_pct': 'f87',
     },
-    # 可扩展3d/5d/10d等
+    '3d': {
+        'change': 'f4',
+        'main': 'f65', 'main_pct': 'f185',
+        'xl': 'f67', 'xl_pct': 'f70',
+        'l': 'f73', 'l_pct': 'f76',
+        'm': 'f79', 'm_pct': 'f82',
+        's': 'f85', 's_pct': 'f88',
+    },
+    '5d': {
+        'change': 'f5',
+        'main': 'f68', 'main_pct': 'f186',
+        'xl': 'f71', 'xl_pct': 'f74',
+        'l': 'f77', 'l_pct': 'f80',
+        'm': 'f83', 'm_pct': 'f86',
+        's': 'f89', 's_pct': 'f90',
+    },
+    '10d': {
+        'change': 'f6',
+        'main': 'f91', 'main_pct': 'f92',
+        'xl': 'f93', 'xl_pct': 'f94',
+        'l': 'f95', 'l_pct': 'f96',
+        'm': 'f97', 'm_pct': 'f98',
+        's': 'f99', 's_pct': 'f100',
+    },
 }
 
 # 采集函数，返回结构化数据列表
