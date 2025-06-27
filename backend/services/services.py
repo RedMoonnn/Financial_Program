@@ -26,12 +26,28 @@ engine = create_engine(
 )
 SessionLocal = sessionmaker(bind=engine)
 
+# 全局数据采集状态
+DATA_READY = False
+
 # 初始化数据库（如首次运行需建表）
 def init_db(max_retries=30, delay=2):
     for i in range(max_retries):
         try:
             Base.metadata.create_all(engine)
             print("数据库连接成功！")
+            # 自动创建管理员账号
+            admin_email = os.getenv('ADMIN_EMAIL')
+            admin_password = os.getenv('ADMIN_PASSWORD')
+            if admin_email and admin_password:
+                session = SessionLocal()
+                user = session.query(User).filter_by(email=admin_email).first()
+                if not user:
+                    password_hash = bcrypt.hash(admin_password)
+                    user = User(email=admin_email, password_hash=password_hash)
+                    session.add(user)
+                    session.commit()
+                    print(f"已自动创建管理员账号: {admin_email}")
+                session.close()
             return
         except OperationalError as e:
             print(f"数据库连接失败，第{i+1}次重试，错误信息：{e}")
@@ -182,7 +198,13 @@ class CacheService:
         return redis_cache.get(key)
 
 # Redis连接（假设和cache一致）
-redis_client = redis.Redis(host=os.getenv('REDIS_HOST', 'localhost'), port=int(os.getenv('REDIS_PORT', 6379)), db=0, decode_responses=True)
+redis_client = redis.Redis(
+    host=os.getenv('REDIS_HOST', 'localhost'),
+    port=int(os.getenv('REDIS_PORT', 6379)),
+    db=0,
+    password=os.getenv('REDIS_PASSWORD', ''),
+    decode_responses=True
+)
 
 class UserService:
     @staticmethod
@@ -233,10 +255,12 @@ class EmailService:
         smtp_port = int(os.getenv('SMTP_PORT', 587))
         smtp_user = os.getenv('SMTP_USER')
         smtp_password = os.getenv('SMTP_PASSWORD')
-        msg = MIMEText(f'您的验证码是：{code}，5分钟内有效。', 'plain', 'utf-8')
-        msg['From'] = smtp_user
+        # 优化邮件内容和发件人
+        content = f'''尊敬的用户：\n\n您正在使用金融数据平台进行身份验证，本次验证码为：{code}。\n验证码5分钟内有效，请勿泄露给他人。\n\n如非本人操作，请忽略本邮件。\n\n—— 金融分析小助手\n'''
+        msg = MIMEText(content, 'plain', 'utf-8')
+        msg['From'] = str(Header('金融分析小助手', 'utf-8')) + f' <{smtp_user}>'
         msg['To'] = email
-        msg['Subject'] = Header('注册/重置密码验证码', 'utf-8')
+        msg['Subject'] = Header('金融数据平台验证码', 'utf-8')
         try:
             server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls()

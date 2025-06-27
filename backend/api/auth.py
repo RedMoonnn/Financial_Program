@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException, Body, Depends
-from services.services import UserService, EmailService
+from services.services import UserService, EmailService, SessionLocal, User
 from pydantic import BaseModel, EmailStr
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt, JWTError
 import os
 from datetime import datetime, timedelta
+import re
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -60,6 +61,12 @@ def register(data: RegisterModel):
 
 @router.post("/send_code")
 def send_code(data: ForgotModel):
+    # 注册时如邮箱已注册则直接返回错误
+    session = SessionLocal()
+    user = session.query(User).filter_by(email=data.email).first()
+    session.close()
+    if user:
+        raise HTTPException(status_code=400, detail="该邮箱已注册，请直接登录或找回密码")
     code = EmailService.gen_and_store_code(data.email)
     try:
         EmailService.send_code(data.email, code)
@@ -85,6 +92,9 @@ def forgot(data: ForgotModel):
 
 @router.post("/reset")
 def reset(data: ResetModel):
+    # 新密码复杂度校验
+    if not re.match(r'^(?=.*[a-z])(?=.*[A-Z]).{6,20}$', data.new_password):
+        raise HTTPException(status_code=400, detail="新密码需包含大小写字母，长度6-20位")
     if not EmailService.verify_code(data.email, data.code):
         raise HTTPException(status_code=400, detail="验证码错误或已过期")
     try:

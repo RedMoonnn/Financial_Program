@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, Input, Button, Form, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { setToken, removeToken } from '../auth';
 
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -11,10 +12,13 @@ const Login: React.FC = () => {
     setLoading(true);
     try {
       // TODO: 替换为真实API
-      await axios.post('/api/auth/login', values);
+      const resp = await axios.post('/api/auth/login', values);
+      // 假设后端返回 { token: 'xxx' }
+      setToken(resp.data.access_token);
       message.success('登录成功');
       navigate('/');
     } catch {
+      removeToken();
       message.error('登录失败');
     }
     setLoading(false);
@@ -23,9 +27,28 @@ const Login: React.FC = () => {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 500 }}>
       <Card title="登录" style={{ width: 360 }}>
-        <Form layout="vertical" onFinish={onFinish}>
-          <Form.Item name="email" label="邮箱" rules={[{ required: true, message: '请输入邮箱' }]}> <Input /> </Form.Item>
-          <Form.Item name="password" label="密码" rules={[{ required: true, message: '请输入密码' }]}> <Input.Password /> </Form.Item>
+        <Form layout="vertical" onFinish={onFinish} onFinishFailed={({ errorFields }) => {
+          if (errorFields && errorFields.length > 0) {
+            message.error(errorFields[0].errors[0]);
+          }
+        }}>
+          <Form.Item
+            name="email"
+            label="邮箱"
+            rules={[
+              { required: true, message: '请输入邮箱' },
+              { type: 'email', message: '邮箱格式不正确' }
+            ]}
+          >
+            <Input autoComplete="off" />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label="密码"
+            rules={[{ required: true, message: '请输入密码' }]}
+          >
+            <Input.Password autoComplete="off" />
+          </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={loading} block style={{ background: '#1677ff', borderColor: '#1677ff' }}>登录</Button>
           </Form.Item>

@@ -29,6 +29,9 @@ services:
       - mysql
       - minio
       - redis
+    dns:
+      - 8.8.8.8
+      - 223.5.5.5
 
   frontend:
     image: financial_program_frontend
@@ -40,6 +43,9 @@ services:
     command: npx vite --host 0.0.0.0
     ports:
       - "5173:5173"
+    dns:
+      - 8.8.8.8
+      - 223.5.5.5
 
   mysql:
     image: mysql:8.0
@@ -48,9 +54,11 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - ./data/mysql:/var/lib/mysql
+      - ./my.cnf:/etc/mysql/my.cnf
+    # 若需外部主机访问，确保防火墙已开放3306端口
 
   minio:
     image: minio/minio
@@ -72,4 +80,6 @@ services:
       - "6379:6379"
     volumes:
       - ./data/redis:/data
-    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+      - ./redis.conf:/etc/redis/redis.conf
+    command: ["redis-server", "/etc/redis/redis.conf", "--requirepass", "${REDIS_PASSWORD}"]
+    # 若需外部主机访问，确保防火墙已开放6379端口

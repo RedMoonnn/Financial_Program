@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { Card, Input, Button, List, message } from 'antd';
 import axios from 'axios';
+import { getToken, removeToken } from '../auth';
 
-const Chat: React.FC = () => {
+interface ChatProps {
+  context?: any;
+}
+
+const Chat: React.FC<ChatProps> = ({ context }) => {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<{ question: string; answer: string }[]>([]);
   const [loading, setLoading] = useState(false);
@@ -11,11 +16,16 @@ const Chat: React.FC = () => {
     if (!input.trim()) return;
     setLoading(true);
     try {
-      const resp = await axios.post('/api/ai/advice', { message: input });
+      const token = getToken();
+      const resp = await axios.post('/api/ai/advice', {
+        message: input,
+        context: context || {}
+      }, { headers: { Authorization: `Bearer ${token}` } });
       setHistory([...history, { question: input, answer: resp.data }]);
       setInput('');
     } catch {
-      message.error('对话失败');
+      removeToken();
+      message.error('对话失败，请重新登录');
     }
     setLoading(false);
   };

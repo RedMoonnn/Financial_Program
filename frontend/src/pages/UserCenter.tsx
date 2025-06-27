@@ -1,11 +1,29 @@
 import React from 'react';
 import { Card, Descriptions, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { getToken, removeToken } from '../auth';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const UserCenter: React.FC = () => {
   const navigate = useNavigate();
-  // TODO: 替换为真实用户信息
-  const user = { email: 'user@example.com', created_at: '2024-06-01' };
+  const [user, setUser] = useState<{ email: string; created_at: string } | null>(null);
+
+  useEffect(() => {
+    const token = getToken();
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    axios.get('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => setUser(res.data))
+      .catch(() => {
+        removeToken();
+        navigate('/login');
+      });
+  }, [navigate]);
+
+  if (!user) return null;
 
   return (
     <Card title="用户中心" bordered={false}>

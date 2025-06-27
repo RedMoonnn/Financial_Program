@@ -51,14 +51,43 @@ async def collect(
 
 @app.get("/api/flow")
 async def get_flow(
-    code: str = Query(...),
+    code: Optional[str] = Query(None),
     flow_type: str = Query(...),
     market_type: str = Query(...),
     period: str = Query(...)
 ):
-    data = CacheService.get_cached_flow_data(code, flow_type, market_type, period)
+    from services.services import SessionLocal, FlowData
+    session = SessionLocal()
+    if code:
+        data = session.query(FlowData).filter_by(code=code, flow_type=flow_type, market_type=market_type, period=period).all()
+    else:
+        data = session.query(FlowData).filter_by(flow_type=flow_type, market_type=market_type, period=period).all()
+    session.close()
     if data:
-        return {"data": data, "cached": True}
+        # 转为dict数组
+        result = [
+            {
+                'code': d.code,
+                'name': d.name,
+                'flow_type': d.flow_type,
+                'market_type': d.market_type,
+                'period': d.period,
+                'latest_price': d.latest_price,
+                'change_percentage': d.change_percentage,
+                'main_flow_net_amount': d.main_flow_net_amount,
+                'main_flow_net_percentage': d.main_flow_net_percentage,
+                'extra_large_order_flow_net_amount': d.extra_large_order_flow_net_amount,
+                'extra_large_order_flow_net_percentage': d.extra_large_order_flow_net_percentage,
+                'large_order_flow_net_amount': d.large_order_flow_net_amount,
+                'large_order_flow_net_percentage': d.large_order_flow_net_percentage,
+                'medium_order_flow_net_amount': d.medium_order_flow_net_amount,
+                'medium_order_flow_net_percentage': d.medium_order_flow_net_percentage,
+                'small_order_flow_net_amount': d.small_order_flow_net_amount,
+                'small_order_flow_net_percentage': d.small_order_flow_net_percentage,
+                'crawl_time': str(d.crawl_time)
+            } for d in data
+        ]
+        return {"data": result, "cached": False}
     raise HTTPException(status_code=404, detail={"error": "未找到数据"})
 
 @app.get("/api/image")
@@ -100,19 +129,16 @@ def get_task_status(task_id):
 
 @app.post("/api/ai/advice")
 async def ai_advice(
-    flow_type: str = Body(...),
-    market_type: str = Body(...),
-    period: str = Body(...),
-    code: str = Body(...),
-    style: str = Body("专业"),
-    message: Optional[str] = Body(None),
-    sector_flow_data: Optional[dict] = Body(None),
+    message: str = Body(...),
+    context: Optional[dict] = Body(None),
     user=Depends(get_current_user)
 ):
     try:
-        flow_data = FlowDataService.get_latest_flow_data(code, flow_type, market_type, period)
+        # context中包含marketType, flowType, period, tableData等
+        flow_data = context.get('tableData') if context else None
+        style = "专业"
         history = ChatService.get_history(user.id)
-        result = DeepseekAgent.analyze(flow_data, sector_flow_data, style, message, history)
+        result = DeepseekAgent.analyze(flow_data, None, style, message, history)
         # 追加本轮对话到历史
         history.append({"question": message, "answer": result})
         ChatService.save_history(user.id, history)
@@ -138,6 +164,11 @@ def report_download(report_id: int, user=Depends(get_current_user)):
         if r.id == report_id:
             return {"file_url": r.file_url, "file_name": r.file_name}
     raise HTTPException(status_code=404, detail="报告不存在")
+
+@app.get("/api/data_ready")
+def data_ready():
+    from services.services import DATA_READY
+    return {"data_ready": DATA_READY}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True) 

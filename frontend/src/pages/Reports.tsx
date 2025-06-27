@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, List, Button, Modal, message } from 'antd';
 import axios from 'axios';
+import { getToken, removeToken } from '../auth';
 
 interface Report {
   id: number;
@@ -16,8 +17,13 @@ const Reports: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // TODO: 替换为真实API
-    axios.get('/api/report/list').then(res => setReports(res.data));
+    const token = getToken();
+    axios.get('/api/report/list', { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => setReports(res.data))
+      .catch(() => {
+        removeToken();
+        message.error('请重新登录');
+      });
   }, []);
 
   const handlePreview = async (report: Report) => {
@@ -27,10 +33,12 @@ const Reports: React.FC = () => {
     }
     setLoading(true);
     try {
-      const resp = await axios.get(report.file_url);
+      const token = getToken();
+      const resp = await axios.get(report.file_url, { headers: { Authorization: `Bearer ${token}` } });
       setPreview(resp.data);
     } catch {
-      message.error('预览失败');
+      removeToken();
+      message.error('预览失败，请重新登录');
     }
     setLoading(false);
   };
