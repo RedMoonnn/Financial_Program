@@ -36,10 +36,10 @@ detail_flows_names = ["Industry_Flow", "Concept_Flow", "Regional_Flow"]  # ["行
 
 # 不同日期区间的ID和名称，用于排名数据查询
 day1_ids = ["f62", "f267", "f164", "f174"]
-day1_names = ["Today_Ranking", "3-Day_Ranking", "5-Day_Ranking", "10-Day_Ranking"]  #  ["今日排行", "3日排行", "5日排行", "10日排行"]
+day1_names = ["Today_Ranking", "3_Day_Ranking", "5_Day_Ranking", "10_Day_Ranking"]  #  ["今日排行", "3日排行", "5日排行", "10日排行"]
 
 day2_ids = ["f62", "f164", "f174"]
-day2_names = ["Today_Ranking", "5-Day_Ranking", "10-Day_Ranking"]  # ["今日排行", "5日排行", "10日排行"]
+day2_names = ["Today_Ranking", "5_Day_Ranking", "10_Day_Ranking"]  # ["今日排行", "5日排行", "10日排行"]
 
 # 请求的基础参数，用于API调用时的配置
 BASE_PARAMS = {

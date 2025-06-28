@@ -123,12 +123,12 @@ end_time = time.time() - start_time
 print(f"Main\t: {end_time} seconds")
 
 # 调用绘图函数
-visualize_data(title, day_name, pages)
+# visualize_data(title, day_name, pages)
 
 # 调用存储函数,存储至mysql
 store_data_to_db(data, title, day_name)
 
 # 调用存储函数,存储至MinIO
-store_data_to_minio(title)
+# store_data_to_minio(title)
 
 

@@ -28,8 +28,8 @@ def store_data_to_db(data, title, day_name):
     # MySQL 连接配置
     db_config = {
         'host': 'localhost',  # 数据库地址
-        'user': 'chy_ubuntu',  # 用户名
-        'password': os.getenv('MYSQL_PASSWORD'),  # 密码
+        'user': 'chy_wsl',  # 用户名
+        'password': 'chen350627',  # 密码
         'database': 'financial_web_crawler',  # 使用的数据库
     }
 
@@ -132,42 +132,42 @@ def store_data_to_db(data, title, day_name):
                 record.get(f"{prefix}_Small_Order_Flow", {}).get("Net_Percentage", '')) else None
         })
 
-    # 图片文件路径
-    image_path = f"./data/{title}/{title}.png"
+    # # 图片文件路径
+    # image_path = f"./data/{title}/{title}.png"
 
-    # 确保图片文件存在
-    if not os.path.exists(image_path):
-        print(f"File not found: {image_path}")
-        return  # 或者抛出异常
+    # # 确保图片文件存在
+    # if not os.path.exists(image_path):
+    #     print(f"File not found: {image_path}")
+    #     return  # 或者抛出异常
 
-    # 读取图片文件为二进制数据
-    try:
-        image_data = open(image_path, 'rb').read()
-    except Exception as e:
-        print(f"Error reading image file: {e}")
-        return  # 或者抛出异常
+    # # 读取图片文件为二进制数据
+    # try:
+    #     image_data = open(image_path, 'rb').read()
+    # except Exception as e:
+    #     print(f"Error reading image file: {e}")
+    #     return  # 或者抛出异常
 
-    # 创建一个存储图片信息的表
-    table2_name = "Images_data"
-    cursor.execute(f"""
-    CREATE TABLE IF NOT EXISTS `{table2_name}` (
-        `Index` INT AUTO_INCREMENT PRIMARY KEY,
-        `Title` VARCHAR(100) UNIQUE,
-        `Image_data` LONGBLOB NOT NULL
-    );
-    """)
+    # # 创建一个存储图片信息的表
+    # table2_name = "Images_data"
+    # cursor.execute(f"""
+    # CREATE TABLE IF NOT EXISTS `{table2_name}` (
+    #     `Index` INT AUTO_INCREMENT PRIMARY KEY,
+    #     `Title` VARCHAR(100) UNIQUE,
+    #     `Image_data` LONGBLOB NOT NULL
+    # );
+    # """)
 
 
 
-    # 插入图片数据
-    cursor.execute(f"""
-        INSERT INTO `{table2_name}` (Title, `Image_data`) 
-        VALUES (%(Title)s, %(Image_data)s)
-        ON DUPLICATE KEY UPDATE 
-            `Image_data` = VALUES(`Image_data`)
-    """, {
-        "Title": title, "Image_data": image_data
-    })
+    # # 插入图片数据
+    # cursor.execute(f"""
+    #     INSERT INTO `{table2_name}` (Title, `Image_data`) 
+    #     VALUES (%(Title)s, %(Image_data)s)
+    #     ON DUPLICATE KEY UPDATE 
+    #         `Image_data` = VALUES(`Image_data`)
+    # """, {
+    #     "Title": title, "Image_data": image_data
+    # })
 
     conn.commit()
 

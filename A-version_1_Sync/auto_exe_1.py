@@ -14,8 +14,8 @@ stock_types_2 = ["1", "2", "3"]  # 3 种股票类型
 ranking_durations_2 = ["1", "2", "3"]  # 3 种排名时长
 
 # 定义 Python 脚本路径
-script_path = r"/home/chy/dev/web_crawler/DongFangCaifu/A-version_1_Sync/main_1.py"
-python_executable = r"/home/chy/dev/web_crawler/DongFangCaifu/.venv/bin/python3"
+script_path = r"/home/chy_wsl/Financial_Program/A-version_1_Sync/main_1.py"
+python_executable = r"/home/chy_wsl/.pyenv/shims/python3"
 
 # 定义计数器，打印到输出窗口
 counter = 0
