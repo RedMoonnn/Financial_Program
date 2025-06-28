@@ -5,33 +5,38 @@ init_db()
 
 # 新增：启动爬虫定时任务
 from threading import Thread
-from services.services import TaskService, FlowDataService
-from crawler.crawler import fetch_flow_data
+from services.services import TaskService, FlowDataService, set_data_ready
+from crawler.crawler import run_collect, market_names, detail_flows_names
 import time
 
 def start_crawler_job():
     from apscheduler.schedulers.background import BackgroundScheduler
     import services.services as services_mod
     def crawl_and_save():
-        # 遍历所有可用分类，采集全量数据
-        all_market_types = ['A股', '港股', '板块', '行业', '概念', '地域']
-        all_flow_types = ['资金流向']
-        all_periods = ['today', '3d', '5d', '10d']
-        for market_type in all_market_types:
-            for flow_type in all_flow_types:
-                for period in all_periods:
-                    task = TaskService.create_task(flow_type, market_type, period, pages=1)
-                    data_list = fetch_flow_data(flow_type, market_type, period, pages=1)
-                    FlowDataService.save_flow_data(data_list, task.id)
-                    print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {market_type}-{flow_type}-{period} 数据采集完成，共{len(data_list)}条")
-        # 采集完成后设置全局状态
-        services_mod.DATA_READY = True
+        set_data_ready(False)
+        # 个股资金流 Stock_Flow
+        for market_choice in range(1, 9):
+            for day_choice in range(1, 5):
+                flow_choice = 1
+                detail_choice = None
+                pages = 1
+                res = run_collect(flow_choice, market_choice, detail_choice, day_choice, pages)
+                print(f"Stock_Flow | 市场: {market_names[market_choice-1]} | 周期: {['today','3d','5d','10d'][day_choice-1]} | 采集条数: {res['count']}")
+        # 板块资金流 Sector_Flow
+        for detail_choice in range(1, 4):
+            for day_choice in range(1, 4):
+                flow_choice = 2
+                market_choice = None
+                pages = 1
+                res = run_collect(flow_choice, market_choice, detail_choice, day_choice, pages)
+                print(f"Sector_Flow | 板块: {detail_flows_names[detail_choice-1]} | 周期: {['today','5d','10d'][day_choice-1]} | 采集条数: {res['count']}")
+        set_data_ready(True)
         print("全量数据采集完成，DATA_READY已置为True")
     # 启动时先全量采集一次
     crawl_and_save()
     # 定时增量刷新
     def refresh_job():
-        services_mod.DATA_READY = False
+        set_data_ready(False)
         crawl_and_save()
     scheduler = BackgroundScheduler()
     scheduler.add_job(refresh_job, 'interval', minutes=5)
@@ -42,4 +47,5 @@ def start_crawler_job():
 Thread(target=start_crawler_job, daemon=True).start()
 
 if __name__ == '__main__':
-    uvicorn.run('api.api:app', host='0.0.0.0', port=8000, reload=True) 
+    # uvicorn.run('api.api:app', host='0.0.0.0', port=8000, reload=True) 
+    uvicorn.run('api.api:app', host='0.0.0.0', port=8000) 

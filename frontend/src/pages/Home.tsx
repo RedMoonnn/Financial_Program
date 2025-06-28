@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Card, Row, Col, Select, Spin } from 'antd';
+import { Table, Card, Row, Col, Select, Spin, Button, message } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import { getToken, removeToken } from '../auth';
 import axios from 'axios';
@@ -40,6 +40,7 @@ const Home: React.FC = () => {
   const [tableData, setTableData] = useState<any[]>([]);
   const [chartOption, setChartOption] = useState<any>(null);
   const [fetching, setFetching] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     const checkData = async () => {
@@ -92,8 +93,38 @@ const Home: React.FC = () => {
     }).catch(() => setFetching(false));
   }, [dataReady, marketType, flowType, period]);
 
+  // 手动触发采集
+  const handleManualUpdate = async () => {
+    setUpdating(true);
+    try {
+      await axios.post('/api/collect', {
+        flow_type: flowType,
+        market_type: marketType,
+        period: period,
+        pages: 1
+      });
+      message.success('数据采集任务已提交，稍后自动刷新');
+      // 立即刷新数据状态
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } catch {
+      message.error('数据采集失败');
+    }
+    setUpdating(false);
+  };
+
   if (loading || !dataReady) {
-    return <div style={{textAlign:'center',marginTop:100,fontSize:20}}>正在收集数据，请稍后...</div>;
+    return (
+      <div style={{textAlign:'center',marginTop:100,fontSize:20}}>
+        正在收集数据，请稍后...
+        <div style={{marginTop:32}}>
+          <Button type="primary" loading={updating} onClick={handleManualUpdate}>
+            {updating ? '正在更新...' : '手动更新数据'}
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -107,6 +138,11 @@ const Home: React.FC = () => {
         </Col>
         <Col>
           <Select value={period} onChange={setPeriod} options={periods} style={{ width: 120 }} />
+        </Col>
+        <Col>
+          <Button type="primary" loading={updating} onClick={handleManualUpdate} style={{ marginLeft: 16 }}>
+            {updating ? '正在更新...' : '手动更新数据'}
+          </Button>
         </Col>
       </Row>
       <Row gutter={24}>

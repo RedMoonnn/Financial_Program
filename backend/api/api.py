@@ -1,11 +1,17 @@
-from fastapi import FastAPI, Request, Query, Body, HTTPException, Depends
+from fastapi import FastAPI, Request, Query, Body, HTTPException, Depends, BackgroundTasks, status
 from fastapi.middleware.cors import CORSMiddleware
-from services.services import TaskService, FlowDataService, FlowImageService, CacheService, init_db, ChatService, ReportService
-from crawler.crawler import fetch_flow_data
+from services.services import TaskService, FlowDataService, FlowImageService, CacheService, init_db, ChatService, ReportService, get_data_ready
+from crawler.crawler import fetch_flow_data, run_collect, run_collect_all, start_crawler_job
 from api.health import health_bp
 from ai.deepseek import DeepseekAgent
 from typing import Optional
 from api.auth import router as auth_router, get_current_user
+import traceback
+import pymysql
+import os
+from datetime import datetime
+from threading import Thread
+import sys
 
 app = FastAPI(title="东方财富数据采集与分析平台API", docs_url="/docs", redoc_url="/redoc")
 
@@ -27,27 +33,57 @@ app.include_router(auth_router)
 # 初始化数据库
 init_db()
 
-@app.post("/api/collect")
-async def collect(
-    flow_type: str = Body(...),
-    market_type: str = Body(...),
-    period: str = Body(...),
-    pages: int = Body(1)
-):
-    try:
-        task = TaskService.create_task(flow_type, market_type, period, pages)
-        try:
-            flow_data = fetch_flow_data(flow_type, market_type, period, pages)
-            FlowDataService.save_flow_data(flow_data, task.id)
-            for item in flow_data:
-                CacheService.cache_flow_data(item['code'], flow_type, market_type, period, item)
-            TaskService.update_task_status(task.id, 'success')
-        except Exception as e:
-            TaskService.update_task_status(task.id, 'failed', error_msg=str(e))
-            raise HTTPException(status_code=500, detail={"error": "采集失败", "detail": str(e)})
-        return {"task_id": task.id}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail={"error": "参数错误", "detail": str(e)})
+# 东方财富采集参数与映射，参考 test_crawler/source_data_1.py
+url = "https://push2.eastmoney.com/api/qt/clist/get"
+headers = {
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+}
+flows_id = [
+    "jquery112309245886249999282_1733396772298",
+    "jQuery112309570655592067874_1733410054611"
+]
+flows_names = ["Stock_Flow", "Sector_Flow"]
+market_ids = [
+    "m:0+t:6+f:!2,m:0+t:13+f:!2,m:0+t:80+f:!2,m:1+t:2+f:!2,m:1+t:23+f:!2,m:0+t:7+f:!2,m:1+t:3+f:!2",
+    "m:0+t:6+f:!2,m:0+t:13+f:!2,m:0+t:80+f:!2,m:1+t:2+f:!2,m:1+t:23+f:!2",
+    "m:1+t:2+f:!2,m:1+t:23+f:!2",
+    "m:1+t:23+f:!2",
+    "m:0+t:6+f:!2,m:0+t:13+f:!2,m:0+t:80+f:!2",
+    "m:0+t:80+f:!2",
+    "m:1+t:3+f:!2",
+    "m:0+t:7+f:!2"
+]
+market_names = [
+    "All_Stocks", "SH&SZ_A_Shares", "SH_A_Shares", "STAR_Market", "SZ_A_Shares", "ChiNext_Market", "SH_B_Shares", "SZ_B_Shares"
+]
+detail_flows_ids = ["m:90+t:2", "m:90+t:3", "m:90+t:1"]
+detail_flows_names = ["Industry_Flow", "Concept_Flow", "Regional_Flow"]
+day1_ids = ["f62", "f267", "f164", "f174"]
+day1_names = ["Today_Ranking", "3_Day_Ranking", "5_Day_Ranking", "10_Day_Ranking"]
+day2_ids = ["f62", "f164", "f174"]
+day2_names = ["Today_Ranking", "5_Day_Ranking", "10_Day_Ranking"]
+fields_ids = [
+    "f12,f14,f2,f3,f62,f184,f66,f69,f72,f75,f78,f81,f84,f87,f204,f205,f124,f1,f13",
+    "f12,f14,f2,f127,f267,f268,f269,f270,f271,f272,f273,f274,f275,f276,f257,f258,f124,f1,f13",
+    "f12,f14,f2,f109,f164,f165,f166,f167,f168,f169,f170,f171,f172,f173,f257,f258,f124,f1,f13",
+    "f12,f14,f2,f160,f174,f175,f176,f177,f178,f179,f180,f181,f182,f183,f260,f261,f124,f1,f13"
+]
+
+# MySQL连接参数（容器内环境变量优先）
+def get_db_config():
+    return {
+        'host': os.getenv('MYSQL_HOST', 'mysql'),
+        'user': os.getenv('MYSQL_USER', 'root'),
+        'password': os.getenv('MYSQL_PASSWORD', '123456'),
+        'database': os.getenv('MYSQL_DATABASE', 'financial_web_crawler'),
+        'port': int(os.getenv('MYSQL_PORT', 3306)),
+        'charset': 'utf8mb4'
+    }
+
+def get_current_time():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
 
 @app.get("/api/flow")
 async def get_flow(
@@ -167,8 +203,43 @@ def report_download(report_id: int, user=Depends(get_current_user)):
 
 @app.get("/api/data_ready")
 def data_ready():
-    from services.services import DATA_READY
-    return {"data_ready": DATA_READY}
+    return {"data_ready": get_data_ready()}
+
+# 新版API：单组合采集，调用crawler.py主函数
+@app.post("/api/collect_v2")
+async def collect_v2(
+    flow_choice: int = Body(..., description="1:Stock_Flow, 2:Sector_Flow"),
+    market_choice: int = Body(None, description="市场选项，仅flow_choice=1时有效"),
+    detail_choice: int = Body(None, description="板块选项，仅flow_choice=2时有效"),
+    day_choice: int = Body(..., description="日期选项"),
+    pages: int = Body(1, description="采集页数")
+):
+    # 参数校验
+    if flow_choice == 1:
+        if market_choice is None or not (1 <= market_choice <= 8):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="flow_choice=1时，market_choice必须为1~8")
+        if day_choice not in [1,2,3,4]:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="day_choice必须为1~4")
+    elif flow_choice == 2:
+        if detail_choice is None or not (1 <= detail_choice <= 3):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="flow_choice=2时，detail_choice必须为1~3")
+        if day_choice not in [1,2,3]:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="flow_choice=2时，day_choice必须为1~3")
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="flow_choice必须为1或2")
+    result = run_collect(flow_choice, market_choice, detail_choice, day_choice, pages)
+    return result
+
+# 新版API：全量采集，调用crawler.py主函数
+@app.post("/api/collect_all_v2")
+async def collect_all_v2(background_tasks: BackgroundTasks):
+    background_tasks.add_task(run_collect_all)
+    return {"msg": "全量采集任务已启动"}
+
+@app.on_event("startup")
+def startup_event():
+    print("startup ok", file=sys.stderr, flush=True)
+    Thread(target=start_crawler_job, daemon=True).start()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True) 

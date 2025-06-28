@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Input, Button, Form, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,6 +7,10 @@ import { setToken, removeToken } from '../auth';
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = '登录 - 金融数据平台';
+  }, []);
 
   const onFinish = async (values: any) => {
     setLoading(true);

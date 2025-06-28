@@ -350,4 +350,11 @@ def generate_daily_reports():
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(generate_daily_reports, 'cron', hour=0, minute=0)
-scheduler.start() 
+scheduler.start()
+
+def set_data_ready(flag: bool):
+    redis_cache.set('DATA_READY', '1' if flag else '0', ex=3600*24)
+
+def get_data_ready():
+    v = redis_cache.get('DATA_READY')
+    return v == '1' 
