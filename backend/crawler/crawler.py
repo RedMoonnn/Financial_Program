@@ -290,6 +290,8 @@ def store_data_to_db(data, table_name):
             `crawl_time` DATETIME
         ) DEFAULT CHARSET=utf8mb4;
     ''')
+    # 新增：每次采集前清空表
+    cursor.execute(f"TRUNCATE TABLE `{table_name}`;")
     for record in data:
         cursor.execute(f'''
             INSERT INTO `{table_name}` (
@@ -376,6 +378,10 @@ def start_crawler_job():
     print("start_crawler_job called", file=sys.stderr, flush=True)
     from apscheduler.schedulers.background import BackgroundScheduler
     from services.services import set_data_ready
+
+    # 全局计数器
+    start_crawler_job.crawl_count = 0
+
     def crawl_and_save():
         print("crawl_and_save called", file=sys.stderr, flush=True)
         try:
@@ -397,7 +403,9 @@ def start_crawler_job():
                     res = run_collect(flow_choice, market_choice, detail_choice, day_choice, pages)
                     print(f"Sector_Flow | 板块: {detail_flows_names[detail_choice-1]} | 周期: {['today','5d','10d'][day_choice-1]} | 采集条数: {res['count']}", file=sys.stderr, flush=True)
             set_data_ready(True)
-            print("全量数据采集完成，DATA_READY已置为True", file=sys.stderr, flush=True)
+            # 采集次数+1
+            start_crawler_job.crawl_count += 1
+            print(f"全量数据采集完成，DATA_READY已置为True，本进程累计采集次数：{start_crawler_job.crawl_count}", file=sys.stderr, flush=True)
         except Exception as e:
             import traceback
             print("采集线程异常:", e, file=sys.stderr, flush=True)
