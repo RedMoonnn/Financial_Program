@@ -9,7 +9,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = '登录 - 金融数据平台';
+    document.title = '登录 - 智能金融数据采集分析平台';
   }, []);
 
   const onFinish = async (values: any) => {

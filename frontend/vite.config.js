@@ -11,8 +11,22 @@ export default defineConfig({
       '/api': {
         target: 'http://backend:8000',
         changeOrigin: true,
+        secure: false,
         rewrite: path => path.replace(/^\/api/, '/api'),
       },
+    }
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          antd: ['antd'],
+          echarts: ['echarts', 'echarts-for-react']
+        }
+      }
     }
   }
 })

@@ -249,7 +249,7 @@ def fetch_flow_data(flow_type, market_type, period, pages=1, flow_choice=None, m
                 # 默认today
                 item.update(process_diff_today(diff))
             results.append(item)
-    return results
+    return results 
 
 def get_db_config():
     return {
@@ -357,7 +357,12 @@ def run_collect(flow_choice, market_choice, detail_choice, day_choice, pages):
     else:
         return {"error": "参数错误"}
     store_data_to_db(data, table_name)
-    return {"table": table_name, "count": len(data), "crawl_time": get_now()}
+    return {
+        "table": table_name,
+        "count": len(data),
+        "crawl_time": get_now(),
+        "data": data  # 新增：返回采集到的全部数据
+    }
 
 def run_collect_all():
     total = 0
@@ -405,7 +410,7 @@ def start_crawler_job():
             set_data_ready(True)
             # 采集次数+1
             start_crawler_job.crawl_count += 1
-            print(f"全量数据采集完成，DATA_READY已置为True，本进程累计采集次数：{start_crawler_job.crawl_count}", file=sys.stderr, flush=True)
+            print(f"全量数据采集完成，本进程累计采集次数：{start_crawler_job.crawl_count}", file=sys.stderr, flush=True)
         except Exception as e:
             import traceback
             print("采集线程异常:", e, file=sys.stderr, flush=True)
@@ -419,7 +424,6 @@ def start_crawler_job():
     scheduler.add_job(refresh_job, 'interval', minutes=5)
     scheduler.start()
     print("爬虫定时任务已启动，每5分钟自动刷新数据", file=sys.stderr, flush=True)
-
 if __name__ == '__main__':
     import pprint
     # 测试采集个股资金流

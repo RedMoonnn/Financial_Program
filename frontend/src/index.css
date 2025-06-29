@@ -21,3 +21,78 @@ body {
 a {
   color: var(--primary-color);
 } 
+
+/* 表格紧凑、字体大、居中 */
+.custom-tight-table .ant-table-cell {
+  font-size: 16px;
+  text-align: center;
+  padding: 6px 4px;
+}
+.custom-tight-table .ant-table-thead > tr > th {
+  font-size: 16px;
+  text-align: center;
+  background: #f6f8fa;
+  border-bottom: 2px solid #e0e0e0;
+  font-weight: 700;
+}
+.custom-tight-table .ant-table-tbody > tr > td {
+  background: #fff;
+}
+
+/* Tabs增强层次感 */
+.custom-tabs .ant-tabs-nav {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #eee;
+  background: #fff;
+}
+.custom-tabs .ant-tabs-tab {
+  background: #fff !important;
+  color: #222 !important;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 8px 8px 0 0;
+  margin-right: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+.custom-tabs .ant-tabs-tab-active {
+  background: #f0f7ff !important;
+  color: var(--primary-color) !important;
+  font-weight: 700;
+  border-bottom: 2px solid var(--primary-color) !important;
+}
+.custom-tabs .ant-tabs-ink-bar {
+  background: var(--primary-color) !important;
+  height: 3px;
+  border-radius: 2px 2px 0 0;
+}
+.custom-tabs .ant-tabs-tab:not(.ant-tabs-tab-active):hover {
+  background: #f6f8fa !important;
+  color: var(--primary-color) !important;
+}
+
+/* 多级Tabs分隔线 */
+.custom-tabs .ant-tabs-nav-list {
+  border-bottom: 1.5px solid #e0e0e0;
+}
+
+/* 周期选择按钮样式 */
+.custom-period-btn {
+  border-radius: 6px;
+  margin-right: 8px;
+  background: #f6f8fa;
+  border: 1px solid #e0e0e0;
+  font-weight: 500;
+  padding: 4px 16px;
+  font-size: 15px;
+  transition: all 0.2s;
+}
+.custom-period-btn.active, .custom-period-btn:hover {
+  background: #1677ff;
+  color: #fff;
+  border-color: #1677ff;
+}
+
+/* 表格单元格不换行，紧凑 */
+.nowrap-cell {
+  white-space: nowrap !important;
+} 

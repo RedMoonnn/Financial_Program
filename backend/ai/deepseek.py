@@ -1,85 +1,142 @@
-import requests
 import os
 from dotenv import load_dotenv
+from openai import OpenAI
+import re, json
 
 load_dotenv()
 
 DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY', '')
-DEEPSEEK_API_URL = os.getenv('DEEPSEEK_BASE_URL', 'https://api.deepseek.com') + '/v1/finance/advice'  # 假设API路径
-
-# 封装Deepseek API调用
-
-def get_investment_advice(flow_type, market_type, period, code, flow_data, user_message, history=None):
-    headers = {
-        'Authorization': f'Bearer {DEEPSEEK_API_KEY}',
-        'Content-Type': 'application/json'
-    }
-    payload = {
-        'flow_type': flow_type,
-        'market_type': market_type,
-        'period': period,
-        'code': code,
-        'flow_data': flow_data,
-        'user_message': user_message,
-        'history': history or []
-    }
-    response = requests.post(DEEPSEEK_API_URL, json=payload, headers=headers, timeout=30)
-    response.raise_for_status()
-    return response.json().get('advice', '未能获取AI建议')
+DEEPSEEK_BASE_URL = os.getenv('DEEPSEEK_BASE_URL', 'https://api.deepseek.com')
 
 class DeepseekAgent:
     @staticmethod
-    def build_prompt(flow_data, sector_data=None, style="专业", user_message=None, history=None):
+    def clean_history(history, max_items=5):
         """
-        生成结构化分析prompt，内置资金流分析规则，支持个性化风格和多轮追问。
+        清理历史对话，只保留最近的几条有效对话
         """
-        rules = (
-            "判断主力态度：主力净流入为正且占比高→主力资金在积极做多；主力净流出为负且占比高→主力资金在减仓、撤退。\n"
-            "看超大单异动：超大单流入明显上涨→机构资金抄底/追涨；超大单流出剧烈→机构止盈、跑路信号。\n"
-            "看散户情绪：小单净流入大增→散户盲目跟风追涨（高风险）；小单净流出→散户恐慌割肉（低吸机会）。\n"
-            "配合板块资金流：看板块是否整体资金净流入，个股是否跟随。个股+板块双流入→更稳健的短线机会；个股流入但板块流出→孤立异动，需小心。"
-        )
-        prompt = f"""
-你是一名专业的金融分析师，请根据以下资金流数据，结合如下分析规则，输出结构化投资建议：
-分析规则：\n{rules}
+        if not history:
+            return None
+        
+        # 如果是字符串，尝试解析为列表
+        if isinstance(history, str):
+            try:
+                history = json.loads(history)
+            except:
+                return None
+        
+        # 过滤掉无效对话（如只有"你好"的简单对话）
+        valid_history = []
+        for item in history:
+            if isinstance(item, dict):
+                question = item.get('question', '').strip()
+                answer = item.get('answer', '')
+                
+                # 过滤掉过于简单的对话
+                if (len(question) > 3 and 
+                    not question.lower() in ['你好', 'hello', 'hi', 'test'] and
+                    not question.startswith('你好')):
+                    valid_history.append(item)
+        
+        # 只保留最近的几条对话
+        return valid_history[-max_items:] if valid_history else None
 
-个股资金流数据：{flow_data}
+    @staticmethod
+    def build_prompt(flow_data, user_message, history=None, style="专业"):
+        """
+        优化的prompt构建：限制历史对话长度，避免token溢出
+        """
+        # 清理历史对话
+        cleaned_history = DeepseekAgent.clean_history(history)
+        
+        prompt = f"""
+你是一名专业金融智能顾问，请结合下方资金流数据，用自然、通俗的语言为用户分析并给出建议。
+如数据不足，请温和提示用户补充信息。
+
+【资金流数据】
+{json.dumps(flow_data, ensure_ascii=False, indent=2)}
+
+【用户问题】
+{user_message}
 """
-        if sector_data:
-            prompt += f"\n板块资金流数据：{sector_data}\n"
-        if user_message:
-            prompt += f"\n用户追问：{user_message}\n"
-        prompt += f"\n请用{style}风格，输出如下结构化JSON：\n"
-        prompt += (
-            '{\n'
-            '  "advice": "投资建议（如买入/观望/卖出）",\n'
-            '  "reasons": ["主要理由1", "主要理由2"],\n'
-            '  "risks": ["风险点1", "风险点2"],\n'
-            '  "detail": "详细分析文本"\n'
-            '}'
-        )
-        if history:
-            prompt += f"\n历史对话：{history}"
+        
+        # 只添加清理后的历史对话
+        if cleaned_history:
+            # 只保留关键信息，减少token消耗
+            history_summary = []
+            for item in cleaned_history:
+                q = item.get('question', '')[:50] + '...' if len(item.get('question', '')) > 50 else item.get('question', '')
+                a = item.get('answer', '')
+                if isinstance(a, dict):
+                    a = a.get('advice', str(a))[:100] + '...' if len(str(a)) > 100 else str(a)
+                history_summary.append(f"Q: {q} | A: {a}")
+            
+            prompt += f"\n【最近对话】\n" + "\n".join(history_summary)
+        
+        prompt += f"\n请用{style}风格作答。"
         return prompt
 
     @staticmethod
-    def analyze(flow_data, sector_data=None, style="专业", user_message=None, history=None):
-        prompt = DeepseekAgent.build_prompt(flow_data, sector_data, style, user_message, history)
-        headers = {
-            'Authorization': f'Bearer {DEEPSEEK_API_KEY}',
-            'Content-Type': 'application/json'
-        }
-        payload = {
-            'model': 'deepseek-finance',
-            'messages': [
+    def analyze(flow_data, user_message=None, history=None, style="专业"):
+        prompt = DeepseekAgent.build_prompt(flow_data, user_message, history, style)
+        
+        # 检查prompt长度，如果过长则截断
+        if len(prompt) > 8000:  # 设置合理的长度限制
+            print(f"Warning: Prompt too long ({len(prompt)} chars), truncating...", flush=True)
+            prompt = prompt[:8000] + "\n\n[提示：对话历史过长，已截断]"
+        
+        request_payload = {
+            "model": "deepseek-chat",
+            "messages": [
                 {"role": "system", "content": "你是一名专业金融分析师，善于资金流分析和投资建议。"},
                 {"role": "user", "content": prompt}
-            ]
+            ],
+            "stream": False
         }
-        response = requests.post(DEEPSEEK_API_URL, json=payload, headers=headers, timeout=60)
-        response.raise_for_status()
-        # 解析结构化JSON
+        print("\n===== Deepseek Request Payload =====\n" + json.dumps(request_payload, ensure_ascii=False, indent=2) + "\n===============================\n", flush=True)
+        client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
+        response = client.chat.completions.create(**request_payload)
+        print("\n===== Deepseek Response Object =====\n" + str(response) + "\n===============================\n", flush=True)
+        content = response.choices[0].message.content
+        # 自动清洗和提取标准JSON
         try:
-            return response.json()['choices'][0]['message']['content']
+            return json.loads(content)
         except Exception:
-            return response.text 
+            match = re.search(r'\{[\s\S]*\}', content)
+            if match:
+                try:
+                    return json.loads(match.group(0))
+                except Exception:
+                    pass
+            # 新增：如果content为自然语言，直接返回advice字段
+            return {
+                "advice": content.strip()
+            }
+
+if __name__ == '__main__':
+    # 构造测试数据
+    flow_data = [{
+        'type': 'stock',
+        'flow_type': 'Stock_Flow',
+        'market_type': 'All_Stocks',
+        'period': 'today',
+        'data': {
+            'code': '600000',
+            'name': '浦发银行',
+            'latest_price': 10.5,
+            'change_percentage': 1.2,
+            'main_flow_net_amount': 1000000,
+            'main_flow_net_percentage': 5.6,
+            'extra_large_order_flow_net_amount': 500000,
+            'extra_large_order_flow_net_percentage': 2.8,
+            'large_order_flow_net_amount': 200000,
+            'large_order_flow_net_percentage': 1.1,
+            'medium_order_flow_net_amount': 150000,
+            'medium_order_flow_net_percentage': 0.8,
+            'small_order_flow_net_amount': 150000,
+            'small_order_flow_net_percentage': 0.9,
+            'crawl_time': '2024-05-01 10:00:00'
+        }
+    }]
+    user_message = "请帮我分析一下浦发银行今日的资金流情况"
+    print("\n=== 本地测试AI对话 ===\n")
+    result = DeepseekAgent.analyze(flow_data, user_message=user_message, history=None, style="专业")

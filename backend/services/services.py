@@ -18,6 +18,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from ai.deepseek import DeepseekAgent
 import tempfile
 import time
+import pymysql
+from crawler.crawler import get_db_config
+from services.flow_data_query import get_all_latest_flow_data, query_table_data, query_stock_flow_data
 
 # 创建数据库引擎和会话工厂
 engine = create_engine(
@@ -150,6 +153,39 @@ class FlowDataService:
             }
         return None
 
+    @staticmethod
+    def get_latest_flow_data_by_name(name):
+        session = SessionLocal()
+        q = session.query(FlowData).filter(FlowData.name.like(f"%{name}%")).order_by(FlowData.crawl_time.desc())
+        result = q.first()
+        session.close()
+        if result:
+            return {
+                'code': result.code,
+                'name': result.name,
+                'flow_type': result.flow_type,
+                'market_type': result.market_type,
+                'period': result.period,
+                'latest_price': result.latest_price,
+                'change_percentage': result.change_percentage,
+                'main_flow_net_amount': result.main_flow_net_amount,
+                'main_flow_net_percentage': result.main_flow_net_percentage,
+                'extra_large_order_flow_net_amount': result.extra_large_order_flow_net_amount,
+                'extra_large_order_flow_net_percentage': result.extra_large_order_flow_net_percentage,
+                'large_order_flow_net_amount': result.large_order_flow_net_amount,
+                'large_order_flow_net_percentage': result.large_order_flow_net_percentage,
+                'medium_order_flow_net_amount': result.medium_order_flow_net_amount,
+                'medium_order_flow_net_percentage': result.medium_order_flow_net_percentage,
+                'small_order_flow_net_amount': result.small_order_flow_net_amount,
+                'small_order_flow_net_percentage': result.small_order_flow_net_percentage,
+                'crawl_time': str(result.crawl_time)
+            }
+        return None
+
+    @staticmethod
+    def get_all_latest_flow_data():
+        return get_all_latest_flow_data()
+
 # 3. 图片上传与元数据入库服务
 class FlowImageService:
     @staticmethod
@@ -260,7 +296,7 @@ class EmailService:
         msg = MIMEText(content, 'plain', 'utf-8')
         msg['From'] = str(Header('金融分析小助手', 'utf-8')) + f' <{smtp_user}>'
         msg['To'] = email
-        msg['Subject'] = Header('金融数据平台验证码', 'utf-8')
+        msg['Subject'] = Header('智能金融数据采集分析平台验证码', 'utf-8')
         try:
             server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls()
@@ -350,7 +386,7 @@ def generate_daily_reports():
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(generate_daily_reports, 'cron', hour=0, minute=0)
-scheduler.start()
+scheduler.start() 
 
 def set_data_ready(flag: bool):
     redis_cache.set('DATA_READY', '1' if flag else '0', ex=3600*24)

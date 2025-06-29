@@ -2,6 +2,7 @@ from minio import Minio
 from minio.error import S3Error
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 load_dotenv()
 
@@ -34,6 +35,11 @@ class MinioStorage:
 
     def get_image_url(self, object_name):
         # 生成预签名URL，默认1天有效
-        return self.client.presigned_get_object(self.bucket, object_name, expires=60*60*24)
+        return self.client.presigned_get_object(self.bucket, object_name, expires=timedelta(seconds=60*60*24))
+
+    def list_files(self, bucket=None):
+        bucket = bucket or self.bucket
+        objects = self.client.list_objects(bucket, recursive=True)
+        return [obj.object_name for obj in objects]
 
 minio_storage = MinioStorage() 

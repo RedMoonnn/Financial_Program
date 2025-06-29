@@ -12,6 +12,11 @@ import os
 from datetime import datetime
 from threading import Thread
 import sys
+import re
+from ai import report
+from redis import Redis
+import json
+from storage.storage import minio_storage
 
 app = FastAPI(title="东方财富数据采集与分析平台API", docs_url="/docs", redoc_url="/redoc")
 
@@ -87,99 +92,84 @@ def get_current_time():
 
 @app.get("/api/flow")
 async def get_flow(
-    code: Optional[str] = Query(None),
     flow_type: str = Query(...),
     market_type: str = Query(...),
     period: str = Query(...)
 ):
-    from services.services import SessionLocal, FlowData
-    session = SessionLocal()
-    if code:
-        data = session.query(FlowData).filter_by(code=code, flow_type=flow_type, market_type=market_type, period=period).all()
-    else:
-        data = session.query(FlowData).filter_by(flow_type=flow_type, market_type=market_type, period=period).all()
-    session.close()
-    if data:
-        # 转为dict数组
-        result = [
-            {
-                'code': d.code,
-                'name': d.name,
-                'flow_type': d.flow_type,
-                'market_type': d.market_type,
-                'period': d.period,
-                'latest_price': d.latest_price,
-                'change_percentage': d.change_percentage,
-                'main_flow_net_amount': d.main_flow_net_amount,
-                'main_flow_net_percentage': d.main_flow_net_percentage,
-                'extra_large_order_flow_net_amount': d.extra_large_order_flow_net_amount,
-                'extra_large_order_flow_net_percentage': d.extra_large_order_flow_net_percentage,
-                'large_order_flow_net_amount': d.large_order_flow_net_amount,
-                'large_order_flow_net_percentage': d.large_order_flow_net_percentage,
-                'medium_order_flow_net_amount': d.medium_order_flow_net_amount,
-                'medium_order_flow_net_percentage': d.medium_order_flow_net_percentage,
-                'small_order_flow_net_amount': d.small_order_flow_net_amount,
-                'small_order_flow_net_percentage': d.small_order_flow_net_percentage,
-                'crawl_time': str(d.crawl_time)
-            } for d in data
-        ]
-        return {"data": result, "cached": False}
-    raise HTTPException(status_code=404, detail={"error": "未找到数据"})
-
-@app.get("/api/image")
-async def get_image(
-    code: str = Query(...),
-    flow_type: str = Query(...),
-    market_type: str = Query(...),
-    period: str = Query(...)
-):
-    url = CacheService.get_cached_image_url(code, flow_type, market_type, period)
-    if url:
-        return {"image_url": url, "cached": True}
-    raise HTTPException(status_code=404, detail={"error": "未找到图片"})
-
-@app.route('/api/task/<int:task_id>', methods=['GET'])
-def get_task_status(task_id):
-    """
-    查询采集任务状态
-    """
-    from backend.models.models import SessionLocal, FlowTask
-    session = SessionLocal()
-    task = session.query(FlowTask).filter_by(id=task_id).first()
-    if not task:
-        session.close()
-        return jsonify({'error': '任务不存在'}), 404
-    result = {
-        'id': task.id,
-        'flow_type': task.flow_type,
-        'market_type': task.market_type,
-        'period': task.period,
-        'pages': task.pages,
-        'status': task.status.value,
-        'start_time': str(task.start_time),
-        'end_time': str(task.end_time) if task.end_time else None,
-        'error_msg': task.error_msg
-    }
-    session.close()
-    return jsonify(result)
+    table_name = f"{flow_type}_{market_type}_{period}".replace("-", "_")
+    db_config = get_db_config()
+    print(f"API查表名: {table_name}", file=sys.stderr, flush=True)
+    print(f"API数据库名: {db_config['database']}", file=sys.stderr, flush=True)
+    conn = pymysql.connect(**db_config)
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    try:
+        cursor.execute(f"SHOW TABLES LIKE %s", (table_name,))
+        if not cursor.fetchone():
+            print(f"表不存在: {table_name}", file=sys.stderr, flush=True)
+            return {"data": [], "cached": False, "error": "未找到数据表"}
+        cursor.execute(f"SELECT * FROM `{table_name}` ORDER BY crawl_time DESC LIMIT 100")
+        rows = cursor.fetchall()
+        print(f"查到数据条数: {len(rows)}", file=sys.stderr, flush=True)
+        return {"data": rows, "cached": False}
+    except Exception as e:
+        print(f"查表异常: {e}", file=sys.stderr, flush=True)
+        return {"data": [], "cached": False, "error": str(e)}
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.post("/api/ai/advice")
 async def ai_advice(
     message: str = Body(...),
     context: Optional[dict] = Body(None),
+    table_name: Optional[str] = Body(None, description="可选，指定要分析的数据库表名"),
     user=Depends(get_current_user)
 ):
     try:
-        # context中包含marketType, flowType, period, tableData等
-        flow_data = context.get('tableData') if context else None
+        print(f"AI advice called with message: {message}, user_id: {user.id}, table_name: {table_name}", file=sys.stderr, flush=True)
+        from services.flow_data_query import query_table_data
+        from ai.deepseek import DeepseekAgent
         style = "专业"
-        history = ChatService.get_history(user.id)
-        result = DeepseekAgent.analyze(flow_data, None, style, message, history)
-        # 追加本轮对话到历史
-        history.append({"question": message, "answer": result})
-        ChatService.save_history(user.id, history)
-        return result
+        flow_data = []
+        # 场景一：前端传了表名，查该表
+        if table_name:
+            flow_data = query_table_data(table_name, limit=50)
+            if not flow_data:
+                return {
+                    "advice": "数据缺失",
+                    "reasons": [f"数据库中未找到表 {table_name} 或无数据，请检查表名或采集流程。"],
+                    "risks": [],
+                    "detail": f"请检查爬虫采集与入库流程，确保 {table_name} 有数据。"
+                }
+            # 只传递核心字段，防止token溢出
+            slim_data = [
+                {
+                    'type': d['type'],
+                    'flow_type': d['flow_type'],
+                    'market_type': d['market_type'],
+                    'period': d['period'],
+                    'data': {
+                        'code': d['data']['code'],
+                        'name': d['data']['name'],
+                        'main_flow_net_amount': d['data']['main_flow_net_amount'],
+                        'main_flow_net_percentage': d['data']['main_flow_net_percentage'],
+                        'change_percentage': d['data']['change_percentage'],
+                        'crawl_time': d['data']['crawl_time']
+                    }
+                } for d in flow_data
+            ]
+            user_message = message or f"请帮我分析一下表 {table_name} 的资金流情况"
+            result = DeepseekAgent.analyze(slim_data, user_message=user_message, style=style)
+            if isinstance(result, dict):
+                return result
+            else:
+                return {"answer": result}
+        # 兼容原有逻辑（未传表名时）
+        # ... existing code ...
     except Exception as e:
+        import traceback
+        error_msg = f"AI advice error: {str(e)}\n{traceback.format_exc()}"
+        print(error_msg, file=sys.stderr, flush=True)
         raise HTTPException(status_code=500, detail={"error": str(e)})
 
 @app.get("/api/report/list")
@@ -214,6 +204,13 @@ async def collect_v2(
     day_choice: int = Body(..., description="日期选项"),
     pages: int = Body(1, description="采集页数")
 ):
+    """
+    采集数据并返回：
+    - table: 表名
+    - count: 采集条数
+    - crawl_time: 采集时间
+    - data: 采集到的全部数据（用于前端Echarts实时渲染）
+    """
     # 参数校验
     if flow_choice == 1:
         if market_choice is None or not (1 <= market_choice <= 8):
@@ -240,6 +237,67 @@ async def collect_all_v2(background_tasks: BackgroundTasks):
 def startup_event():
     print("startup ok", file=sys.stderr, flush=True)
     Thread(target=start_crawler_job, daemon=True).start()
+
+@app.post("/api/report/generate")
+async def generate_report_api(
+    table_name: str = Body(...),
+    chat_history: list = Body(...),
+    user=Depends(get_current_user)
+):
+    try:
+        file_path, file_name, md_content, file_url = report.generate_report(table_name, chat_history, user_id=user.id)
+        from services.services import ReportService
+        ReportService.add_report(user.id, 'markdown', file_url, file_name)
+        return {"success": True, "file_url": file_url, "file_name": file_name}
+    except Exception as e:
+        import traceback
+        return {"success": False, "error": str(e), "trace": traceback.format_exc()}
+
+@app.get("/api/report/history")
+def report_history(user=Depends(get_current_user)):
+    try:
+        r = Redis(host=os.getenv('REDIS_HOST', 'redis'), port=int(os.getenv('REDIS_PORT', 6379)), decode_responses=True)
+        key = f"report:{user.id}"
+        reports = r.lrange(key, 0, 19)  # 只取最近20条
+        result = []
+        for item in reports:
+            try:
+                result.append(json.loads(item))
+            except Exception:
+                continue
+        return result
+    except Exception as e:
+        return []
+
+@app.get("/api/report/minio_list")
+def report_minio_list():
+    try:
+        bucket = minio_storage.bucket
+        files = minio_storage.list_files(bucket)
+        result = []
+        for f in files:
+            if f.endswith('.md'):
+                try:
+                    url = minio_storage.get_image_url(f)
+                except Exception as e:
+                    url = f"error: {e}"
+                result.append({
+                    'file_name': f,
+                    'url': url
+                })
+        return result
+    except Exception as e:
+        print(f"[report_minio_list] error: {e}")
+        return []
+
+@app.delete("/api/report/delete")
+def report_delete(file_name: str):
+    try:
+        bucket = minio_storage.bucket
+        minio_storage.client.remove_object(bucket, file_name)
+        return {"success": True, "msg": f"已删除 {file_name}"}
+    except Exception as e:
+        return {"success": False, "msg": str(e)}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True) 

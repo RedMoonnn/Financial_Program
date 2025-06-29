@@ -1,77 +1,93 @@
 import React, { useEffect, useState } from 'react';
-import { Card, List, Button, Modal, message } from 'antd';
+import { List, Button, message, Tag, Popconfirm } from 'antd';
 import axios from 'axios';
-import { getToken, removeToken } from '../auth';
 
 interface Report {
-  id: number;
-  type: string;
-  file_url: string;
   file_name: string;
-  created_at: string;
+  url: string;
+  created_at?: string;
 }
+
+// 生成MinIO控制台API下载链接
+const getMinioDownloadUrl = (fileName: string) =>
+  `http://192.168.211.99:9001/api/v1/buckets/data-financial-agent/objects/download?prefix=${encodeURIComponent(fileName)}&version_id=null`;
 
 const Reports: React.FC = () => {
   const [reports, setReports] = useState<Report[]>([]);
-  const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const token = getToken();
-    axios.get('/api/report/list', { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => setReports(res.data))
+  const fetchReports = () => {
+    axios.get('/api/report/minio_list')
+      .then(res => {
+        // 严格按created_at时间戳倒序排序，无created_at的排在最后
+        const sorted = [...res.data].sort((a, b) => {
+          if (a.created_at && b.created_at) {
+            return b.created_at.localeCompare(a.created_at);
+          } else if (a.created_at) {
+            return -1;
+          } else if (b.created_at) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        setReports(sorted);
+      })
       .catch(() => {
-        removeToken();
-        message.error('请重新登录');
+        message.error('获取报告列表失败');
       });
+  };
+
+  useEffect(() => {
+    fetchReports();
   }, []);
 
-  const handlePreview = async (report: Report) => {
-    if (report.type !== 'markdown') {
-      message.info('仅支持Markdown报告在线预览');
-      return;
-    }
+  const handleDelete = async (fileName: string) => {
     setLoading(true);
     try {
-      const token = getToken();
-      const resp = await axios.get(report.file_url, { headers: { Authorization: `Bearer ${token}` } });
-      setPreview(resp.data);
+      const res = await axios.delete('/api/report/delete', { params: { file_name: fileName } });
+      if (res.data && res.data.success) {
+        message.success('删除成功');
+        fetchReports();
+      } else {
+        message.error(res.data.msg || '删除失败');
+      }
     } catch {
-      removeToken();
-      message.error('预览失败，请重新登录');
+      message.error('删除失败');
     }
     setLoading(false);
   };
 
   return (
-    <Card title="历史报告" bordered={false}>
+    <div style={{ maxWidth: 900, margin: '0 auto', padding: 32 }}>
       <List
-        itemLayout="horizontal"
+        header={<div style={{ fontWeight: 600, fontSize: 20 }}>历史报告列表（MinIO）</div>}
+        bordered
         dataSource={reports}
+        loading={loading}
         renderItem={item => (
           <List.Item
             actions={[
-              <Button type="link" onClick={() => handlePreview(item)} key="preview">预览</Button>,
-              <Button type="link" href={item.file_url} download={item.file_name} key="download">下载</Button>
+              <Button type="link" href={getMinioDownloadUrl(item.file_name)} download={item.file_name} key="download">下载</Button>,
+              <Popconfirm
+                title="确定要删除该报告吗？"
+                onConfirm={() => handleDelete(item.file_name)}
+                okText="删除"
+                cancelText="取消"
+                key="delete"
+              >
+                <Button type="link" danger>删除</Button>
+              </Popconfirm>
             ]}
           >
-            <List.Item.Meta
-              title={item.file_name}
-              description={`类型: ${item.type}  时间: ${item.created_at}`}
-            />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontWeight: 500 }}>{item.file_name}</span>
+              {item.created_at && <span style={{ color: '#888', fontSize: 13, marginTop: 2 }}>生成时间：{item.created_at}</span>}
+            </div>
           </List.Item>
         )}
       />
-      <Modal
-        open={!!preview}
-        title="Markdown报告预览"
-        onCancel={() => setPreview(null)}
-        footer={null}
-        width={800}
-      >
-        <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', background: '#f5f8fa', padding: 16 }}>{preview}</pre>
-      </Modal>
-    </Card>
+    </div>
   );
 };
 
