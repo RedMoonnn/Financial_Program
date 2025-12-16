@@ -1,476 +1,294 @@
-# 金融数据采集平台 dflow 重构指南
+# 金融数据采集平台 dflow 重构指南（简易版）
 
-## 1. 什么是 dflow
+## 1. 概述
 
-### 1.1 dflow 核心理念
+### 为什么用 dflow
 
-**dflow** 是一个基于 Python 的科学计算工作流框架，其核心思想是：
+| 当前问题 | dflow 解决方案 |
+|---------|---------------|
+| 串行采集 32 个组合，约 5 分钟 | 并行执行，约 30 秒 |
+| APScheduler 单机定时 | K8s CronWorkflow，高可用 |
+| 失败需手动重启 | 自动重试 + 断点恢复 |
+| 日志分散 | Argo UI 可视化监控 |
 
-> **将复杂任务拆解为可复用的原子操作（OP），通过 DAG（有向无环图）定义依赖关系，由调度引擎自动编排执行。**
+### 重构后架构
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        dflow 核心概念                            │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   ┌─────────┐                                                   │
-│   │   OP    │  原子操作单元，定义输入→处理→输出                   │
-│   └────┬────┘                                                   │
-│        │                                                        │
-│        ▼                                                        │
-│   ┌─────────┐                                                   │
-│   │  Step   │  OP的实例化，可配置参数、资源、重试策略             │
-│   └────┬────┘                                                   │
-│        │                                                        │
-│        ▼                                                        │
-│   ┌─────────┐                                                   │
-│   │Workflow │  由多个Step组成的DAG，定义执行顺序和依赖           │
-│   └────┬────┘                                                   │
-│        │                                                        │
-│        ▼                                                        │
-│   ┌─────────┐                                                   │
-│   │  Argo   │  Kubernetes原生的工作流引擎，负责调度执行          │
-│   └─────────┘                                                   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    dflow 工作流                          │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  ┌────────────── 并行采集层 (41个任务) ───────────────┐  │
+│  │  个股: 8市场 × 4周期 = 32 任务                     │  │
+│  │  板块: 3板块 × 3周期 = 9 任务                      │  │
+│  └─────────────────────┬─────────────────────────────┘  │
+│                        ▼                                │
+│  ┌─────────────────────────────────────────────────────┐│
+│  │                 数据汇总存储 MySQL                   ││
+│  └─────────────────────┬───────────────────────────────┘│
+│                        ▼                                │
+│  ┌─────────────────────────────────────────────────────┐│
+│  │                 AI 分析 (Deepseek)                  ││
+│  └─────────────────────┬───────────────────────────────┘│
+│                        ▼                                │
+│  ┌─────────────────────────────────────────────────────┐│
+│  │                 生成报告 → MinIO                    ││
+│  └─────────────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────────────┘
 ```
-
-### 1.2 为什么选择 dflow
-
-| 传统方式 | dflow 方式 |
-|---------|-----------|
-| 代码耦合，难以复用 | OP 模块化，可组合复用 |
-| 串行执行，效率低 | 自动识别依赖，最大化并行 |
-| 失败后手动处理 | 自动重试，断点续跑 |
-| 单机运行，资源受限 | K8s 调度，弹性扩展 |
-| 日志分散，难以追踪 | 统一监控，可视化 DAG |
 
 ---
 
-## 2. dflow 工作流设计思路
-
-### 2.1 任务分解原则
-
-将业务流程拆解为**独立、可复用、可测试**的原子操作：
-
-```
-业务需求：采集金融数据 → 存储 → AI分析 → 生成报告
-
-拆解为 OP：
-┌──────────────────────────────────────────────────────────────┐
-│                                                              │
-│  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐        │
-│  │ 采集OP      │   │ 存储OP      │   │ 分析OP      │        │
-│  │             │   │             │   │             │        │
-│  │ 输入:参数   │──▶│ 输入:文件   │──▶│ 输入:数据   │        │
-│  │ 输出:文件   │   │ 输出:状态   │   │ 输出:报告   │        │
-│  └─────────────┘   └─────────────┘   └─────────────┘        │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
-```
-
-**设计原则：**
-1. **单一职责**：每个 OP 只做一件事
-2. **无状态**：OP 不依赖外部状态，所有依赖通过输入传递
-3. **幂等性**：相同输入产生相同输出，支持安全重试
-4. **数据隔离**：OP 间通过 Artifact（文件）传递数据
-
-### 2.2 并行化策略（v2.0 优化）
-
-**v1.0 策略（已废弃）**：41 个 Slice 并行
-- 问题：Pod 启动开销大，影响性能
-
-**v2.0 策略（当前）**：2 个批量任务并行
-- 个股采集：1 个 OP 批量采集 32 组数据
-- 板块采集：1 个 OP 批量采集 9 组数据
-- 优势：减少 Pod 开销，提升整体性能
-
-```
-v2.0 并行策略：
-
-                    Workflow
-                       │
-         ┌─────────────┴─────────────┐
-         │                           │
-         ▼                           ▼
-    ┌─────────────┐           ┌─────────────┐
-    │ 批量采集    │           │ 批量采集    │
-    │ 个股数据    │           │ 板块数据    │
-    │ (32组合并)  │           │ (9组合并)   │
-    └──────┬──────┘           └──────┬──────┘
-           │                         │
-           └────────────┬────────────┘
-                        │
-          ┌─────────────┼─────────────┐
-          │             │             │
-          ▼             ▼             ▼
-    ┌──────────┐  ┌──────────┐  ┌──────────┐
-    │ 存储个股  │  │ 存储板块  │  │ AI分析   │
-    │  → MySQL │  │  → MySQL │  │→DeepSeek │
-    └──────────┘  └──────────┘  └────┬─────┘
-                                     │
-                                     ▼
-                               ┌──────────┐
-                               │存储报告  │
-                               │ → MinIO  │
-                               └──────────┘
-```
-
-### 2.3 数据流设计
-
-dflow 区分两种数据类型：
-
-| 类型 | Parameter（参数） | Artifact（制品） |
-|------|------------------|-----------------|
-| 用途 | 小数据、配置项 | 大数据、文件 |
-| 传递 | 直接传值 | 通过 S3/MinIO 存储 |
-| 大小 | < 256KB | 无限制 |
-| 示例 | market_choice=1 | data.json 文件 |
-
----
-
-## 3. 本项目工作流架构（v2.0）
-
-### 3.1 整体流程
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              完整流水线 (full) - v2.0 优化版                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Step 1: 并行采集（2 个任务）                                    │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │                                                         │    │
-│  │   ┌───────────────────┐    ┌───────────────────┐       │    │
-│  │   │ BatchCrawlStock   │    │ BatchCrawlSector  │       │    │
-│  │   │ (32组数据合并)     │    │ (9组数据合并)      │       │    │
-│  │   └─────────┬─────────┘    └─────────┬─────────┘       │    │
-│  │             │                        │                  │    │
-│  │             └────────────┬───────────┘                  │    │
-│  │                          │                              │    │
-│  └──────────────────────────┼──────────────────────────────┘    │
-│                             │ 2个JSON文件                        │
-│                             ▼                                    │
-│  Step 2: 并行处理（两路）                                         │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │                                                         │    │
-│  │   路线 A: 数据库存储                                     │    │
-│  │   ┌───────────────────┐    ┌───────────────────┐       │    │
-│  │   │ BatchStore        │    │ BatchStore        │       │    │
-│  │   │ (个股→MySQL)      │    │ (板块→MySQL)      │       │    │
-│  │   └───────────────────┘    └───────────────────┘       │    │
-│  │                                                         │    │
-│  │   路线 B: AI 分析                                        │    │
-│  │   ┌───────────────────┐    ┌───────────────────┐       │    │
-│  │   │ DeepSeekAnalysis  │───▶│ StoreToMinIO      │       │    │
-│  │   │ (生成分析报告)     │    │ (报告存储)        │       │    │
-│  │   └───────────────────┘    └───────────────────┘       │    │
-│  │                                                         │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### 3.2 OP 职责划分（v2.0）
-
-| OP | 职责 | 输入 | 输出 | 说明 |
-|----|------|------|------|------|
-| **BatchCrawlStockFlowOP** | 批量采集个股资金流 | 无 | JSON文件(32组) | 新增 |
-| **BatchCrawlSectorFlowOP** | 批量采集板块资金流 | 无 | JSON文件(9组) | 新增 |
-| **BatchStoreToMySQLOP** | 批量存储到MySQL | JSON文件 | 存储状态 | 新增 |
-| **DeepSeekAnalysisOP** | AI智能分析 | 个股+板块文件 | 分析报告 | 新增 |
-| **StoreReportToMinIOOP** | 存储报告到MinIO | 报告文件 | MinIO路径 | 新增 |
-| ~~CrawlStockFlowOP~~ | 单任务采集 | - | - | 已废弃 |
-| ~~StoreSingleFileOP~~ | 单文件存储 | - | - | 已废弃 |
-
-### 3.3 工作流类型
-
-| 工作流 | 命令 | 用途 | 包含步骤 |
-|--------|------|------|----------|
-| **full** | `run full` | 完整流程 | 采集+存储+AI分析+MinIO |
-| **crawl** | `run crawl` | 只采集存储 | 采集+存储（无AI分析） |
-| **incremental** | `run incremental` | 增量更新 | 部分市场采集 |
-| **quick** | `run quick` | 快速刷新 | 最小采集 |
-
----
-
-## 4. 环境配置
-
-### 4.1 配置文件结构
-
-```
-项目根目录/
-├── .env                    # 环境变量配置
-└── backend/
-    └── dflow_pipeline/
-        └── config.py       # dflow 配置（自动加载 .env）
-```
-
-### 4.2 .env 文件配置
+## 2. 环境准备
 
 ```bash
-# =====================================================
-# 金融智能数据采集与分析平台 - 环境变量配置
-# =====================================================
+# 1. 安装 minikube + argo
+minikube start --memory 4096 --cpus 4
+kubectl create ns argo
+kubectl apply -n argo -f https://raw.githubusercontent.com/deepmodeling/dflow/master/manifests/quick-start-postgres.yaml
 
-# MySQL数据库配置（Pod 内部使用）
-MYSQL_HOST=mysql
-MYSQL_PORT=3306
-MYSQL_USER=root
-MYSQL_PASSWORD=your_password
-MYSQL_DATABASE=financial_web_crawler
+# 2. 端口转发
+kubectl -n argo port-forward deployment/argo-server 2746:2746 --address 0.0.0.0 &
+kubectl -n argo port-forward deployment/minio 9000:9000 --address 0.0.0.0 &
 
-# MinIO对象存储配置（Pod 内部使用）
-MINIO_ENDPOINT=minio:9000
-MINIO_ACCESS_KEY=admin
-MINIO_SECRET_KEY=admin123
-MINIO_BUCKET=data-financial-agent
-
-# Deepseek AI配置
-DEEPSEEK_API_KEY=sk-xxxxx
-DEEPSEEK_BASE_URL=https://api.deepseek.com
-```
-
-### 4.3 dflow 客户端配置
-
-`config.py` 中有两套 MinIO 配置：
-
-1. **dflow 客户端配置**（从本机提交到 K8s）
-   ```python
-   # 使用本地端口转发 (127.0.0.1:9000)
-   s3_config["endpoint"] = "127.0.0.1:9000"
-   s3_config["secret_key"] = "password"  # K8s my-minio-cred 密码
-   ```
-
-2. **Pod 内部配置**（从 .env 加载，传递给 Pod）
-   ```python
-   # 使用 K8s 内部 DNS (minio:9000)
-   MINIO_ENDPOINT = "minio:9000"
-   MINIO_SECRET_KEY = "admin123"  # .env 中的密码
-   ```
-
----
-
-## 5. 执行模型
-
-### 5.1 dflow 执行流程
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      dflow 执行流程                              │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. 定义阶段                                                     │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │  Python 代码定义 Workflow                                │    │
-│  │  - 自动加载 .env 环境变量                                │    │
-│  │  - 创建 OP Template                                      │    │
-│  │  - 定义 Step 和依赖关系                                   │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                            │                                    │
-│                            ▼                                    │
-│  2. 提交阶段                                                     │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │  workflow.submit()                                       │    │
-│  │  - 通过端口转发连接 Argo Server (127.0.0.1:2746)         │    │
-│  │  - 上传 Python 包到 MinIO (127.0.0.1:9000)               │    │
-│  │  - 返回 Workflow ID                                       │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                            │                                    │
-│                            ▼                                    │
-│  3. 执行阶段                                                     │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │  K8s Pod 执行                                            │    │
-│  │  - 拉取容器镜像 (python:3.9-slim)                        │    │
-│  │  - 执行 pre_script (pip install)                         │    │
-│  │  - 下载输入 Artifact (从 MinIO minio:9000)               │    │
-│  │  - 执行 OP.execute()                                     │    │
-│  │  - 上传输出 Artifact                                     │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### 5.2 容器执行模型
-
-每个 OP 在独立的容器中执行：
-
-```
-┌────────────────────────────────────────────────────────────┐
-│                    K8s Pod                                 │
-├────────────────────────────────────────────────────────────┤
-│                                                            │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  │
-│  │ Init Container│    │ Main Container│    │ Wait Container│ │
-│  │              │    │              │    │              │  │
-│  │ 下载Artifact │───▶│ 执行OP代码  │───▶│ 上传Artifact │  │
-│  │ 从 MinIO    │    │              │    │ 到 MinIO     │  │
-│  └──────────────┘    └──────────────┘    └──────────────┘  │
-│                                                            │
-│  环境变量（从 full_pipeline.py 传入）:                       │
-│  - MYSQL_HOST, MYSQL_PASSWORD, ...                         │
-│  - DEEPSEEK_API_KEY, DEEPSEEK_BASE_URL                     │
-│  - MINIO_ENDPOINT, MINIO_ACCESS_KEY, ...                   │
-│                                                            │
-└────────────────────────────────────────────────────────────┘
+# 3. 安装 pydflow
+pip install pydflow
 ```
 
 ---
 
-## 6. 使用指南
+## 3. OP 设计
 
-### 6.1 环境准备
+### 3.1 需要创建的 OP
 
-```bash
-# 1. 启动 minikube
-minikube start
+| OP 名称 | 功能 | 输入 | 输出 |
+|--------|------|------|------|
+| `CrawlStockFlowOP` | 采集个股资金流 | market_choice, day_choice | data_file, count |
+| `CrawlSectorFlowOP` | 采集板块资金流 | detail_choice, day_choice | data_file, count |
+| `StoreToMySQLOP` | 批量存储数据 | data_files[] | total_count |
+| `AIAnalysisOP` | AI 智能分析 | query | analysis_result |
+| `GenerateReportOP` | 生成报告 | analysis_result | report_url |
 
-# 2. 确保服务正常运行
-kubectl -n argo get pods
+### 3.2 OP 实现示例
 
-# 3. 启动端口转发（必须！）
-kubectl -n argo port-forward svc/minio 9000:9000 --address 0.0.0.0 &
-kubectl -n argo port-forward svc/argo-server 2746:2746 --address 0.0.0.0 &
-```
+```python
+from dflow.python import OP, OPIO, Artifact, Parameter
+from pathlib import Path
 
-### 6.2 运行工作流
+class CrawlStockFlowOP(OP):
+    """个股资金流采集 OP"""
 
-```bash
-cd /home/chy/dev/Financial_Program/backend
+    @classmethod
+    def get_input_sign(cls):
+        return OPIO({
+            "market_choice": Parameter(int),   # 1-8
+            "day_choice": Parameter(int),      # 1-4
+        })
 
-# 完整流水线（采集 + 存储 + AI 分析 + MinIO 报告）
-PYTHONPATH=. python -m dflow_pipeline.run full
+    @classmethod
+    def get_output_sign(cls):
+        return OPIO({
+            "data_file": Artifact(Path),
+            "count": Parameter(int),
+        })
 
-# 只采集和存储（不进行 AI 分析）
-PYTHONPATH=. python -m dflow_pipeline.run crawl
+    @OP.exec_sign_check
+    def execute(self, op_in: OPIO) -> OPIO:
+        # 复用现有 crawler.py 的采集逻辑
+        from crawler.crawler import fetch_flow_data, market_names
+        import json
 
-# 增量更新
-PYTHONPATH=. python -m dflow_pipeline.run incremental
+        market_choice = op_in["market_choice"]
+        day_choice = op_in["day_choice"]
+        periods = ["today", "3d", "5d", "10d"]
 
-# 快速刷新
-PYTHONPATH=. python -m dflow_pipeline.run quick
+        data = fetch_flow_data(
+            flow_type="Stock_Flow",
+            market_type=market_names[market_choice - 1],
+            period=periods[day_choice - 1],
+            pages=1,
+            flow_choice=1,
+            market_choice=market_choice,
+            day_choice=day_choice,
+        )
 
-# 本地调试模式（不需要 K8s）
-PYTHONPATH=. python -m dflow_pipeline.run hello --debug
-```
+        output_path = Path(f"/tmp/stock_{market_choice}_{day_choice}.json")
+        with open(output_path, 'w') as f:
+            json.dump(data, f, ensure_ascii=False)
 
-### 6.3 查看工作流状态
-
-```bash
-# 查看所有工作流
-kubectl -n argo get workflows
-
-# 查看工作流详情
-kubectl -n argo describe workflow <workflow-name>
-
-# 查看 Pod 日志
-kubectl -n argo logs <pod-name> -c main
-
-# Argo UI（浏览器）
-# https://127.0.0.1:2746
+        return OPIO({
+            "data_file": output_path,
+            "count": len(data),
+        })
 ```
 
 ---
 
-## 7. 与现有系统的关系
+## 4. 工作流实现
 
-### 7.1 双模式运行
+### 4.1 完整流水线
 
-重构后支持两种运行模式：
+```python
+from dflow import Workflow, Step, Slices
+from dflow.python import PythonOPTemplate
 
+def create_pipeline():
+    wf = Workflow(name="financial-pipeline")
+
+    # Step 1: 并行采集个股 (32 个任务)
+    stock_template = PythonOPTemplate(
+        CrawlStockFlowOP,
+        image="python:3.9",
+        python_packages=["requests", "pymysql"],
+    )
+
+    market_choices = []
+    day_choices = []
+    for m in range(1, 9):
+        for d in range(1, 5):
+            market_choices.append(m)
+            day_choices.append(d)
+
+    stock_step = Step(
+        name="crawl-stock",
+        template=stock_template,
+        slices=Slices(
+            input_parameter=["market_choice", "day_choice"],
+            output_artifact=["data_file"],
+        ),
+        parameters={
+            "market_choice": market_choices,
+            "day_choice": day_choices,
+        },
+    )
+    wf.add(stock_step)
+
+    # Step 2: 存储数据
+    store_step = Step(
+        name="store-data",
+        template=PythonOPTemplate(StoreToMySQLOP, ...),
+        artifacts={
+            "data_files": stock_step.outputs.artifacts["data_file"],
+        },
+    )
+    wf.add(store_step)
+
+    # Step 3: AI 分析
+    ai_step = Step(
+        name="ai-analysis",
+        template=PythonOPTemplate(AIAnalysisOP, ...),
+        parameters={"query": "分析今日市场资金流向"},
+    )
+    wf.add(ai_step)
+
+    return wf
+
+# 运行
+wf = create_pipeline()
+wf.submit()
+print(f"提交成功: {wf.id}")
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     运行模式选择                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  模式A: Docker Compose（原有方式）                               │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │  适用场景：开发环境、单机部署                             │    │
-│  │  调度方式：APScheduler                                    │    │
-│  │  执行方式：串行                                           │    │
-│  │  启动命令：docker compose up -d                           │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                 │
-│  模式B: dflow + K8s（新方式）                                    │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │  适用场景：生产环境、需要高可用                           │    │
-│  │  调度方式：Argo CronWorkflow                              │    │
-│  │  执行方式：并行                                           │    │
-│  │  启动命令：python -m dflow_pipeline.run full              │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+### 4.2 增量更新流水线
+
+```python
+def create_incremental():
+    """只采集 today 数据，用于频繁刷新"""
+    wf = Workflow(name="incremental-update")
+
+    # 只采集 8 个市场的 today 数据
+    step = Step(
+        name="crawl-today",
+        template=stock_template,
+        slices=Slices(input_parameter=["market_choice"]),
+        parameters={
+            "market_choice": list(range(1, 9)),
+            "day_choice": 1,  # today
+        },
+    )
+    wf.add(step)
+    return wf
 ```
 
-### 7.2 代码结构
+---
+
+## 5. 目录结构
 
 ```
 backend/
-├── crawler/              # 原有爬虫代码（保留）
-├── ai/                   # 原有 AI 代码（保留）
-└── dflow_pipeline/       # dflow 工作流（新增）
-    ├── config.py         # 配置（自动加载 .env）
-    ├── run.py            # 启动脚本
-    ├── ops/              # OP 定义
-    │   ├── batch_crawl_op.py       # 批量采集
-    │   ├── batch_store_op.py       # 批量存储
-    │   ├── deepseek_analysis_op.py # AI 分析
-    │   └── minio_store_op.py       # MinIO 存储
-    └── workflows/        # 工作流定义
-        └── full_pipeline.py        # 完整流水线
+├── dflow_pipeline/
+│   ├── __init__.py
+│   ├── config.py              # 配置
+│   ├── run.py                 # 启动脚本
+│   ├── ops/
+│   │   ├── crawl_op.py        # 采集 OP
+│   │   ├── store_op.py        # 存储 OP
+│   │   └── ai_op.py           # AI 分析 OP
+│   └── workflows/
+│       ├── full_pipeline.py   # 完整流水线
+│       └── incremental.py     # 增量更新
+└── ...
 ```
 
 ---
 
-## 8. 常见问题
-
-### 8.1 MinIO 连接失败
+## 6. 运行方式
 
 ```bash
-# 检查端口转发
-ss -tlnp | grep 9000
+# 运行完整流水线
+python -m dflow_pipeline.run full
 
-# 重新启动端口转发
-kubectl -n argo port-forward svc/minio 9000:9000 --address 0.0.0.0 &
+# 运行增量更新
+python -m dflow_pipeline.run incremental
+
+# 查看 Argo UI
+open https://127.0.0.1:2746
 ```
 
-### 8.2 签名不匹配错误
+---
 
-K8s 中 MinIO 密码与 .env 不同：
-- K8s my-minio-cred: `password`
-- .env MINIO_SECRET_KEY: `admin123`
+## 7. 定时任务
 
-`config.py` 已配置使用 K8s 密码连接。
+使用 K8s CronWorkflow：
 
-### 8.3 pip root 用户警告
-
-已在所有 `pre_script` 中添加 `--root-user-action=ignore` 参数。
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: financial-cron
+spec:
+  schedule: "*/5 * * * *"  # 每 5 分钟
+  workflowSpec:
+    entrypoint: main
+    templates:
+      - name: main
+        container:
+          image: financial-crawler:latest
+          command: ["python", "-m", "dflow_pipeline.run", "incremental"]
+```
 
 ---
 
-## 9. 总结
+## 8. 关键收益
 
-### 9.1 v2.0 优化点
-
-| 优化项 | v1.0 | v2.0 |
-|--------|------|------|
-| 采集任务数 | 41 个 Slice | 2 个批量任务 |
-| Pod 开销 | 高（41 个 Pod） | 低（2 个 Pod） |
-| AI 分析 | 无 | DeepSeek 集成 |
-| 报告存储 | 无 | MinIO 自动存储 |
-| pip 警告 | 有 | 已修复 |
-| 环境配置 | 手动 | 自动加载 .env |
-
-### 9.2 核心价值
-
-| 维度 | 价值 |
-|------|------|
-| **效率** | 批量采集，减少 Pod 启动开销 |
-| **智能** | DeepSeek AI 自动分析金融数据 |
-| **持久化** | 分析报告自动存储到 MinIO |
-| **可观测** | Argo UI 可视化监控 |
-| **配置化** | .env 自动加载，环境隔离 |
+| 指标 | 改进前 | 改进后 |
+|------|--------|--------|
+| 全量采集时间 | ~5 分钟 | ~30 秒 |
+| 失败恢复 | 手动 | 自动 |
+| 监控方式 | 查日志 | Argo UI |
+| 扩展性 | 单机 | 分布式 |
 
 ---
 
-*dflow 重构指南 v4.0 - 2024-12*
+## 9. 实施步骤
+
+1. **安装环境**：minikube + argo + pydflow
+2. **创建 OP**：将现有函数封装为 PythonOPTemplate
+3. **组装工作流**：使用 Slices 实现并行
+4. **测试运行**：先跑通简单版本
+5. **部署定时任务**：配置 CronWorkflow
+6. **迁移切换**：逐步替换 APScheduler
+
+---
+
+*简易版指南 v1.0*
