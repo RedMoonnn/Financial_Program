@@ -7,6 +7,7 @@ from fastapi import (
     status,
 )
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from services.services import init_db, ReportService, get_data_ready
 from crawler.crawler import run_collect, run_collect_all, start_crawler_job
 from api.health import health_bp
@@ -19,7 +20,17 @@ import sys
 from ai import report
 from redis import Redis
 import json
+import re
 from storage.storage import minio_storage
+
+# 允许的表名模式（防止SQL注入）
+VALID_TABLE_PATTERN = re.compile(r"^(Stock_Flow|Sector_Flow)_[A-Za-z0-9_&]+$")
+
+
+def validate_table_name(table_name: str) -> bool:
+    """验证表名是否合法，防止SQL注入"""
+    return bool(VALID_TABLE_PATTERN.match(table_name))
+
 
 app = FastAPI(
     title="东方财富数据采集与分析平台API", docs_url="/docs", redoc_url="/redoc"
@@ -105,6 +116,11 @@ async def get_flow(
     flow_type: str = Query(...), market_type: str = Query(...), period: str = Query(...)
 ):
     table_name = f"{flow_type}_{market_type}_{period}".replace("-", "_")
+    # 验证表名防止SQL注入
+    if not validate_table_name(table_name):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="非法表名格式"
+        )
     db_config = get_db_config()
     print(f"API查表名: {table_name}", file=sys.stderr, flush=True)
     print(f"API数据库名: {db_config['database']}", file=sys.stderr, flush=True)
@@ -194,6 +210,89 @@ async def ai_advice(
         error_msg = f"AI advice error: {str(e)}\n{traceback.format_exc()}"
         print(error_msg, file=sys.stderr, flush=True)
         raise HTTPException(status_code=500, detail={"error": str(e)})
+
+
+@app.post("/api/ai/advice/stream")
+async def ai_advice_stream(
+    message: str = Body(...),
+    context: Optional[dict] = Body(None),
+    table_name: Optional[str] = Body(None, description="可选，指定要分析的数据库表名"),
+):
+    """
+    流式输出AI分析结果，使用Server-Sent Events (SSE)
+    """
+    from services.flow_data_query import query_table_data
+    from ai.deepseek import DeepseekAgent
+
+    async def generate():
+        try:
+            print(
+                f"AI stream advice called with message: {message}, table_name: {table_name}",
+                file=sys.stderr,
+                flush=True,
+            )
+            style = "专业"
+            flow_data = []
+
+            if table_name:
+                flow_data = query_table_data(table_name, limit=50)
+                if not flow_data:
+                    yield f"data: 数据库中未找到表 {table_name} 或无数据，请检查表名或采集流程。\n\n"
+                    yield "data: [DONE]\n\n"
+                    return
+
+                # 只传递核心字段，防止token溢出
+                slim_data = [
+                    {
+                        "type": d["type"],
+                        "flow_type": d["flow_type"],
+                        "market_type": d["market_type"],
+                        "period": d["period"],
+                        "data": {
+                            "code": d["data"]["code"],
+                            "name": d["data"]["name"],
+                            "main_flow_net_amount": d["data"]["main_flow_net_amount"],
+                            "main_flow_net_percentage": d["data"][
+                                "main_flow_net_percentage"
+                            ],
+                            "change_percentage": d["data"]["change_percentage"],
+                            "crawl_time": d["data"]["crawl_time"],
+                        },
+                    }
+                    for d in flow_data
+                ]
+
+                user_message = message or f"请帮我分析一下表 {table_name} 的资金流情况"
+
+                # 使用流式输出
+                for chunk in DeepseekAgent.analyze_stream(
+                    slim_data, user_message=user_message, style=style
+                ):
+                    # SSE格式：data: <内容>\n\n
+                    yield f"data: {json.dumps({'content': chunk}, ensure_ascii=False)}\n\n"
+
+                yield "data: [DONE]\n\n"
+            else:
+                yield "data: 请指定要分析的表名\n\n"
+                yield "data: [DONE]\n\n"
+
+        except Exception as e:
+            import traceback
+
+            error_msg = f"AI stream error: {str(e)}\n{traceback.format_exc()}"
+            print(error_msg, file=sys.stderr, flush=True)
+            yield f"data: {json.dumps({'error': str(e)}, ensure_ascii=False)}\n\n"
+            yield "data: [DONE]\n\n"
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
 
 
 @app.get("/api/report/list")
@@ -309,6 +408,7 @@ def report_history():
         r = Redis(
             host=os.getenv("REDIS_HOST", "redis"),
             port=int(os.getenv("REDIS_PORT", 6379)),
+            password=os.getenv("REDIS_PASSWORD", None),
             decode_responses=True,
         )
         key = "report:history"

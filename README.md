@@ -233,7 +233,7 @@ pip install -r backend/requirements.txt
 cd frontend && npm install
 
 # 🐳 启动MySQL、Redis、MinIO（推荐用docker-compose）
-docker-compose up -d
+docker compose up -d
 
 # 🚀 启动后端
 cd backend && python run.py

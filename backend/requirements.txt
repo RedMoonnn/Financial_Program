@@ -1,5 +1,6 @@
 SQLAlchemy>=2.0.0
 pymysql>=1.0.2
+cryptography>=41.0.0
 redis>=5.0.0
 minio>=7.1.0
 python-dotenv>=1.0.0
@@ -10,3 +11,4 @@ uvicorn>=0.20.0
 fastapi>=0.100.0
 openai
 markdown>=3.4.0
+apscheduler>=3.10.0

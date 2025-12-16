@@ -1,12 +1,21 @@
 import pymysql
 import sys
 import os
+import re
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 load_dotenv(
     dotenv_path=os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.env"))
 )
+
+# 允许的表名模式（防止SQL注入）
+VALID_TABLE_PATTERN = re.compile(r"^(Stock_Flow|Sector_Flow)_[A-Za-z0-9_&]+$")
+
+
+def validate_table_name(table_name: str) -> bool:
+    """验证表名是否合法，防止SQL注入"""
+    return bool(VALID_TABLE_PATTERN.match(table_name))
 
 
 def get_all_latest_flow_data():
@@ -73,6 +82,10 @@ def query_table_data(table_name, limit=50):
     """
     查询指定表名的最新N条数据，返回结构化列表。
     """
+    # 验证表名防止SQL注入
+    if not validate_table_name(table_name):
+        print(f"非法表名格式: {table_name}")
+        return []
     db_config = {
         "host": os.getenv("MYSQL_HOST", "localhost"),
         "user": os.getenv("MYSQL_USER", "root"),

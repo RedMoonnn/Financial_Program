@@ -23,9 +23,25 @@ class MinioStorage:
         if not object_name:
             object_name = os.path.basename(file_path)
         file_stat = os.stat(file_path)
+        # 根据文件扩展名确定content_type
+        ext = os.path.splitext(file_path)[1].lower()
+        content_type_map = {
+            ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".gif": "image/gif",
+            ".md": "text/markdown",
+            ".pdf": "application/pdf",
+            ".txt": "text/plain",
+        }
+        content_type = content_type_map.get(ext, "application/octet-stream")
         with open(file_path, "rb") as f:
             self.client.put_object(
-                self.bucket, object_name, f, file_stat.st_size, content_type="image/png"
+                self.bucket,
+                object_name,
+                f,
+                file_stat.st_size,
+                content_type=content_type,
             )
         return object_name
 

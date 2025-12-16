@@ -125,6 +125,7 @@ const Chat: React.FC<ChatProps> = ({ context }) => {
   const [tableLoading, setTableLoading] = useState(false);
   const [aiResult, setAiResult] = useState<any>(null);
   const [chatLoading, setChatLoading] = useState(false);
+  const [streamingAnswer, setStreamingAnswer] = useState('');
   const [chatHistory, setChatHistory] = useState<any[]>(() => {
     const saved = localStorage.getItem(CHAT_HISTORY_KEY);
     return saved ? JSON.parse(saved) : [];
@@ -160,23 +161,71 @@ const Chat: React.FC<ChatProps> = ({ context }) => {
       return;
     }
     setChatLoading(true);
+    setStreamingAnswer('');
+    const currentQuestion = input;
+    setInput('');
+
     try {
-      // 传递清理后的历史对话
-      const cleanedHistory = cleanChatHistory(chatHistory);
-      
-      const res = await axios.post('/api/ai/advice', {
-        message: input,
-        table_name: tableName,
-        history: cleanedHistory  // 传递清理后的历史
+      // 使用流式API
+      const response = await fetch('/api/ai/advice/stream', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: currentQuestion,
+          table_name: tableName,
+        }),
       });
-      let answer = res.data;
-      if (!answer || (typeof answer === 'object' && Object.keys(answer).length === 0)) {
-        answer = { advice: '未获取到分析结果', reasons: [], risks: [], detail: '' };
+
+      if (!response.ok) {
+        throw new Error('请求失败');
       }
-      setChatHistory([...chatHistory, { question: input, answer }]);
-      setInput('');
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let fullAnswer = '';
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6);
+              if (data === '[DONE]') {
+                // 流结束，保存完整答案到历史
+                setChatHistory(prev => [...prev, {
+                  question: currentQuestion,
+                  answer: { advice: fullAnswer }
+                }]);
+                setStreamingAnswer('');
+              } else {
+                try {
+                  const parsed = JSON.parse(data);
+                  if (parsed.content) {
+                    fullAnswer += parsed.content;
+                    setStreamingAnswer(fullAnswer);
+                  } else if (parsed.error) {
+                    message.error(parsed.error);
+                  }
+                } catch {
+                  // 非JSON数据，直接显示
+                  fullAnswer += data;
+                  setStreamingAnswer(fullAnswer);
+                }
+              }
+            }
+          }
+        }
+      }
     } catch (e) {
       message.error('AI分析失败');
+      setStreamingAnswer('');
     }
     setChatLoading(false);
   };
@@ -257,20 +306,36 @@ const Chat: React.FC<ChatProps> = ({ context }) => {
           dataSource={chatHistory}
           renderItem={item => (
           <List.Item>
-              <div>
+              <div style={{ width: '100%' }}>
                 <b>你：</b>{item.question}
                 <br />
-                <b>AI：</b>{
+                <b>AI：</b>
+                <pre style={{ whiteSpace: 'pre-wrap', margin: 0, fontFamily: 'inherit' }}>{
                   (item.answer?.advice &&
                     ["AI未能返回有效分析结果", "未获取到分析结果"].includes(item.answer.advice) &&
                     item.answer.reasons && item.answer.reasons.length > 0)
                     ? item.answer.reasons.join('\n')
                     : (item.answer?.advice || item.answer?.answer || '未获取到分析结果')
-                }
+                }</pre>
             </div>
           </List.Item>
           )}
       />
+        {/* 流式输出实时显示区域 */}
+        {streamingAnswer && (
+          <div style={{
+            padding: '12px',
+            background: '#f5f5f5',
+            borderRadius: '8px',
+            marginTop: '16px',
+            marginBottom: '16px'
+          }}>
+            <b>AI正在回答...</b>
+            <pre style={{ whiteSpace: 'pre-wrap', margin: '8px 0 0 0', fontFamily: 'inherit' }}>
+              {streamingAnswer}
+            </pre>
+          </div>
+        )}
         <Input.Search
         value={input}
         onChange={e => setInput(e.target.value)}

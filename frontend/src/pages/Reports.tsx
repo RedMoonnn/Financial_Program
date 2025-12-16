@@ -8,10 +8,6 @@ interface Report {
   created_at?: string;
 }
 
-// 生成MinIO控制台API下载链接
-const getMinioDownloadUrl = (fileName: string) =>
-  `http://192.168.211.99:9001/api/v1/buckets/data-financial-agent/objects/download?prefix=${encodeURIComponent(fileName)}&version_id=null`;
-
 const Reports: React.FC = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
@@ -68,7 +64,7 @@ const Reports: React.FC = () => {
         renderItem={item => (
           <List.Item
             actions={[
-              <Button type="link" href={getMinioDownloadUrl(item.file_name)} download={item.file_name} key="download">下载</Button>,
+              <Button type="link" href={item.url} target="_blank" download={item.file_name} key="download">下载</Button>,
               <Popconfirm
                 title="确定要删除该报告吗？"
                 onConfirm={() => handleDelete(item.file_name)}

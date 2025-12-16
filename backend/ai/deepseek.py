@@ -137,6 +137,45 @@ class DeepseekAgent:
             # 新增：如果content为自然语言，直接返回advice字段
             return {"advice": content.strip()}
 
+    @staticmethod
+    def analyze_stream(flow_data, user_message=None, history=None, style="专业"):
+        """
+        流式输出版本的分析方法，返回一个生成器
+        """
+        prompt = DeepseekAgent.build_prompt(flow_data, user_message, history, style)
+
+        # 检查prompt长度，如果过长则截断
+        if len(prompt) > 8000:
+            print(
+                f"Warning: Prompt too long ({len(prompt)} chars), truncating...",
+                flush=True,
+            )
+            prompt = prompt[:8000] + "\n\n[提示：对话历史过长，已截断]"
+
+        request_payload = {
+            "model": "deepseek-chat",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "你是一名专业金融分析师，善于资金流分析和投资建议。请直接回答用户问题，不要使用JSON格式。",
+                },
+                {"role": "user", "content": prompt},
+            ],
+            "stream": True,
+        }
+        print(
+            "\n===== Deepseek Stream Request =====\n"
+            + json.dumps({**request_payload, "stream": True}, ensure_ascii=False, indent=2)
+            + "\n===============================\n",
+            flush=True,
+        )
+        client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
+        response = client.chat.completions.create(**request_payload)
+
+        for chunk in response:
+            if chunk.choices and chunk.choices[0].delta.content:
+                yield chunk.choices[0].delta.content
+
 
 if __name__ == "__main__":
     # 构造测试数据
