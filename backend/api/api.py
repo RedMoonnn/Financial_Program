@@ -1,24 +1,31 @@
-from fastapi import FastAPI, Request, Query, Body, HTTPException, Depends, BackgroundTasks, status
+from fastapi import (
+    FastAPI,
+    Query,
+    Body,
+    HTTPException,
+    Depends,
+    BackgroundTasks,
+    status,
+)
 from fastapi.middleware.cors import CORSMiddleware
-from services.services import TaskService, FlowDataService, FlowImageService, CacheService, init_db, ChatService, ReportService, get_data_ready
-from crawler.crawler import fetch_flow_data, run_collect, run_collect_all, start_crawler_job
+from services.services import init_db, ReportService, get_data_ready
+from crawler.crawler import run_collect, run_collect_all, start_crawler_job
 from api.health import health_bp
-from ai.deepseek import DeepseekAgent
 from typing import Optional
 from api.auth import router as auth_router, get_current_user
-import traceback
 import pymysql
 import os
 from datetime import datetime
 from threading import Thread
 import sys
-import re
 from ai import report
 from redis import Redis
 import json
 from storage.storage import minio_storage
 
-app = FastAPI(title="东方财富数据采集与分析平台API", docs_url="/docs", redoc_url="/redoc")
+app = FastAPI(
+    title="东方财富数据采集与分析平台API", docs_url="/docs", redoc_url="/redoc"
+)
 
 # CORS
 app.add_middleware(
@@ -45,7 +52,7 @@ headers = {
 }
 flows_id = [
     "jquery112309245886249999282_1733396772298",
-    "jQuery112309570655592067874_1733410054611"
+    "jQuery112309570655592067874_1733410054611",
 ]
 flows_names = ["Stock_Flow", "Sector_Flow"]
 market_ids = [
@@ -56,10 +63,17 @@ market_ids = [
     "m:0+t:6+f:!2,m:0+t:13+f:!2,m:0+t:80+f:!2",
     "m:0+t:80+f:!2",
     "m:1+t:3+f:!2",
-    "m:0+t:7+f:!2"
+    "m:0+t:7+f:!2",
 ]
 market_names = [
-    "All_Stocks", "SH&SZ_A_Shares", "SH_A_Shares", "STAR_Market", "SZ_A_Shares", "ChiNext_Market", "SH_B_Shares", "SZ_B_Shares"
+    "All_Stocks",
+    "SH&SZ_A_Shares",
+    "SH_A_Shares",
+    "STAR_Market",
+    "SZ_A_Shares",
+    "ChiNext_Market",
+    "SH_B_Shares",
+    "SZ_B_Shares",
 ]
 detail_flows_ids = ["m:90+t:2", "m:90+t:3", "m:90+t:1"]
 detail_flows_names = ["Industry_Flow", "Concept_Flow", "Regional_Flow"]
@@ -71,30 +85,29 @@ fields_ids = [
     "f12,f14,f2,f3,f62,f184,f66,f69,f72,f75,f78,f81,f84,f87,f204,f205,f124,f1,f13",
     "f12,f14,f2,f127,f267,f268,f269,f270,f271,f272,f273,f274,f275,f276,f257,f258,f124,f1,f13",
     "f12,f14,f2,f109,f164,f165,f166,f167,f168,f169,f170,f171,f172,f173,f257,f258,f124,f1,f13",
-    "f12,f14,f2,f160,f174,f175,f176,f177,f178,f179,f180,f181,f182,f183,f260,f261,f124,f1,f13"
+    "f12,f14,f2,f160,f174,f175,f176,f177,f178,f179,f180,f181,f182,f183,f260,f261,f124,f1,f13",
 ]
+
 
 # MySQL连接参数（容器内环境变量优先）
 def get_db_config():
     return {
-        'host': os.getenv('MYSQL_HOST', 'mysql'),
-        'user': os.getenv('MYSQL_USER', 'root'),
-        'password': os.getenv('MYSQL_PASSWORD', '123456'),
-        'database': os.getenv('MYSQL_DATABASE', 'financial_web_crawler'),
-        'port': int(os.getenv('MYSQL_PORT', 3306)),
-        'charset': 'utf8mb4'
+        "host": os.getenv("MYSQL_HOST", "mysql"),
+        "user": os.getenv("MYSQL_USER", "root"),
+        "password": os.getenv("MYSQL_PASSWORD", "123456"),
+        "database": os.getenv("MYSQL_DATABASE", "financial_web_crawler"),
+        "port": int(os.getenv("MYSQL_PORT", 3306)),
+        "charset": "utf8mb4",
     }
+
 
 def get_current_time():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
-
 @app.get("/api/flow")
 async def get_flow(
-    flow_type: str = Query(...),
-    market_type: str = Query(...),
-    period: str = Query(...)
+    flow_type: str = Query(...), market_type: str = Query(...), period: str = Query(...)
 ):
     table_name = f"{flow_type}_{market_type}_{period}".replace("-", "_")
     db_config = get_db_config()
@@ -103,11 +116,13 @@ async def get_flow(
     conn = pymysql.connect(**db_config)
     cursor = conn.cursor(pymysql.cursors.DictCursor)
     try:
-        cursor.execute(f"SHOW TABLES LIKE %s", (table_name,))
+        cursor.execute("SHOW TABLES LIKE %s", (table_name,))
         if not cursor.fetchone():
             print(f"表不存在: {table_name}", file=sys.stderr, flush=True)
             return {"data": [], "cached": False, "error": "未找到数据表"}
-        cursor.execute(f"SELECT * FROM `{table_name}` ORDER BY crawl_time DESC LIMIT 100")
+        cursor.execute(
+            f"SELECT * FROM `{table_name}` ORDER BY crawl_time DESC LIMIT 100"
+        )
         rows = cursor.fetchall()
         print(f"查到数据条数: {len(rows)}", file=sys.stderr, flush=True)
         return {"data": rows, "cached": False}
@@ -118,17 +133,23 @@ async def get_flow(
         cursor.close()
         conn.close()
 
+
 @app.post("/api/ai/advice")
 async def ai_advice(
     message: str = Body(...),
     context: Optional[dict] = Body(None),
     table_name: Optional[str] = Body(None, description="可选，指定要分析的数据库表名"),
-    user=Depends(get_current_user)
+    user=Depends(get_current_user),
 ):
     try:
-        print(f"AI advice called with message: {message}, user_id: {user.id}, table_name: {table_name}", file=sys.stderr, flush=True)
+        print(
+            f"AI advice called with message: {message}, user_id: {user.id}, table_name: {table_name}",
+            file=sys.stderr,
+            flush=True,
+        )
         from services.flow_data_query import query_table_data
         from ai.deepseek import DeepseekAgent
+
         style = "专业"
         flow_data = []
         # 场景一：前端传了表名，查该表
@@ -137,29 +158,36 @@ async def ai_advice(
             if not flow_data:
                 return {
                     "advice": "数据缺失",
-                    "reasons": [f"数据库中未找到表 {table_name} 或无数据，请检查表名或采集流程。"],
+                    "reasons": [
+                        f"数据库中未找到表 {table_name} 或无数据，请检查表名或采集流程。"
+                    ],
                     "risks": [],
-                    "detail": f"请检查爬虫采集与入库流程，确保 {table_name} 有数据。"
+                    "detail": f"请检查爬虫采集与入库流程，确保 {table_name} 有数据。",
                 }
             # 只传递核心字段，防止token溢出
             slim_data = [
                 {
-                    'type': d['type'],
-                    'flow_type': d['flow_type'],
-                    'market_type': d['market_type'],
-                    'period': d['period'],
-                    'data': {
-                        'code': d['data']['code'],
-                        'name': d['data']['name'],
-                        'main_flow_net_amount': d['data']['main_flow_net_amount'],
-                        'main_flow_net_percentage': d['data']['main_flow_net_percentage'],
-                        'change_percentage': d['data']['change_percentage'],
-                        'crawl_time': d['data']['crawl_time']
-                    }
-                } for d in flow_data
+                    "type": d["type"],
+                    "flow_type": d["flow_type"],
+                    "market_type": d["market_type"],
+                    "period": d["period"],
+                    "data": {
+                        "code": d["data"]["code"],
+                        "name": d["data"]["name"],
+                        "main_flow_net_amount": d["data"]["main_flow_net_amount"],
+                        "main_flow_net_percentage": d["data"][
+                            "main_flow_net_percentage"
+                        ],
+                        "change_percentage": d["data"]["change_percentage"],
+                        "crawl_time": d["data"]["crawl_time"],
+                    },
+                }
+                for d in flow_data
             ]
             user_message = message or f"请帮我分析一下表 {table_name} 的资金流情况"
-            result = DeepseekAgent.analyze(slim_data, user_message=user_message, style=style)
+            result = DeepseekAgent.analyze(
+                slim_data, user_message=user_message, style=style
+            )
             if isinstance(result, dict):
                 return result
             else:
@@ -168,20 +196,26 @@ async def ai_advice(
         # ... existing code ...
     except Exception as e:
         import traceback
+
         error_msg = f"AI advice error: {str(e)}\n{traceback.format_exc()}"
         print(error_msg, file=sys.stderr, flush=True)
         raise HTTPException(status_code=500, detail={"error": str(e)})
 
+
 @app.get("/api/report/list")
 def report_list(user=Depends(get_current_user)):
     reports = ReportService.list_reports(user.id)
-    return [{
-        "id": r.id,
-        "type": r.report_type,
-        "file_url": r.file_url,
-        "file_name": r.file_name,
-        "created_at": str(r.created_at)
-    } for r in reports]
+    return [
+        {
+            "id": r.id,
+            "type": r.report_type,
+            "file_url": r.file_url,
+            "file_name": r.file_name,
+            "created_at": str(r.created_at),
+        }
+        for r in reports
+    ]
+
 
 @app.get("/api/report/download")
 def report_download(report_id: int, user=Depends(get_current_user)):
@@ -191,9 +225,11 @@ def report_download(report_id: int, user=Depends(get_current_user)):
             return {"file_url": r.file_url, "file_name": r.file_name}
     raise HTTPException(status_code=404, detail="报告不存在")
 
+
 @app.get("/api/data_ready")
 def data_ready():
     return {"data_ready": get_data_ready()}
+
 
 # 新版API：单组合采集，调用crawler.py主函数
 @app.post("/api/collect_v2")
@@ -202,7 +238,7 @@ async def collect_v2(
     market_choice: int = Body(None, description="市场选项，仅flow_choice=1时有效"),
     detail_choice: int = Body(None, description="板块选项，仅flow_choice=2时有效"),
     day_choice: int = Body(..., description="日期选项"),
-    pages: int = Body(1, description="采集页数")
+    pages: int = Body(1, description="采集页数"),
 ):
     """
     采集数据并返回：
@@ -214,18 +250,32 @@ async def collect_v2(
     # 参数校验
     if flow_choice == 1:
         if market_choice is None or not (1 <= market_choice <= 8):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="flow_choice=1时，market_choice必须为1~8")
-        if day_choice not in [1,2,3,4]:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="day_choice必须为1~4")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="flow_choice=1时，market_choice必须为1~8",
+            )
+        if day_choice not in [1, 2, 3, 4]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="day_choice必须为1~4"
+            )
     elif flow_choice == 2:
         if detail_choice is None or not (1 <= detail_choice <= 3):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="flow_choice=2时，detail_choice必须为1~3")
-        if day_choice not in [1,2,3]:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="flow_choice=2时，day_choice必须为1~3")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="flow_choice=2时，detail_choice必须为1~3",
+            )
+        if day_choice not in [1, 2, 3]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="flow_choice=2时，day_choice必须为1~3",
+            )
     else:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="flow_choice必须为1或2")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="flow_choice必须为1或2"
+        )
     result = run_collect(flow_choice, market_choice, detail_choice, day_choice, pages)
     return result
+
 
 # 新版API：全量采集，调用crawler.py主函数
 @app.post("/api/collect_all_v2")
@@ -233,30 +283,41 @@ async def collect_all_v2(background_tasks: BackgroundTasks):
     background_tasks.add_task(run_collect_all)
     return {"msg": "全量采集任务已启动"}
 
+
 @app.on_event("startup")
 def startup_event():
     print("startup ok", file=sys.stderr, flush=True)
     Thread(target=start_crawler_job, daemon=True).start()
 
+
 @app.post("/api/report/generate")
 async def generate_report_api(
     table_name: str = Body(...),
     chat_history: list = Body(...),
-    user=Depends(get_current_user)
+    user=Depends(get_current_user),
 ):
     try:
-        file_path, file_name, md_content, file_url = report.generate_report(table_name, chat_history, user_id=user.id)
+        file_path, file_name, md_content, file_url = report.generate_report(
+            table_name, chat_history, user_id=user.id
+        )
         from services.services import ReportService
-        ReportService.add_report(user.id, 'markdown', file_url, file_name)
+
+        ReportService.add_report(user.id, "markdown", file_url, file_name)
         return {"success": True, "file_url": file_url, "file_name": file_name}
     except Exception as e:
         import traceback
+
         return {"success": False, "error": str(e), "trace": traceback.format_exc()}
+
 
 @app.get("/api/report/history")
 def report_history(user=Depends(get_current_user)):
     try:
-        r = Redis(host=os.getenv('REDIS_HOST', 'redis'), port=int(os.getenv('REDIS_PORT', 6379)), decode_responses=True)
+        r = Redis(
+            host=os.getenv("REDIS_HOST", "redis"),
+            port=int(os.getenv("REDIS_PORT", 6379)),
+            decode_responses=True,
+        )
         key = f"report:{user.id}"
         reports = r.lrange(key, 0, 19)  # 只取最近20条
         result = []
@@ -266,8 +327,9 @@ def report_history(user=Depends(get_current_user)):
             except Exception:
                 continue
         return result
-    except Exception as e:
+    except Exception:
         return []
+
 
 @app.get("/api/report/minio_list")
 def report_minio_list():
@@ -276,19 +338,17 @@ def report_minio_list():
         files = minio_storage.list_files(bucket)
         result = []
         for f in files:
-            if f.endswith('.md'):
+            if f.endswith(".md"):
                 try:
                     url = minio_storage.get_image_url(f)
                 except Exception as e:
                     url = f"error: {e}"
-                result.append({
-                    'file_name': f,
-                    'url': url
-                })
+                result.append({"file_name": f, "url": url})
         return result
     except Exception as e:
         print(f"[report_minio_list] error: {e}")
         return []
+
 
 @app.delete("/api/report/delete")
 def report_delete(file_name: str):
@@ -299,5 +359,6 @@ def report_delete(file_name: str):
     except Exception as e:
         return {"success": False, "msg": str(e)}
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=True) 
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000, debug=True)

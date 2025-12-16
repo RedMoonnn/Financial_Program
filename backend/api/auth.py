@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException, Body, Depends
+from fastapi import APIRouter, HTTPException, Depends
 from services.services import UserService, EmailService, SessionLocal, User
 from pydantic import BaseModel, EmailStr
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 import os
 from datetime import datetime, timedelta
@@ -9,17 +9,23 @@ import re
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
-SECRET_KEY = os.getenv('JWT_SECRET', 'secret')
-ALGORITHM = 'HS256'
+SECRET_KEY = os.getenv("JWT_SECRET", "secret")
+ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7天
+
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    expire = datetime.utcnow() + (
+        expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def get_current_user(token: str = Depends(OAuth2PasswordBearer(tokenUrl="/api/auth/login"))):
+
+def get_current_user(
+    token: str = Depends(OAuth2PasswordBearer(tokenUrl="/api/auth/login")),
+):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")
@@ -32,22 +38,27 @@ def get_current_user(token: str = Depends(OAuth2PasswordBearer(tokenUrl="/api/au
     except JWTError:
         raise HTTPException(status_code=401, detail="token无效或过期")
 
+
 class RegisterModel(BaseModel):
     email: EmailStr
     password: str
     code: str
 
+
 class LoginModel(BaseModel):
     email: EmailStr
     password: str
 
+
 class ForgotModel(BaseModel):
     email: EmailStr
+
 
 class ResetModel(BaseModel):
     email: EmailStr
     code: str
     new_password: str
+
 
 @router.post("/register")
 def register(data: RegisterModel):
@@ -59,6 +70,7 @@ def register(data: RegisterModel):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
 @router.post("/send_code")
 def send_code(data: ForgotModel):
     # 注册时如邮箱已注册则直接返回错误
@@ -66,7 +78,9 @@ def send_code(data: ForgotModel):
     user = session.query(User).filter_by(email=data.email).first()
     session.close()
     if user:
-        raise HTTPException(status_code=400, detail="该邮箱已注册，请直接登录或找回密码")
+        raise HTTPException(
+            status_code=400, detail="该邮箱已注册，请直接登录或找回密码"
+        )
     code = EmailService.gen_and_store_code(data.email)
     try:
         EmailService.send_code(data.email, code)
@@ -74,12 +88,14 @@ def send_code(data: ForgotModel):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/login")
 def login(data: LoginModel):
     if not UserService.verify_password(data.email, data.password):
         raise HTTPException(status_code=401, detail="邮箱或密码错误")
     access_token = create_access_token({"sub": data.email})
     return {"access_token": access_token, "token_type": "bearer"}
+
 
 @router.post("/forgot")
 def forgot(data: ForgotModel):
@@ -90,15 +106,18 @@ def forgot(data: ForgotModel):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/reset")
 def reset(data: ResetModel):
     # 新密码复杂度校验
-    if not re.match(r'^(?=.*[a-z])(?=.*[A-Z]).{6,20}$', data.new_password):
-        raise HTTPException(status_code=400, detail="新密码需包含大小写字母，长度6-20位")
+    if not re.match(r"^(?=.*[a-z])(?=.*[A-Z]).{6,20}$", data.new_password):
+        raise HTTPException(
+            status_code=400, detail="新密码需包含大小写字母，长度6-20位"
+        )
     if not EmailService.verify_code(data.email, data.code):
         raise HTTPException(status_code=400, detail="验证码错误或已过期")
     try:
         UserService.set_password(data.email, data.new_password)
         return {"msg": "密码重置成功"}
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e)) 
+        raise HTTPException(status_code=400, detail=str(e))

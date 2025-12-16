@@ -1,4 +1,14 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text, Enum, Index
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Float,
+    DateTime,
+    ForeignKey,
+    Text,
+    Enum,
+    Index,
+)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 import enum
@@ -6,13 +16,15 @@ import datetime
 
 Base = declarative_base()
 
+
 class TaskStatus(enum.Enum):
-    pending = 'pending'
-    success = 'success'
-    failed = 'failed'
+    pending = "pending"
+    success = "success"
+    failed = "failed"
+
 
 class FlowTask(Base):
-    __tablename__ = 'flow_task'
+    __tablename__ = "flow_task"
     id = Column(Integer, primary_key=True, autoincrement=True)
     flow_type = Column(String(32), nullable=False)
     market_type = Column(String(64), nullable=False)
@@ -23,11 +35,12 @@ class FlowTask(Base):
     end_time = Column(DateTime)
     error_msg = Column(Text)
     # 反向引用
-    flow_data = relationship('FlowData', back_populates='task')
-    flow_images = relationship('FlowImage', back_populates='task')
+    flow_data = relationship("FlowData", back_populates="task")
+    flow_images = relationship("FlowImage", back_populates="task")
+
 
 class FlowData(Base):
-    __tablename__ = 'flow_data'
+    __tablename__ = "flow_data"
     id = Column(Integer, primary_key=True, autoincrement=True)
     code = Column(String(16), nullable=False)
     name = Column(String(64), nullable=False)
@@ -47,14 +60,23 @@ class FlowData(Base):
     small_order_flow_net_amount = Column(Float)
     small_order_flow_net_percentage = Column(Float)
     crawl_time = Column(DateTime, default=datetime.datetime.utcnow)
-    task_id = Column(Integer, ForeignKey('flow_task.id'))
-    task = relationship('FlowTask', back_populates='flow_data')
+    task_id = Column(Integer, ForeignKey("flow_task.id"))
+    task = relationship("FlowTask", back_populates="flow_data")
     __table_args__ = (
-        Index('idx_code_type_period_task', 'code', 'flow_type', 'market_type', 'period', 'task_id', unique=True),
+        Index(
+            "idx_code_type_period_task",
+            "code",
+            "flow_type",
+            "market_type",
+            "period",
+            "task_id",
+            unique=True,
+        ),
     )
 
+
 class FlowImage(Base):
-    __tablename__ = 'flow_image'
+    __tablename__ = "flow_image"
     id = Column(Integer, primary_key=True, autoincrement=True)
     code = Column(String(16), nullable=False)
     flow_type = Column(String(32), nullable=False)
@@ -62,14 +84,23 @@ class FlowImage(Base):
     period = Column(String(16), nullable=False)
     image_url = Column(String(256), nullable=False)
     crawl_time = Column(DateTime, default=datetime.datetime.utcnow)
-    task_id = Column(Integer, ForeignKey('flow_task.id'))
-    task = relationship('FlowTask', back_populates='flow_images')
+    task_id = Column(Integer, ForeignKey("flow_task.id"))
+    task = relationship("FlowTask", back_populates="flow_images")
     __table_args__ = (
-        Index('idx_img_code_type_period_task', 'code', 'flow_type', 'market_type', 'period', 'task_id', unique=True),
+        Index(
+            "idx_img_code_type_period_task",
+            "code",
+            "flow_type",
+            "market_type",
+            "period",
+            "task_id",
+            unique=True,
+        ),
     )
 
+
 class User(Base):
-    __tablename__ = 'user'
+    __tablename__ = "user"
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String(128), unique=True, nullable=False, index=True)
     password_hash = Column(String(256), nullable=False)
@@ -78,12 +109,13 @@ class User(Base):
     # 可扩展字段：昵称、头像、角色等
     # 反向引用：用户的报告、任务等
 
+
 class Report(Base):
-    __tablename__ = 'report'
+    __tablename__ = "report"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     report_type = Column(String(32), nullable=False)  # pdf/markdown
-    file_url = Column(String(256), nullable=False)    # MinIO URL
+    file_url = Column(String(256), nullable=False)  # MinIO URL
     file_name = Column(String(128), nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    # 可扩展字段：摘要、状态等 
+    # 可扩展字段：摘要、状态等

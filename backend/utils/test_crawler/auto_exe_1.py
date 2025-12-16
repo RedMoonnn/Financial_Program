@@ -29,14 +29,16 @@ for category in categories_1:
         for ranking_duration in ranking_durations_1:
             # 打印当前输入的组合
             # 构建输入流，模拟用户在控制台的输入操作
-            inputs = f"{category}\n{stock_type}\n{ranking_duration}\n1\n"  # 默认选择第1页
+            inputs = (
+                f"{category}\n{stock_type}\n{ranking_duration}\n1\n"  # 默认选择第1页
+            )
             try:
                 process = subprocess.run(
                     [python_executable, script_path],
                     input=inputs,
                     text=True,
                     capture_output=True,
-                    encoding="utf-8"
+                    encoding="utf-8",
                 )
                 # 打印脚本的输出结果
                 print(process.stdout)
@@ -49,7 +51,9 @@ for category in categories_1:
                     # 打印当前的计时和数据表个数
                     counter += 1
                     elapsed_time = time.time() - start_time
-                    print(f"Current number of data tables: {counter}, Elapsed time: {elapsed_time:.2f} seconds\n")
+                    print(
+                        f"Current number of data tables: {counter}, Elapsed time: {elapsed_time:.2f} seconds\n"
+                    )
             except Exception as e:
                 # 捕获异常并打印错误信息
                 print(f"运行脚本时出错: {e}")
@@ -63,11 +67,14 @@ for category in categories_2:
             try:
                 # 使用 subprocess 调用脚本并传递输入
                 process = subprocess.run(
-                    [python_executable, script_path],  # 指定 Python 可执行文件和脚本路径
-                    input=inputs,                     # 将输入传递给脚本的标准输入
-                    text=True,                        # 输入和输出为字符串格式
-                    capture_output=True,              # 捕获脚本的标准输出和错误输出
-                    encoding="utf-8"                  # 明确指定使用 UTF-8 编码来读取输出
+                    [
+                        python_executable,
+                        script_path,
+                    ],  # 指定 Python 可执行文件和脚本路径
+                    input=inputs,  # 将输入传递给脚本的标准输入
+                    text=True,  # 输入和输出为字符串格式
+                    capture_output=True,  # 捕获脚本的标准输出和错误输出
+                    encoding="utf-8",  # 明确指定使用 UTF-8 编码来读取输出
                 )
                 # 打印脚本的输出结果
                 print(process.stdout)
@@ -77,11 +84,12 @@ for category in categories_2:
                 if process.stderr:
                     print(f"错误信息: {process.stderr}")
                 else:
-
                     # 打印当前的计时和数据表个数
                     counter += 1
                     elapsed_time = time.time() - start_time
-                    print(f"Current number of data tables: {counter}, Elapsed time: {elapsed_time:.2f} seconds\n")
+                    print(
+                        f"Current number of data tables: {counter}, Elapsed time: {elapsed_time:.2f} seconds\n"
+                    )
             except Exception as e:
                 # 捕获异常并打印错误信息
                 print(f"运行脚本时出错: {e}")

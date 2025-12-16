@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import json
 import os
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import OperationalError
 from passlib.hash import bcrypt
 import smtplib
 from email.mime.text import MIMEText
@@ -18,19 +18,18 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from ai.deepseek import DeepseekAgent
 import tempfile
 import time
-import pymysql
-from crawler.crawler import get_db_config
-from services.flow_data_query import get_all_latest_flow_data, query_table_data, query_stock_flow_data
+from services.flow_data_query import get_all_latest_flow_data
 
 # 创建数据库引擎和会话工厂
 engine = create_engine(
-    f"mysql+pymysql://{os.getenv('MYSQL_USER','root')}:{os.getenv('MYSQL_PASSWORD','')}@{os.getenv('MYSQL_HOST','localhost')}:{os.getenv('MYSQL_PORT','3306')}/{os.getenv('MYSQL_DATABASE','test')}?charset=utf8mb4",
-    echo=False
+    f"mysql+pymysql://{os.getenv('MYSQL_USER', 'root')}:{os.getenv('MYSQL_PASSWORD', '')}@{os.getenv('MYSQL_HOST', 'localhost')}:{os.getenv('MYSQL_PORT', '3306')}/{os.getenv('MYSQL_DATABASE', 'test')}?charset=utf8mb4",
+    echo=False,
 )
 SessionLocal = sessionmaker(bind=engine)
 
 # 全局数据采集状态
 DATA_READY = False
+
 
 # 初始化数据库（如首次运行需建表）
 def init_db(max_retries=30, delay=2):
@@ -39,8 +38,8 @@ def init_db(max_retries=30, delay=2):
             Base.metadata.create_all(engine)
             print("数据库连接成功！")
             # 自动创建管理员账号
-            admin_email = os.getenv('ADMIN_EMAIL')
-            admin_password = os.getenv('ADMIN_PASSWORD')
+            admin_email = os.getenv("ADMIN_EMAIL")
+            admin_password = os.getenv("ADMIN_PASSWORD")
             if admin_email and admin_password:
                 session = SessionLocal()
                 user = session.query(User).filter_by(email=admin_email).first()
@@ -53,9 +52,10 @@ def init_db(max_retries=30, delay=2):
                 session.close()
             return
         except OperationalError as e:
-            print(f"数据库连接失败，第{i+1}次重试，错误信息：{e}")
+            print(f"数据库连接失败，第{i + 1}次重试，错误信息：{e}")
             time.sleep(delay)
     raise Exception("多次重试后仍无法连接数据库，请检查 MySQL 服务！")
+
 
 # 1. 采集任务相关服务
 class TaskService:
@@ -68,7 +68,7 @@ class TaskService:
             period=period,
             pages=pages,
             status=TaskStatus.pending,
-            start_time=get_now()
+            start_time=get_now(),
         )
         session.add(task)
         session.commit()
@@ -88,6 +88,7 @@ class TaskService:
             session.commit()
         session.close()
 
+
 # 2. 资金流数据入库服务
 class FlowDataService:
     @staticmethod
@@ -95,25 +96,35 @@ class FlowDataService:
         session = SessionLocal()
         for data in data_list:
             flow_data = FlowData(
-                code=data['code'],
-                name=data['name'],
-                flow_type=data['flow_type'],
-                market_type=data['market_type'],
-                period=data['period'],
-                latest_price=data.get('latest_price'),
-                change_percentage=data.get('change_percentage'),
-                main_flow_net_amount=data.get('main_flow_net_amount'),
-                main_flow_net_percentage=data.get('main_flow_net_percentage'),
-                extra_large_order_flow_net_amount=data.get('extra_large_order_flow_net_amount'),
-                extra_large_order_flow_net_percentage=data.get('extra_large_order_flow_net_percentage'),
-                large_order_flow_net_amount=data.get('large_order_flow_net_amount'),
-                large_order_flow_net_percentage=data.get('large_order_flow_net_percentage'),
-                medium_order_flow_net_amount=data.get('medium_order_flow_net_amount'),
-                medium_order_flow_net_percentage=data.get('medium_order_flow_net_percentage'),
-                small_order_flow_net_amount=data.get('small_order_flow_net_amount'),
-                small_order_flow_net_percentage=data.get('small_order_flow_net_percentage'),
+                code=data["code"],
+                name=data["name"],
+                flow_type=data["flow_type"],
+                market_type=data["market_type"],
+                period=data["period"],
+                latest_price=data.get("latest_price"),
+                change_percentage=data.get("change_percentage"),
+                main_flow_net_amount=data.get("main_flow_net_amount"),
+                main_flow_net_percentage=data.get("main_flow_net_percentage"),
+                extra_large_order_flow_net_amount=data.get(
+                    "extra_large_order_flow_net_amount"
+                ),
+                extra_large_order_flow_net_percentage=data.get(
+                    "extra_large_order_flow_net_percentage"
+                ),
+                large_order_flow_net_amount=data.get("large_order_flow_net_amount"),
+                large_order_flow_net_percentage=data.get(
+                    "large_order_flow_net_percentage"
+                ),
+                medium_order_flow_net_amount=data.get("medium_order_flow_net_amount"),
+                medium_order_flow_net_percentage=data.get(
+                    "medium_order_flow_net_percentage"
+                ),
+                small_order_flow_net_amount=data.get("small_order_flow_net_amount"),
+                small_order_flow_net_percentage=data.get(
+                    "small_order_flow_net_percentage"
+                ),
                 crawl_time=get_now(),
-                task_id=task_id
+                task_id=task_id,
             )
             session.merge(flow_data)  # merge可避免唯一索引冲突
         session.commit()
@@ -122,69 +133,75 @@ class FlowDataService:
     @staticmethod
     def get_latest_flow_data(code, flow_type, market_type, period):
         session = SessionLocal()
-        q = session.query(FlowData).filter_by(
-            code=code,
-            flow_type=flow_type,
-            market_type=market_type,
-            period=period
-        ).order_by(FlowData.crawl_time.desc())
+        q = (
+            session.query(FlowData)
+            .filter_by(
+                code=code, flow_type=flow_type, market_type=market_type, period=period
+            )
+            .order_by(FlowData.crawl_time.desc())
+        )
         result = q.first()
         session.close()
         if result:
             return {
-                'code': result.code,
-                'name': result.name,
-                'flow_type': result.flow_type,
-                'market_type': result.market_type,
-                'period': result.period,
-                'latest_price': result.latest_price,
-                'change_percentage': result.change_percentage,
-                'main_flow_net_amount': result.main_flow_net_amount,
-                'main_flow_net_percentage': result.main_flow_net_percentage,
-                'extra_large_order_flow_net_amount': result.extra_large_order_flow_net_amount,
-                'extra_large_order_flow_net_percentage': result.extra_large_order_flow_net_percentage,
-                'large_order_flow_net_amount': result.large_order_flow_net_amount,
-                'large_order_flow_net_percentage': result.large_order_flow_net_percentage,
-                'medium_order_flow_net_amount': result.medium_order_flow_net_amount,
-                'medium_order_flow_net_percentage': result.medium_order_flow_net_percentage,
-                'small_order_flow_net_amount': result.small_order_flow_net_amount,
-                'small_order_flow_net_percentage': result.small_order_flow_net_percentage,
-                'crawl_time': str(result.crawl_time)
+                "code": result.code,
+                "name": result.name,
+                "flow_type": result.flow_type,
+                "market_type": result.market_type,
+                "period": result.period,
+                "latest_price": result.latest_price,
+                "change_percentage": result.change_percentage,
+                "main_flow_net_amount": result.main_flow_net_amount,
+                "main_flow_net_percentage": result.main_flow_net_percentage,
+                "extra_large_order_flow_net_amount": result.extra_large_order_flow_net_amount,
+                "extra_large_order_flow_net_percentage": result.extra_large_order_flow_net_percentage,
+                "large_order_flow_net_amount": result.large_order_flow_net_amount,
+                "large_order_flow_net_percentage": result.large_order_flow_net_percentage,
+                "medium_order_flow_net_amount": result.medium_order_flow_net_amount,
+                "medium_order_flow_net_percentage": result.medium_order_flow_net_percentage,
+                "small_order_flow_net_amount": result.small_order_flow_net_amount,
+                "small_order_flow_net_percentage": result.small_order_flow_net_percentage,
+                "crawl_time": str(result.crawl_time),
             }
         return None
 
     @staticmethod
     def get_latest_flow_data_by_name(name):
         session = SessionLocal()
-        q = session.query(FlowData).filter(FlowData.name.like(f"%{name}%")).order_by(FlowData.crawl_time.desc())
+        q = (
+            session.query(FlowData)
+            .filter(FlowData.name.like(f"%{name}%"))
+            .order_by(FlowData.crawl_time.desc())
+        )
         result = q.first()
         session.close()
         if result:
             return {
-                'code': result.code,
-                'name': result.name,
-                'flow_type': result.flow_type,
-                'market_type': result.market_type,
-                'period': result.period,
-                'latest_price': result.latest_price,
-                'change_percentage': result.change_percentage,
-                'main_flow_net_amount': result.main_flow_net_amount,
-                'main_flow_net_percentage': result.main_flow_net_percentage,
-                'extra_large_order_flow_net_amount': result.extra_large_order_flow_net_amount,
-                'extra_large_order_flow_net_percentage': result.extra_large_order_flow_net_percentage,
-                'large_order_flow_net_amount': result.large_order_flow_net_amount,
-                'large_order_flow_net_percentage': result.large_order_flow_net_percentage,
-                'medium_order_flow_net_amount': result.medium_order_flow_net_amount,
-                'medium_order_flow_net_percentage': result.medium_order_flow_net_percentage,
-                'small_order_flow_net_amount': result.small_order_flow_net_amount,
-                'small_order_flow_net_percentage': result.small_order_flow_net_percentage,
-                'crawl_time': str(result.crawl_time)
+                "code": result.code,
+                "name": result.name,
+                "flow_type": result.flow_type,
+                "market_type": result.market_type,
+                "period": result.period,
+                "latest_price": result.latest_price,
+                "change_percentage": result.change_percentage,
+                "main_flow_net_amount": result.main_flow_net_amount,
+                "main_flow_net_percentage": result.main_flow_net_percentage,
+                "extra_large_order_flow_net_amount": result.extra_large_order_flow_net_amount,
+                "extra_large_order_flow_net_percentage": result.extra_large_order_flow_net_percentage,
+                "large_order_flow_net_amount": result.large_order_flow_net_amount,
+                "large_order_flow_net_percentage": result.large_order_flow_net_percentage,
+                "medium_order_flow_net_amount": result.medium_order_flow_net_amount,
+                "medium_order_flow_net_percentage": result.medium_order_flow_net_percentage,
+                "small_order_flow_net_amount": result.small_order_flow_net_amount,
+                "small_order_flow_net_percentage": result.small_order_flow_net_percentage,
+                "crawl_time": str(result.crawl_time),
             }
         return None
 
     @staticmethod
     def get_all_latest_flow_data():
         return get_all_latest_flow_data()
+
 
 # 3. 图片上传与元数据入库服务
 class FlowImageService:
@@ -201,12 +218,13 @@ class FlowImageService:
             period=period,
             image_url=image_url,
             crawl_time=get_now(),
-            task_id=task_id
+            task_id=task_id,
         )
         session.merge(flow_image)
         session.commit()
         session.close()
         return image_url
+
 
 # 4. Redis缓存服务
 class CacheService:
@@ -233,14 +251,16 @@ class CacheService:
         key = f"flowimg:{code}:{flow_type}:{market_type}:{period}"
         return redis_cache.get(key)
 
+
 # Redis连接（假设和cache一致）
 redis_client = redis.Redis(
-    host=os.getenv('REDIS_HOST', 'localhost'),
-    port=int(os.getenv('REDIS_PORT', 6379)),
+    host=os.getenv("REDIS_HOST", "localhost"),
+    port=int(os.getenv("REDIS_PORT", 6379)),
     db=0,
-    password=os.getenv('REDIS_PASSWORD', ''),
-    decode_responses=True
+    password=os.getenv("REDIS_PASSWORD", ""),
+    decode_responses=True,
 )
+
 
 class UserService:
     @staticmethod
@@ -248,7 +268,7 @@ class UserService:
         session = SessionLocal()
         if session.query(User).filter_by(email=email).first():
             session.close()
-            raise Exception('邮箱已注册')
+            raise Exception("邮箱已注册")
         password_hash = bcrypt.hash(password)
         user = User(email=email, password_hash=password_hash)
         session.add(user)
@@ -278,25 +298,26 @@ class UserService:
         user = session.query(User).filter_by(email=email).first()
         if not user:
             session.close()
-            raise Exception('用户不存在')
+            raise Exception("用户不存在")
         user.password_hash = bcrypt.hash(new_password)
         session.commit()
         session.close()
         return True
 
+
 class EmailService:
     @staticmethod
     def send_code(email, code):
-        smtp_server = os.getenv('SMTP_SERVER')
-        smtp_port = int(os.getenv('SMTP_PORT', 587))
-        smtp_user = os.getenv('SMTP_USER')
-        smtp_password = os.getenv('SMTP_PASSWORD')
+        smtp_server = os.getenv("SMTP_SERVER")
+        smtp_port = int(os.getenv("SMTP_PORT", 587))
+        smtp_user = os.getenv("SMTP_USER")
+        smtp_password = os.getenv("SMTP_PASSWORD")
         # 优化邮件内容和发件人
-        content = f'''尊敬的用户：\n\n您正在使用金融数据平台进行身份验证，本次验证码为：{code}。\n验证码5分钟内有效，请勿泄露给他人。\n\n如非本人操作，请忽略本邮件。\n\n—— 金融分析小助手\n'''
-        msg = MIMEText(content, 'plain', 'utf-8')
-        msg['From'] = str(Header('金融分析小助手', 'utf-8')) + f' <{smtp_user}>'
-        msg['To'] = email
-        msg['Subject'] = Header('智能金融数据采集分析平台验证码', 'utf-8')
+        content = f"""尊敬的用户：\n\n您正在使用金融数据平台进行身份验证，本次验证码为：{code}。\n验证码5分钟内有效，请勿泄露给他人。\n\n如非本人操作，请忽略本邮件。\n\n—— 金融分析小助手\n"""
+        msg = MIMEText(content, "plain", "utf-8")
+        msg["From"] = str(Header("金融分析小助手", "utf-8")) + f" <{smtp_user}>"
+        msg["To"] = email
+        msg["Subject"] = Header("智能金融数据采集分析平台验证码", "utf-8")
         try:
             server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls()
@@ -304,24 +325,30 @@ class EmailService:
             server.sendmail(smtp_user, [email], msg.as_string())
             server.quit()
         except Exception as e:
-            raise Exception(f'邮件发送失败: {e}')
+            raise Exception(f"邮件发送失败: {e}")
 
     @staticmethod
     def gen_and_store_code(email):
-        code = ''.join(random.choices(string.digits, k=6))
-        redis_client.setex(f'email:code:{email}', 300, code)
+        code = "".join(random.choices(string.digits, k=6))
+        redis_client.setex(f"email:code:{email}", 300, code)
         return code
 
     @staticmethod
     def verify_code(email, code):
-        real_code = redis_client.get(f'email:code:{email}')
+        real_code = redis_client.get(f"email:code:{email}")
         return real_code == code
+
 
 class ReportService:
     @staticmethod
     def add_report(user_id, report_type, file_url, file_name):
         session = SessionLocal()
-        report = Report(user_id=user_id, report_type=report_type, file_url=file_url, file_name=file_name)
+        report = Report(
+            user_id=user_id,
+            report_type=report_type,
+            file_url=file_url,
+            file_name=file_name,
+        )
         session.add(report)
         session.commit()
         session.close()
@@ -330,25 +357,34 @@ class ReportService:
     @staticmethod
     def list_reports(user_id):
         session = SessionLocal()
-        reports = session.query(Report).filter_by(user_id=user_id).order_by(Report.created_at.desc()).all()
+        reports = (
+            session.query(Report)
+            .filter_by(user_id=user_id)
+            .order_by(Report.created_at.desc())
+            .all()
+        )
         session.close()
         return reports
+
 
 class ChatService:
     @staticmethod
     def save_history(user_id, history):
-        redis_client.setex(f'chat:history:{user_id}', 7*24*3600, json.dumps(history))
+        redis_client.setex(
+            f"chat:history:{user_id}", 7 * 24 * 3600, json.dumps(history)
+        )
 
     @staticmethod
     def get_history(user_id):
-        data = redis_client.get(f'chat:history:{user_id}')
+        data = redis_client.get(f"chat:history:{user_id}")
         if data:
             return json.loads(data)
         return []
 
     @staticmethod
     def clear_history(user_id):
-        redis_client.delete(f'chat:history:{user_id}')
+        redis_client.delete(f"chat:history:{user_id}")
+
 
 def generate_daily_reports():
     session = SessionLocal()
@@ -376,21 +412,24 @@ def generate_daily_reports():
         advice = DeepseekAgent.analyze(flow_data, style="专业", user_message=prompt)
         # 生成Markdown
         md_content = f"# {user.email} 每日分析报告\n\n{advice}"
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.md') as f:
-            f.write(md_content.encode('utf-8'))
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".md") as f:
+            f.write(md_content.encode("utf-8"))
             md_path = f.name
         md_url = minio_storage.upload_image(md_path)
         # 写入MySQL
-        ReportService.add_report(user.id, 'markdown', md_url, md_path.split('/')[-1])
+        ReportService.add_report(user.id, "markdown", md_url, md_path.split("/")[-1])
     session.close()
 
+
 scheduler = BackgroundScheduler()
-scheduler.add_job(generate_daily_reports, 'cron', hour=0, minute=0)
-scheduler.start() 
+scheduler.add_job(generate_daily_reports, "cron", hour=0, minute=0)
+scheduler.start()
+
 
 def set_data_ready(flag: bool):
-    redis_cache.set('DATA_READY', '1' if flag else '0', ex=3600*24)
+    redis_cache.set("DATA_READY", "1" if flag else "0", ex=3600 * 24)
+
 
 def get_data_ready():
-    v = redis_cache.get('DATA_READY')
-    return v == '1' 
+    v = redis_cache.get("DATA_READY")
+    return v == "1"

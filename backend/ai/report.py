@@ -4,25 +4,33 @@ from ai.deepseek import DeepseekAgent
 from datetime import datetime, timedelta, timezone
 from storage.storage import minio_storage
 
+
 def chat_history_to_markdown(chat_history):
     md = ""
     # 清理历史对话，只保留有效对话
     cleaned_history = []
     for item in chat_history:
-        question = item.get('question', '').strip()
+        question = item.get("question", "").strip()
         # 过滤掉过于简单的对话
-        if (len(question) > 3 and 
-            not question.lower() in ['你好', 'hello', 'hi', 'test'] and
-            not question.startswith('你好')):
+        if (
+            len(question) > 3
+            and question.lower() not in ["你好", "hello", "hi", "test"]
+            and not question.startswith("你好")
+        ):
             cleaned_history.append(item)
     # 只保留最近的10条有效对话
     cleaned_history = cleaned_history[-10:]
     for idx, item in enumerate(cleaned_history, 1):
         md += f"### 问答{idx}\n"
         md += f"**你：** {item['question']}\n\n"
-        ai_ans = item['answer']['advice'] if isinstance(item['answer'], dict) and 'advice' in item['answer'] else str(item['answer'])
+        ai_ans = (
+            item["answer"]["advice"]
+            if isinstance(item["answer"], dict) and "advice" in item["answer"]
+            else str(item["answer"])
+        )
         md += f"**AI：** {ai_ans}\n\n"
     return md
+
 
 def generate_report(table_name, chat_history, user_id=None):
     # 整理对话为md
@@ -35,18 +43,18 @@ def generate_report(table_name, chat_history, user_id=None):
         "\n\n" + md_content
     )
     summary = DeepseekAgent.analyze([], user_message=summary_prompt, style="专业")
-    if isinstance(summary, dict) and 'advice' in summary:
-        summary_md = summary['advice']
+    if isinstance(summary, dict) and "advice" in summary:
+        summary_md = summary["advice"]
     else:
         summary_md = str(summary)
     # 合并原始对话和AI总结
     final_md = f"{md_content}\n---\n{summary_md}"
     # 使用东八区时间
     beijing_tz = timezone(timedelta(hours=8))
-    now = datetime.now(beijing_tz).strftime('%Y%m%d_%H%M%S')
+    now = datetime.now(beijing_tz).strftime("%Y%m%d_%H%M%S")
     file_name = f"report_{table_name}_{now}.md"
-    file_path = os.path.join('/tmp', file_name)
-    with open(file_path, 'w', encoding='utf-8') as f:
+    file_path = os.path.join("/tmp", file_name)
+    with open(file_path, "w", encoding="utf-8") as f:
         f.write(final_md)
     # 上传到MinIO
     object_name = minio_storage.upload_image(file_path, file_name)
@@ -55,16 +63,22 @@ def generate_report(table_name, chat_history, user_id=None):
     try:
         if user_id:
             from redis import Redis
+
             redis_kwargs = {
-                'host': os.getenv('REDIS_HOST', 'redis'),
-                'port': int(os.getenv('REDIS_PORT', 6379)),
-                'decode_responses': True
+                "host": os.getenv("REDIS_HOST", "redis"),
+                "port": int(os.getenv("REDIS_PORT", 6379)),
+                "decode_responses": True,
             }
-            redis_pwd = os.getenv('REDIS_PASSWORD')
+            redis_pwd = os.getenv("REDIS_PASSWORD")
             if redis_pwd:
-                redis_kwargs['password'] = redis_pwd
+                redis_kwargs["password"] = redis_pwd
             r = Redis(**redis_kwargs)
-            r.lpush(f"report:{user_id}", json.dumps({"url": file_url, "file_name": file_name, "created_at": now}))
+            r.lpush(
+                f"report:{user_id}",
+                json.dumps(
+                    {"url": file_url, "file_name": file_name, "created_at": now}
+                ),
+            )
     except Exception as e:
         print(f"[report.py] Redis存储报告路径失败: {e}")
     return file_path, file_name, final_md, file_url

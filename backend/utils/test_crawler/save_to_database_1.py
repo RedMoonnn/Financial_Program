@@ -1,10 +1,9 @@
 # 保持热爱 奔赴山海
-from dotenv import load_dotenv
-import os
 import mysql.connector
 import time
 
 # 记住修改mysql的连接配置
+
 
 def store_data_to_db(data, title, day_name):
     """
@@ -27,10 +26,10 @@ def store_data_to_db(data, title, day_name):
 
     # MySQL 连接配置
     db_config = {
-        'host': 'localhost',  # 数据库地址
-        'user': 'chy_ubuntu',  # 用户名
-        'password': 'chen350627',  # 密码
-        'database': 'financial_web_crawler',  # 使用的数据库
+        "host": "localhost",  # 数据库地址
+        "user": "chy_ubuntu",  # 用户名
+        "password": "chen350627",  # 密码
+        "database": "financial_web_crawler",  # 使用的数据库
     }
 
     # 连接到 MySQL 数据库
@@ -64,7 +63,8 @@ def store_data_to_db(data, title, day_name):
 
     for record in data:
         # 插入或更新数据的 SQL 语句
-        cursor.execute(f"""
+        cursor.execute(
+            f"""
             INSERT INTO `{table1_name}` (
                 `Index`, `Code`, `Name`, `Latest_Price`, `{prefix}_Change_Percentage`,
                 `{prefix}_Main_Flow_Net_Amount`, `{prefix}_Main_Flow_Net_Percentage`,
@@ -94,43 +94,109 @@ def store_data_to_db(data, title, day_name):
                 `{prefix}_Medium_Order_Flow_Net_Percentage` = VALUES(`{prefix}_Medium_Order_Flow_Net_Percentage`),
                 `{prefix}_Small_Order_Flow_Net_Amount` = VALUES(`{prefix}_Small_Order_Flow_Net_Amount`),
                 `{prefix}_Small_Order_Flow_Net_Percentage` = VALUES(`{prefix}_Small_Order_Flow_Net_Percentage`)
-        """, {
-            "Index": record["Index"],
-            "Code": record["Code"],
-            "Name": record["Name"],
-            "Latest_Price": float(record["Latest_Price"]) if is_float(record["Latest_Price"]) else None,
-            "Change_Percentage": float(record.get(f"{prefix}_Change_Percentage", 0)) if is_float(
-                record.get(f"{prefix}_Change_Percentage", '')) else None,
-            "Main_Flow_Net_Amount": float(record.get(f"{prefix}_Main_Flow", {}).get("Net_Amount", None)) if is_float(
-                record.get(f"{prefix}_Main_Flow", {}).get("Net_Amount", '')) else None,
-            "Main_Flow_Net_Percentage": float(
-                record.get(f"{prefix}_Main_Flow", {}).get("Net_Percentage", None)) if is_float(
-                record.get(f"{prefix}_Main_Flow", {}).get("Net_Percentage", '')) else None,
-            "Extra_Large_Order_Flow_Net_Amount": float(
-                record.get(f"{prefix}_Extra_Large_Order_Flow", {}).get("Net_Amount", None)) if is_float(
-                record.get(f"{prefix}_Extra_Large_Order_Flow", {}).get("Net_Amount", '')) else None,
-            "Extra_Large_Order_Flow_Net_Percentage": float(
-                record.get(f"{prefix}_Extra_Large_Order_Flow", {}).get("Net_Percentage", None)) if is_float(
-                record.get(f"{prefix}_Extra_Large_Order_Flow", {}).get("Net_Percentage", '')) else None,
-            "Large_Order_Flow_Net_Amount": float(
-                record.get(f"{prefix}_Large_Order_Flow", {}).get("Net_Amount", None)) if is_float(
-                record.get(f"{prefix}_Large_Order_Flow", {}).get("Net_Amount", '')) else None,
-            "Large_Order_Flow_Net_Percentage": float(
-                record.get(f"{prefix}_Large_Order_Flow", {}).get("Net_Percentage", None)) if is_float(
-                record.get(f"{prefix}_Large_Order_Flow", {}).get("Net_Percentage", '')) else None,
-            "Medium_Order_Flow_Net_Amount": float(
-                record.get(f"{prefix}_Medium_Order_Flow", {}).get("Net_Amount", None)) if is_float(
-                record.get(f"{prefix}_Medium_Order_Flow", {}).get("Net_Amount", '')) else None,
-            "Medium_Order_Flow_Net_Percentage": float(
-                record.get(f"{prefix}_Medium_Order_Flow", {}).get("Net_Percentage", None)) if is_float(
-                record.get(f"{prefix}_Medium_Order_Flow", {}).get("Net_Percentage", '')) else None,
-            "Small_Order_Flow_Net_Amount": float(
-                record.get(f"{prefix}_Small_Order_Flow", {}).get("Net_Amount", None)) if is_float(
-                record.get(f"{prefix}_Small_Order_Flow", {}).get("Net_Amount", '')) else None,
-            "Small_Order_Flow_Net_Percentage": float(
-                record.get(f"{prefix}_Small_Order_Flow", {}).get("Net_Percentage", None)) if is_float(
-                record.get(f"{prefix}_Small_Order_Flow", {}).get("Net_Percentage", '')) else None
-        })
+        """,
+            {
+                "Index": record["Index"],
+                "Code": record["Code"],
+                "Name": record["Name"],
+                "Latest_Price": float(record["Latest_Price"])
+                if is_float(record["Latest_Price"])
+                else None,
+                "Change_Percentage": float(record.get(f"{prefix}_Change_Percentage", 0))
+                if is_float(record.get(f"{prefix}_Change_Percentage", ""))
+                else None,
+                "Main_Flow_Net_Amount": float(
+                    record.get(f"{prefix}_Main_Flow", {}).get("Net_Amount", None)
+                )
+                if is_float(record.get(f"{prefix}_Main_Flow", {}).get("Net_Amount", ""))
+                else None,
+                "Main_Flow_Net_Percentage": float(
+                    record.get(f"{prefix}_Main_Flow", {}).get("Net_Percentage", None)
+                )
+                if is_float(
+                    record.get(f"{prefix}_Main_Flow", {}).get("Net_Percentage", "")
+                )
+                else None,
+                "Extra_Large_Order_Flow_Net_Amount": float(
+                    record.get(f"{prefix}_Extra_Large_Order_Flow", {}).get(
+                        "Net_Amount", None
+                    )
+                )
+                if is_float(
+                    record.get(f"{prefix}_Extra_Large_Order_Flow", {}).get(
+                        "Net_Amount", ""
+                    )
+                )
+                else None,
+                "Extra_Large_Order_Flow_Net_Percentage": float(
+                    record.get(f"{prefix}_Extra_Large_Order_Flow", {}).get(
+                        "Net_Percentage", None
+                    )
+                )
+                if is_float(
+                    record.get(f"{prefix}_Extra_Large_Order_Flow", {}).get(
+                        "Net_Percentage", ""
+                    )
+                )
+                else None,
+                "Large_Order_Flow_Net_Amount": float(
+                    record.get(f"{prefix}_Large_Order_Flow", {}).get("Net_Amount", None)
+                )
+                if is_float(
+                    record.get(f"{prefix}_Large_Order_Flow", {}).get("Net_Amount", "")
+                )
+                else None,
+                "Large_Order_Flow_Net_Percentage": float(
+                    record.get(f"{prefix}_Large_Order_Flow", {}).get(
+                        "Net_Percentage", None
+                    )
+                )
+                if is_float(
+                    record.get(f"{prefix}_Large_Order_Flow", {}).get(
+                        "Net_Percentage", ""
+                    )
+                )
+                else None,
+                "Medium_Order_Flow_Net_Amount": float(
+                    record.get(f"{prefix}_Medium_Order_Flow", {}).get(
+                        "Net_Amount", None
+                    )
+                )
+                if is_float(
+                    record.get(f"{prefix}_Medium_Order_Flow", {}).get("Net_Amount", "")
+                )
+                else None,
+                "Medium_Order_Flow_Net_Percentage": float(
+                    record.get(f"{prefix}_Medium_Order_Flow", {}).get(
+                        "Net_Percentage", None
+                    )
+                )
+                if is_float(
+                    record.get(f"{prefix}_Medium_Order_Flow", {}).get(
+                        "Net_Percentage", ""
+                    )
+                )
+                else None,
+                "Small_Order_Flow_Net_Amount": float(
+                    record.get(f"{prefix}_Small_Order_Flow", {}).get("Net_Amount", None)
+                )
+                if is_float(
+                    record.get(f"{prefix}_Small_Order_Flow", {}).get("Net_Amount", "")
+                )
+                else None,
+                "Small_Order_Flow_Net_Percentage": float(
+                    record.get(f"{prefix}_Small_Order_Flow", {}).get(
+                        "Net_Percentage", None
+                    )
+                )
+                if is_float(
+                    record.get(f"{prefix}_Small_Order_Flow", {}).get(
+                        "Net_Percentage", ""
+                    )
+                )
+                else None,
+            },
+        )
 
     # # 图片文件路径
     # image_path = f"./data/{title}/{title}.png"
@@ -157,13 +223,11 @@ def store_data_to_db(data, title, day_name):
     # );
     # """)
 
-
-
     # # 插入图片数据
     # cursor.execute(f"""
-    #     INSERT INTO `{table2_name}` (Title, `Image_data`) 
+    #     INSERT INTO `{table2_name}` (Title, `Image_data`)
     #     VALUES (%(Title)s, %(Image_data)s)
-    #     ON DUPLICATE KEY UPDATE 
+    #     ON DUPLICATE KEY UPDATE
     #         `Image_data` = VALUES(`Image_data`)
     # """, {
     #     "Title": title, "Image_data": image_data
@@ -172,14 +236,13 @@ def store_data_to_db(data, title, day_name):
     conn.commit()
 
     # 记录运行时间
-    end_time = time.time()-start_time
+    end_time = time.time() - start_time
 
     # print(f"MySQL: Table `{table1_name}` has been successfully updated.")
     # print(f"MySQL: Table `{table2_name}` has been successfully updated.")
-    
+
     print(f"MySQL\t: {end_time} seconds")
     # MySQL: Time taken: 0.49565935134887695 seconds
-
 
     # 关闭游标
     cursor.close()
