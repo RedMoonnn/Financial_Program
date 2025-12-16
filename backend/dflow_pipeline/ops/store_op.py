@@ -1,6 +1,7 @@
 """
 数据存储 OP - 将采集的数据存储到 MySQL
 """
+
 import os
 import json
 from pathlib import Path
@@ -26,17 +27,21 @@ class StoreToMySQLOP(OP):
 
     @classmethod
     def get_input_sign(cls):
-        return OPIOSign({
-            "data_files": Artifact(List[Path]),  # 多个数据文件
-        })
+        return OPIOSign(
+            {
+                "data_files": Artifact(List[Path]),  # 多个数据文件
+            }
+        )
 
     @classmethod
     def get_output_sign(cls):
-        return OPIOSign({
-            "success": bool,
-            "total_count": int,
-            "tables": List[str],
-        })
+        return OPIOSign(
+            {
+                "success": bool,
+                "total_count": int,
+                "tables": List[str],
+            }
+        )
 
     @OP.exec_sign_check
     def execute(self, op_in: OPIO) -> OPIO:
@@ -81,11 +86,13 @@ class StoreToMySQLOP(OP):
             cursor.close()
             conn.close()
 
-        return OPIO({
-            "success": True,
-            "total_count": total_count,
-            "tables": tables,
-        })
+        return OPIO(
+            {
+                "success": True,
+                "total_count": total_count,
+                "tables": tables,
+            }
+        )
 
     def _create_table(self, cursor, table_name):
         """创建数据表"""
@@ -144,17 +151,21 @@ class StoreSingleFileOP(OP):
 
     @classmethod
     def get_input_sign(cls):
-        return OPIOSign({
-            "data_file": Artifact(Path),
-        })
+        return OPIOSign(
+            {
+                "data_file": Artifact(Path),
+            }
+        )
 
     @classmethod
     def get_output_sign(cls):
-        return OPIOSign({
-            "success": bool,
-            "count": int,
-            "table_name": str,
-        })
+        return OPIOSign(
+            {
+                "success": bool,
+                "count": int,
+                "table_name": str,
+            }
+        )
 
     @OP.exec_sign_check
     def execute(self, op_in: OPIO) -> OPIO:
@@ -167,11 +178,13 @@ class StoreSingleFileOP(OP):
         data = file_data["data"]
 
         if not data:
-            return OPIO({
-                "success": True,
-                "count": 0,
-                "table_name": table_name,
-            })
+            return OPIO(
+                {
+                    "success": True,
+                    "count": 0,
+                    "table_name": table_name,
+                }
+            )
 
         db_config = get_db_config()
         conn = pymysql.connect(**db_config)
@@ -240,8 +253,10 @@ class StoreSingleFileOP(OP):
             cursor.close()
             conn.close()
 
-        return OPIO({
-            "success": True,
-            "count": len(data),
-            "table_name": table_name,
-        })
+        return OPIO(
+            {
+                "success": True,
+                "count": len(data),
+                "table_name": table_name,
+            }
+        )

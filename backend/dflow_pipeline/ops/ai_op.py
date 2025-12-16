@@ -1,6 +1,7 @@
 """
 AI 分析 OP - 使用 DeepSeek 进行资金流分析
 """
+
 import os
 import json
 from pathlib import Path
@@ -26,17 +27,21 @@ class AIAnalysisOP(OP):
 
     @classmethod
     def get_input_sign(cls):
-        return OPIOSign({
-            "table_name": str,
-            "query": str,
-        })
+        return OPIOSign(
+            {
+                "table_name": str,
+                "query": str,
+            }
+        )
 
     @classmethod
     def get_output_sign(cls):
-        return OPIOSign({
-            "analysis_result": Artifact(Path),
-            "summary": str,
-        })
+        return OPIOSign(
+            {
+                "analysis_result": Artifact(Path),
+                "summary": str,
+            }
+        )
 
     @OP.exec_sign_check
     def execute(self, op_in: OPIO) -> OPIO:
@@ -62,10 +67,12 @@ class AIAnalysisOP(OP):
 
         summary = result.get("advice", str(result))[:500]
 
-        return OPIO({
-            "analysis_result": output_path,
-            "summary": summary,
-        })
+        return OPIO(
+            {
+                "analysis_result": output_path,
+                "summary": summary,
+            }
+        )
 
     def _query_table_data(self, table_name, limit=50):
         """从数据库查询数据"""
@@ -80,7 +87,7 @@ class AIAnalysisOP(OP):
 
             cursor.execute(
                 f"SELECT * FROM `{table_name}` ORDER BY crawl_time DESC LIMIT %s",
-                (limit,)
+                (limit,),
             )
             rows = cursor.fetchall()
 
@@ -92,20 +99,24 @@ class AIAnalysisOP(OP):
             period = parts[-1]
 
             for row in rows:
-                result.append({
-                    "type": "stock" if flow_type == "Stock_Flow" else "sector",
-                    "flow_type": flow_type,
-                    "market_type": market_type,
-                    "period": period,
-                    "data": {
-                        "code": row.get("code"),
-                        "name": row.get("name"),
-                        "main_flow_net_amount": row.get("main_flow_net_amount"),
-                        "main_flow_net_percentage": row.get("main_flow_net_percentage"),
-                        "change_percentage": row.get("change_percentage"),
-                        "crawl_time": str(row.get("crawl_time")),
-                    },
-                })
+                result.append(
+                    {
+                        "type": "stock" if flow_type == "Stock_Flow" else "sector",
+                        "flow_type": flow_type,
+                        "market_type": market_type,
+                        "period": period,
+                        "data": {
+                            "code": row.get("code"),
+                            "name": row.get("name"),
+                            "main_flow_net_amount": row.get("main_flow_net_amount"),
+                            "main_flow_net_percentage": row.get(
+                                "main_flow_net_percentage"
+                            ),
+                            "change_percentage": row.get("change_percentage"),
+                            "crawl_time": str(row.get("crawl_time")),
+                        },
+                    }
+                )
 
             return result
 
@@ -119,7 +130,10 @@ class AIAnalysisOP(OP):
         base_url = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
 
         if not api_key:
-            return {"advice": "API Key 未配置", "reasons": ["请设置 DEEPSEEK_API_KEY 环境变量"]}
+            return {
+                "advice": "API Key 未配置",
+                "reasons": ["请设置 DEEPSEEK_API_KEY 环境变量"],
+            }
 
         # 构建 prompt
         slim_data = [
@@ -156,7 +170,10 @@ class AIAnalysisOP(OP):
         response = client.chat.completions.create(
             model="deepseek-chat",
             messages=[
-                {"role": "system", "content": "你是一名专业金融分析师，善于资金流分析和投资建议。"},
+                {
+                    "role": "system",
+                    "content": "你是一名专业金融分析师，善于资金流分析和投资建议。",
+                },
                 {"role": "user", "content": prompt},
             ],
             stream=False,
@@ -169,6 +186,7 @@ class AIAnalysisOP(OP):
             return json.loads(content)
         except Exception:
             import re
+
             match = re.search(r"\{[\s\S]*\}", content)
             if match:
                 try:

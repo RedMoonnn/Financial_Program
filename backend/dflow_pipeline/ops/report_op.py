@@ -1,6 +1,7 @@
 """
 报告生成 OP - 生成分析报告并上传到 MinIO
 """
+
 import os
 import json
 from pathlib import Path
@@ -15,18 +16,22 @@ class GenerateReportOP(OP):
 
     @classmethod
     def get_input_sign(cls):
-        return OPIOSign({
-            "table_name": str,
-            "chat_history": str,  # JSON 字符串
-        })
+        return OPIOSign(
+            {
+                "table_name": str,
+                "chat_history": str,  # JSON 字符串
+            }
+        )
 
     @classmethod
     def get_output_sign(cls):
-        return OPIOSign({
-            "report_file": Artifact(Path),
-            "report_url": str,
-            "file_name": str,
-        })
+        return OPIOSign(
+            {
+                "report_file": Artifact(Path),
+                "report_url": str,
+                "file_name": str,
+            }
+        )
 
     @OP.exec_sign_check
     def execute(self, op_in: OPIO) -> OPIO:
@@ -51,11 +56,13 @@ class GenerateReportOP(OP):
         # 上传到 MinIO
         report_url = self._upload_to_minio(file_path, file_name)
 
-        return OPIO({
-            "report_file": file_path,
-            "report_url": report_url,
-            "file_name": file_name,
-        })
+        return OPIO(
+            {
+                "report_file": file_path,
+                "report_url": report_url,
+                "file_name": file_name,
+            }
+        )
 
     def _chat_history_to_markdown(self, chat_history):
         """将聊天记录转换为 Markdown"""
