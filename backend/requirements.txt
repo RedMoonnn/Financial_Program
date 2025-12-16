@@ -1,5 +1,3 @@
-Flask>=2.2.0
-Flask-Cors>=3.0.10
 SQLAlchemy>=2.0.0
 pymysql>=1.0.2
 redis>=5.0.0
@@ -9,13 +7,6 @@ requests>=2.28.0
 matplotlib>=3.5.0
 numpy>=1.21.0
 uvicorn>=0.20.0
-hypercorn>=0.14.0
 fastapi>=0.100.0
 openai
-cryptography
-apscheduler>=3.10.0
-python-jose[cryptography]>=3.3.0
-passlib[bcrypt]>=1.7.4
 markdown>=3.4.0
-email-validator
-bcrypt==4.3.0

@@ -3,7 +3,6 @@ from fastapi import (
     Query,
     Body,
     HTTPException,
-    Depends,
     BackgroundTasks,
     status,
 )
@@ -12,7 +11,6 @@ from services.services import init_db, ReportService, get_data_ready
 from crawler.crawler import run_collect, run_collect_all, start_crawler_job
 from api.health import health_bp
 from typing import Optional
-from api.auth import router as auth_router, get_current_user
 import pymysql
 import os
 from datetime import datetime
@@ -38,9 +36,6 @@ app.add_middleware(
 
 # 注册健康检查蓝图
 app.include_router(health_bp)
-
-# 注册auth路由
-app.include_router(auth_router)
 
 # 初始化数据库
 init_db()
@@ -139,11 +134,10 @@ async def ai_advice(
     message: str = Body(...),
     context: Optional[dict] = Body(None),
     table_name: Optional[str] = Body(None, description="可选，指定要分析的数据库表名"),
-    user=Depends(get_current_user),
 ):
     try:
         print(
-            f"AI advice called with message: {message}, user_id: {user.id}, table_name: {table_name}",
+            f"AI advice called with message: {message}, table_name: {table_name}",
             file=sys.stderr,
             flush=True,
         )
@@ -203,8 +197,8 @@ async def ai_advice(
 
 
 @app.get("/api/report/list")
-def report_list(user=Depends(get_current_user)):
-    reports = ReportService.list_reports(user.id)
+def report_list():
+    reports = ReportService.list_reports()
     return [
         {
             "id": r.id,
@@ -218,8 +212,8 @@ def report_list(user=Depends(get_current_user)):
 
 
 @app.get("/api/report/download")
-def report_download(report_id: int, user=Depends(get_current_user)):
-    reports = ReportService.list_reports(user.id)
+def report_download(report_id: int):
+    reports = ReportService.list_reports()
     for r in reports:
         if r.id == report_id:
             return {"file_url": r.file_url, "file_name": r.file_name}
@@ -294,15 +288,14 @@ def startup_event():
 async def generate_report_api(
     table_name: str = Body(...),
     chat_history: list = Body(...),
-    user=Depends(get_current_user),
 ):
     try:
         file_path, file_name, md_content, file_url = report.generate_report(
-            table_name, chat_history, user_id=user.id
+            table_name, chat_history
         )
         from services.services import ReportService
 
-        ReportService.add_report(user.id, "markdown", file_url, file_name)
+        ReportService.add_report("markdown", file_url, file_name)
         return {"success": True, "file_url": file_url, "file_name": file_name}
     except Exception as e:
         import traceback
@@ -311,14 +304,14 @@ async def generate_report_api(
 
 
 @app.get("/api/report/history")
-def report_history(user=Depends(get_current_user)):
+def report_history():
     try:
         r = Redis(
             host=os.getenv("REDIS_HOST", "redis"),
             port=int(os.getenv("REDIS_PORT", 6379)),
             decode_responses=True,
         )
-        key = f"report:{user.id}"
+        key = "report:history"
         reports = r.lrange(key, 0, 19)  # 只取最近20条
         result = []
         for item in reports:

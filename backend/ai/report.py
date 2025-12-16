@@ -1,5 +1,4 @@
 import os
-import json
 from ai.deepseek import DeepseekAgent
 from datetime import datetime, timedelta, timezone
 from storage.storage import minio_storage
@@ -32,7 +31,7 @@ def chat_history_to_markdown(chat_history):
     return md
 
 
-def generate_report(table_name, chat_history, user_id=None):
+def generate_report(table_name, chat_history):
     # 整理对话为md
     md_content = chat_history_to_markdown(chat_history)
     # 新prompt：直接生成最终结构化投资分析报告，不再要求补充，不嵌套markdown
@@ -59,26 +58,4 @@ def generate_report(table_name, chat_history, user_id=None):
     # 上传到MinIO
     object_name = minio_storage.upload_image(file_path, file_name)
     file_url = minio_storage.get_image_url(object_name)
-    # 存储到Redis（如有user_id）
-    try:
-        if user_id:
-            from redis import Redis
-
-            redis_kwargs = {
-                "host": os.getenv("REDIS_HOST", "redis"),
-                "port": int(os.getenv("REDIS_PORT", 6379)),
-                "decode_responses": True,
-            }
-            redis_pwd = os.getenv("REDIS_PASSWORD")
-            if redis_pwd:
-                redis_kwargs["password"] = redis_pwd
-            r = Redis(**redis_kwargs)
-            r.lpush(
-                f"report:{user_id}",
-                json.dumps(
-                    {"url": file_url, "file_name": file_name, "created_at": now}
-                ),
-            )
-    except Exception as e:
-        print(f"[report.py] Redis存储报告路径失败: {e}")
     return file_path, file_name, final_md, file_url

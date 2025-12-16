@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Input, Button, List, message, Select, Cascader, Spin } from 'antd';
 import axios from 'axios';
-import { getToken, removeToken } from '../auth';
 
 interface ChatProps {
   context?: any;
