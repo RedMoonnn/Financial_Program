@@ -1,9 +1,27 @@
 import os
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 import json
 import pymysql
 from datetime import datetime, timedelta, timezone
 import sys
+import time
+
+
+def create_session_with_retry():
+    """创建带有重试机制的 requests session"""
+    session = requests.Session()
+    retry_strategy = Retry(
+        total=3,  # 最多重试3次
+        backoff_factor=1,  # 重试间隔: 1s, 2s, 4s
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["GET"],
+    )
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
 
 # 东方财富API参数配置
 BASE_URL = "https://push2.eastmoney.com/api/qt/clist/get"
@@ -264,7 +282,21 @@ def fetch_flow_data(
             "invt": "2",
             "ut": "b2884a393a59ad64002292a3e90d46a5",
         }
-        response = requests.get(BASE_URL, headers=HEADERS, params=params)
+        # 使用带重试机制的 session，并添加手动重试逻辑处理连接重置
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                session = create_session_with_retry()
+                response = session.get(BASE_URL, headers=HEADERS, params=params, timeout=30)
+                break
+            except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+                if attempt < max_retries - 1:
+                    wait_time = (attempt + 1) * 2  # 2s, 4s, 6s
+                    print(f"请求失败，{wait_time}秒后重试 ({attempt + 1}/{max_retries}): {e}", file=sys.stderr, flush=True)
+                    time.sleep(wait_time)
+                else:
+                    print(f"请求失败，已达最大重试次数: {e}", file=sys.stderr, flush=True)
+                    raise
         data = response.text
         try:
             if data.strip().startswith("{"):
@@ -476,44 +508,69 @@ def start_crawler_job():
 
     def crawl_and_save():
         print("crawl_and_save called", file=sys.stderr, flush=True)
+        failed_tasks = []
+        success_count = 0
         try:
             set_data_ready(False)
             # 个股资金流 Stock_Flow
             for market_choice in range(1, 9):
                 for day_choice in range(1, 5):
-                    flow_choice = 1
-                    detail_choice = None
-                    pages = 1
-                    res = run_collect(
-                        flow_choice, market_choice, detail_choice, day_choice, pages
-                    )
-                    print(
-                        f"Stock_Flow | 市场: {market_names[market_choice - 1]} | 周期: {['today', '3d', '5d', '10d'][day_choice - 1]} | 采集条数: {res['count']}",
-                        file=sys.stderr,
-                        flush=True,
-                    )
+                    try:
+                        flow_choice = 1
+                        detail_choice = None
+                        pages = 1
+                        res = run_collect(
+                            flow_choice, market_choice, detail_choice, day_choice, pages
+                        )
+                        success_count += 1
+                        print(
+                            f"Stock_Flow | 市场: {market_names[market_choice - 1]} | 周期: {['today', '3d', '5d', '10d'][day_choice - 1]} | 采集条数: {res['count']}",
+                            file=sys.stderr,
+                            flush=True,
+                        )
+                        # 添加短暂延迟，避免请求过于频繁
+                        time.sleep(0.5)
+                    except Exception as e:
+                        failed_tasks.append(f"Stock_Flow_{market_names[market_choice - 1]}_{['today', '3d', '5d', '10d'][day_choice - 1]}")
+                        print(f"采集失败: Stock_Flow | 市场: {market_names[market_choice - 1]} | 周期: {['today', '3d', '5d', '10d'][day_choice - 1]} | 错误: {e}", file=sys.stderr, flush=True)
+                        continue
             # 板块资金流 Sector_Flow
             for detail_choice in range(1, 4):
                 for day_choice in range(1, 4):
-                    flow_choice = 2
-                    market_choice = None
-                    pages = 1
-                    res = run_collect(
-                        flow_choice, market_choice, detail_choice, day_choice, pages
-                    )
-                    print(
-                        f"Sector_Flow | 板块: {detail_flows_names[detail_choice - 1]} | 周期: {['today', '5d', '10d'][day_choice - 1]} | 采集条数: {res['count']}",
-                        file=sys.stderr,
-                        flush=True,
-                    )
+                    try:
+                        flow_choice = 2
+                        market_choice = None
+                        pages = 1
+                        res = run_collect(
+                            flow_choice, market_choice, detail_choice, day_choice, pages
+                        )
+                        success_count += 1
+                        print(
+                            f"Sector_Flow | 板块: {detail_flows_names[detail_choice - 1]} | 周期: {['today', '5d', '10d'][day_choice - 1]} | 采集条数: {res['count']}",
+                            file=sys.stderr,
+                            flush=True,
+                        )
+                        # 添加短暂延迟
+                        time.sleep(0.5)
+                    except Exception as e:
+                        failed_tasks.append(f"Sector_Flow_{detail_flows_names[detail_choice - 1]}_{['today', '5d', '10d'][day_choice - 1]}")
+                        print(f"采集失败: Sector_Flow | 板块: {detail_flows_names[detail_choice - 1]} | 周期: {['today', '5d', '10d'][day_choice - 1]} | 错误: {e}", file=sys.stderr, flush=True)
+                        continue
             set_data_ready(True)
             # 采集次数+1
             start_crawler_job.crawl_count += 1
-            print(
-                f"全量数据采集完成，本进程累计采集次数：{start_crawler_job.crawl_count}",
-                file=sys.stderr,
-                flush=True,
-            )
+            if failed_tasks:
+                print(
+                    f"采集完成（部分失败），成功: {success_count}/41，失败任务: {failed_tasks}，累计采集次数：{start_crawler_job.crawl_count}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+            else:
+                print(
+                    f"全量数据采集完成，成功: {success_count}/41，累计采集次数：{start_crawler_job.crawl_count}",
+                    file=sys.stderr,
+                    flush=True,
+                )
         except Exception as e:
             import traceback
 

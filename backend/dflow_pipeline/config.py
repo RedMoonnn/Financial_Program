@@ -2,12 +2,19 @@
 dflow 配置文件
 """
 import os
+from pathlib import Path
 from dflow import config, s3_config
+
+# 获取 backend 目录路径
+BACKEND_DIR = str(Path(__file__).parent.parent.absolute())
 
 # Argo Server 配置
 config["host"] = os.getenv("ARGO_SERVER", "https://127.0.0.1:2746")
 config["k8s_api_server"] = os.getenv("K8S_API_SERVER", "https://kubernetes.default.svc")
 config["token"] = os.getenv("ARGO_TOKEN", "")
+
+# Debug 模式配置 - 设置工作目录为 backend
+config["debug_workdir"] = BACKEND_DIR
 
 # S3/MinIO 配置 (artifact 存储)
 s3_config["endpoint"] = os.getenv("MINIO_ENDPOINT", "minio:9000")
