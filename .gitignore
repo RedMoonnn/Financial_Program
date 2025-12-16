@@ -19,6 +19,7 @@ data/
 # 忽略 dflow 工作流产物
 financial-*/
 backend/financial-*/
+backend/.dflow_workdir/
 
 # 忽略上传文件目录
 backend/upload/
