@@ -31,15 +31,17 @@ def create_full_pipeline(name: str = "financial-full-pipeline") -> Workflow:
     """
     wf = Workflow(name=name)
 
-    # 获取 backend 目录路径（用于本地调试时设置 PYTHONPATH）
+    # 获取 backend 目录和 dflow_pipeline 目录路径
     from pathlib import Path
-    backend_dir = str(Path(__file__).parent.parent.parent.absolute())
+    backend_dir = Path(__file__).parent.parent.parent.absolute()
+    dflow_pipeline_dir = backend_dir / "dflow_pipeline"
 
     # ========== Step 1: 并行采集个股资金流 (32 个任务) ==========
     stock_template = PythonOPTemplate(
         CrawlStockFlowOP,
         image="python:3.9-slim",
-        envs={"PYTHONPATH": backend_dir},
+        python_packages=[dflow_pipeline_dir],  # 上传 dflow_pipeline 到 Pod
+        pre_script="import subprocess; subprocess.run(['pip', 'install', 'requests', '-q'])\n",
     )
 
     # 生成参数组合: 8 市场 × 4 周期 = 32
@@ -69,7 +71,8 @@ def create_full_pipeline(name: str = "financial-full-pipeline") -> Workflow:
     sector_template = PythonOPTemplate(
         CrawlSectorFlowOP,
         image="python:3.9-slim",
-        envs={"PYTHONPATH": backend_dir},
+        python_packages=[dflow_pipeline_dir],
+        pre_script="import subprocess; subprocess.run(['pip', 'install', 'requests', '-q'])\n",
     )
 
     # 生成参数组合: 3 板块 × 3 周期 = 9
@@ -96,12 +99,12 @@ def create_full_pipeline(name: str = "financial-full-pipeline") -> Workflow:
     wf.add(sector_step)
 
     # ========== Step 3: 并行存储个股数据到 MySQL ==========
-    db_envs = get_db_envs()
-    db_envs["PYTHONPATH"] = backend_dir
     store_template = PythonOPTemplate(
         StoreSingleFileOP,
         image="python:3.9-slim",
-        envs=db_envs,
+        python_packages=[dflow_pipeline_dir],
+        pre_script="import subprocess; subprocess.run(['pip', 'install', 'pymysql', '-q'])\n",
+        envs=get_db_envs(),
     )
 
     store_stock_step = Step(
@@ -140,14 +143,16 @@ def create_stock_only_pipeline(name: str = "financial-stock-pipeline") -> Workfl
     """
     wf = Workflow(name=name)
 
-    # 获取 backend 目录路径
+    # 获取 dflow_pipeline 目录路径
     from pathlib import Path
-    backend_dir = str(Path(__file__).parent.parent.parent.absolute())
+    backend_dir = Path(__file__).parent.parent.parent.absolute()
+    dflow_pipeline_dir = backend_dir / "dflow_pipeline"
 
     stock_template = PythonOPTemplate(
         CrawlStockFlowOP,
         image="python:3.9-slim",
-        envs={"PYTHONPATH": backend_dir},
+        python_packages=[dflow_pipeline_dir],
+        pre_script="import subprocess; subprocess.run(['pip', 'install', 'requests', '-q'])\n",
     )
 
     stock_market_choices = []
@@ -172,12 +177,12 @@ def create_stock_only_pipeline(name: str = "financial-stock-pipeline") -> Workfl
     )
     wf.add(stock_step)
 
-    db_envs = get_db_envs()
-    db_envs["PYTHONPATH"] = backend_dir
     store_template = PythonOPTemplate(
         StoreSingleFileOP,
         image="python:3.9-slim",
-        envs=db_envs,
+        python_packages=[dflow_pipeline_dir],
+        pre_script="import subprocess; subprocess.run(['pip', 'install', 'pymysql', '-q'])\n",
+        envs=get_db_envs(),
     )
 
     store_step = Step(

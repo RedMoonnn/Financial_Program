@@ -31,16 +31,17 @@ def create_incremental_pipeline(name: str = "financial-incremental") -> Workflow
     """
     wf = Workflow(name=name)
 
-    # 获取 backend 目录路径（用于本地调试时设置 PYTHONPATH）
-    import os
+    # 获取 dflow_pipeline 目录路径
     from pathlib import Path
-    backend_dir = str(Path(__file__).parent.parent.parent.absolute())
+    backend_dir = Path(__file__).parent.parent.parent.absolute()
+    dflow_pipeline_dir = backend_dir / "dflow_pipeline"
 
     # ========== Step 1: 并行采集个股 today 数据 (8 个任务) ==========
     stock_template = PythonOPTemplate(
         CrawlStockFlowOP,
         image="python:3.9-slim",
-        envs={"PYTHONPATH": backend_dir},
+        python_packages=[dflow_pipeline_dir],
+        pre_script="import subprocess; subprocess.run(['pip', 'install', 'requests', '-q'])\n",
     )
 
     stock_step = Step(
@@ -62,7 +63,8 @@ def create_incremental_pipeline(name: str = "financial-incremental") -> Workflow
     sector_template = PythonOPTemplate(
         CrawlSectorFlowOP,
         image="python:3.9-slim",
-        envs={"PYTHONPATH": backend_dir},
+        python_packages=[dflow_pipeline_dir],
+        pre_script="import subprocess; subprocess.run(['pip', 'install', 'requests', '-q'])\n",
     )
 
     sector_step = Step(
@@ -81,12 +83,12 @@ def create_incremental_pipeline(name: str = "financial-incremental") -> Workflow
     wf.add(sector_step)
 
     # ========== Step 3: 并行存储数据 ==========
-    db_envs = get_db_envs()
-    db_envs["PYTHONPATH"] = backend_dir
     store_template = PythonOPTemplate(
         StoreSingleFileOP,
         image="python:3.9-slim",
-        envs=db_envs,
+        python_packages=[dflow_pipeline_dir],
+        pre_script="import subprocess; subprocess.run(['pip', 'install', 'pymysql', '-q'])\n",
+        envs=get_db_envs(),
     )
 
     store_stock_step = Step(
@@ -126,14 +128,16 @@ def create_quick_refresh_pipeline(name: str = "financial-quick-refresh") -> Work
     """
     wf = Workflow(name=name)
 
-    # 获取 backend 目录路径
+    # 获取 dflow_pipeline 目录路径
     from pathlib import Path
-    backend_dir = str(Path(__file__).parent.parent.parent.absolute())
+    backend_dir = Path(__file__).parent.parent.parent.absolute()
+    dflow_pipeline_dir = backend_dir / "dflow_pipeline"
 
     stock_template = PythonOPTemplate(
         CrawlStockFlowOP,
         image="python:3.9-slim",
-        envs={"PYTHONPATH": backend_dir},
+        python_packages=[dflow_pipeline_dir],
+        pre_script="import subprocess; subprocess.run(['pip', 'install', 'requests', '-q'])\n",
     )
 
     # 只采集 All_Stocks (market_choice=1) 的 today (day_choice=1) 数据
@@ -147,12 +151,12 @@ def create_quick_refresh_pipeline(name: str = "financial-quick-refresh") -> Work
     )
     wf.add(stock_step)
 
-    db_envs = get_db_envs()
-    db_envs["PYTHONPATH"] = backend_dir
     store_template = PythonOPTemplate(
         StoreSingleFileOP,
         image="python:3.9-slim",
-        envs=db_envs,
+        python_packages=[dflow_pipeline_dir],
+        pre_script="import subprocess; subprocess.run(['pip', 'install', 'pymysql', '-q'])\n",
+        envs=get_db_envs(),
     )
 
     store_step = Step(
