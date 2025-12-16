@@ -60,7 +60,7 @@ kubectl -n argo port-forward deployment/minio 9000:9000 9001:9001 --address 0.0.
 ### 1.5 安装 Python 依赖
 
 ```bash
-cd /home/chy/dev/Financial_Program/backend
+cd /path/to/Financial_Program/backend
 pip install pydflow
 ```
 
@@ -71,7 +71,7 @@ pip install pydflow
 ### 2.1 命令行方式
 
 ```bash
-cd /home/chy/dev/Financial_Program/backend
+cd /path/to/Financial_Program/backend
 
 # 运行完整流水线 (41 个并行任务)
 python -m dflow_pipeline.run full

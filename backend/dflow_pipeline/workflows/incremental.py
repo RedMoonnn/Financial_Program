@@ -1,9 +1,8 @@
 """
 增量更新流水线 - 只采集 today 数据，用于频繁刷新
 """
-
-from dflow import Workflow, Step
-from dflow.python import PythonOPTemplate, Slices
+from dflow import Workflow, Step, Slices
+from dflow.python import PythonOPTemplate
 
 from ..ops.crawl_op import CrawlStockFlowOP, CrawlSectorFlowOP
 from ..ops.store_op import StoreSingleFileOP
@@ -12,7 +11,6 @@ from ..ops.store_op import StoreSingleFileOP
 def get_db_envs():
     """获取数据库环境变量配置"""
     import os
-
     return {
         "MYSQL_HOST": os.getenv("MYSQL_HOST", "mysql"),
         "MYSQL_PORT": os.getenv("MYSQL_PORT", "3306"),
@@ -33,18 +31,11 @@ def create_incremental_pipeline(name: str = "financial-incremental") -> Workflow
     """
     wf = Workflow(name=name)
 
-    # 获取 dflow_pipeline 目录路径
-    from pathlib import Path
-
-    backend_dir = Path(__file__).parent.parent.parent.absolute()
-    dflow_pipeline_dir = backend_dir / "dflow_pipeline"
-
     # ========== Step 1: 并行采集个股 today 数据 (8 个任务) ==========
     stock_template = PythonOPTemplate(
         CrawlStockFlowOP,
         image="python:3.9-slim",
-        python_packages=[dflow_pipeline_dir],
-        pre_script="import subprocess; subprocess.run(['pip', 'install', 'requests', '-q'])\n",
+        pip_packages=["requests"],
     )
 
     stock_step = Step(
@@ -52,7 +43,7 @@ def create_incremental_pipeline(name: str = "financial-incremental") -> Workflow
         template=stock_template,
         slices=Slices(
             "{{item}}",
-            input_parameter=["market_choice", "day_choice"],
+            input_parameter=["market_choice"],
             output_artifact=["data_file"],
         ),
         parameters={
@@ -66,8 +57,7 @@ def create_incremental_pipeline(name: str = "financial-incremental") -> Workflow
     sector_template = PythonOPTemplate(
         CrawlSectorFlowOP,
         image="python:3.9-slim",
-        python_packages=[dflow_pipeline_dir],
-        pre_script="import subprocess; subprocess.run(['pip', 'install', 'requests', '-q'])\n",
+        pip_packages=["requests"],
     )
 
     sector_step = Step(
@@ -75,7 +65,7 @@ def create_incremental_pipeline(name: str = "financial-incremental") -> Workflow
         template=sector_template,
         slices=Slices(
             "{{item}}",
-            input_parameter=["detail_choice", "day_choice"],
+            input_parameter=["detail_choice"],
             output_artifact=["data_file"],
         ),
         parameters={
@@ -89,8 +79,7 @@ def create_incremental_pipeline(name: str = "financial-incremental") -> Workflow
     store_template = PythonOPTemplate(
         StoreSingleFileOP,
         image="python:3.9-slim",
-        python_packages=[dflow_pipeline_dir],
-        pre_script="import subprocess; subprocess.run(['pip', 'install', 'pymysql', '-q'])\n",
+        pip_packages=["pymysql", "cryptography"],
         envs=get_db_envs(),
     )
 
@@ -131,17 +120,10 @@ def create_quick_refresh_pipeline(name: str = "financial-quick-refresh") -> Work
     """
     wf = Workflow(name=name)
 
-    # 获取 dflow_pipeline 目录路径
-    from pathlib import Path
-
-    backend_dir = Path(__file__).parent.parent.parent.absolute()
-    dflow_pipeline_dir = backend_dir / "dflow_pipeline"
-
     stock_template = PythonOPTemplate(
         CrawlStockFlowOP,
         image="python:3.9-slim",
-        python_packages=[dflow_pipeline_dir],
-        pre_script="import subprocess; subprocess.run(['pip', 'install', 'requests', '-q'])\n",
+        pip_packages=["requests"],
     )
 
     # 只采集 All_Stocks (market_choice=1) 的 today (day_choice=1) 数据
@@ -158,8 +140,7 @@ def create_quick_refresh_pipeline(name: str = "financial-quick-refresh") -> Work
     store_template = PythonOPTemplate(
         StoreSingleFileOP,
         image="python:3.9-slim",
-        python_packages=[dflow_pipeline_dir],
-        pre_script="import subprocess; subprocess.run(['pip', 'install', 'pymysql', '-q'])\n",
+        pip_packages=["pymysql", "cryptography"],
         envs=get_db_envs(),
     )
 
