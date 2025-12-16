@@ -1,6 +1,7 @@
 """
 增量更新流水线 - 只采集 today 数据，用于频繁刷新
 """
+
 from dflow import Workflow, Step
 from dflow.python import PythonOPTemplate, Slices
 
@@ -11,6 +12,7 @@ from ..ops.store_op import StoreSingleFileOP
 def get_db_envs():
     """获取数据库环境变量配置"""
     import os
+
     return {
         "MYSQL_HOST": os.getenv("MYSQL_HOST", "mysql"),
         "MYSQL_PORT": os.getenv("MYSQL_PORT", "3306"),
@@ -33,6 +35,7 @@ def create_incremental_pipeline(name: str = "financial-incremental") -> Workflow
 
     # 获取 dflow_pipeline 目录路径
     from pathlib import Path
+
     backend_dir = Path(__file__).parent.parent.parent.absolute()
     dflow_pipeline_dir = backend_dir / "dflow_pipeline"
 
@@ -130,6 +133,7 @@ def create_quick_refresh_pipeline(name: str = "financial-quick-refresh") -> Work
 
     # 获取 dflow_pipeline 目录路径
     from pathlib import Path
+
     backend_dir = Path(__file__).parent.parent.parent.absolute()
     dflow_pipeline_dir = backend_dir / "dflow_pipeline"
 

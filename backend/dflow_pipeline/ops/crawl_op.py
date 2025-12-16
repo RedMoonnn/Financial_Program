@@ -1,6 +1,7 @@
 """
 数据采集 OP - 个股资金流和板块资金流采集
 """
+
 import json
 import requests
 from pathlib import Path
@@ -149,18 +150,22 @@ class CrawlStockFlowOP(OP):
 
     @classmethod
     def get_input_sign(cls):
-        return OPIOSign({
-            "market_choice": int,  # 1-8
-            "day_choice": int,     # 1-4
-        })
+        return OPIOSign(
+            {
+                "market_choice": int,  # 1-8
+                "day_choice": int,  # 1-4
+            }
+        )
 
     @classmethod
     def get_output_sign(cls):
-        return OPIOSign({
-            "data_file": Artifact(Path),
-            "count": int,
-            "table_name": str,
-        })
+        return OPIOSign(
+            {
+                "data_file": Artifact(Path),
+                "count": int,
+                "table_name": str,
+            }
+        )
 
     @OP.exec_sign_check
     def execute(self, op_in: OPIO) -> OPIO:
@@ -177,16 +182,22 @@ class CrawlStockFlowOP(OP):
         # 保存为 JSON 文件
         output_path = Path(f"/tmp/stock_{market_choice}_{day_choice}.json")
         with open(output_path, "w", encoding="utf-8") as f:
-            json.dump({
-                "table_name": table_name,
-                "data": data,
-            }, f, ensure_ascii=False)
+            json.dump(
+                {
+                    "table_name": table_name,
+                    "data": data,
+                },
+                f,
+                ensure_ascii=False,
+            )
 
-        return OPIO({
-            "data_file": output_path,
-            "count": len(data),
-            "table_name": table_name,
-        })
+        return OPIO(
+            {
+                "data_file": output_path,
+                "count": len(data),
+                "table_name": table_name,
+            }
+        )
 
     def _fetch_stock_data(self, market_choice, day_choice, market_type, period):
         """采集个股资金流数据"""
@@ -262,18 +273,22 @@ class CrawlSectorFlowOP(OP):
 
     @classmethod
     def get_input_sign(cls):
-        return OPIOSign({
-            "detail_choice": int,  # 1-3
-            "day_choice": int,     # 1-3
-        })
+        return OPIOSign(
+            {
+                "detail_choice": int,  # 1-3
+                "day_choice": int,  # 1-3
+            }
+        )
 
     @classmethod
     def get_output_sign(cls):
-        return OPIOSign({
-            "data_file": Artifact(Path),
-            "count": int,
-            "table_name": str,
-        })
+        return OPIOSign(
+            {
+                "data_file": Artifact(Path),
+                "count": int,
+                "table_name": str,
+            }
+        )
 
     @OP.exec_sign_check
     def execute(self, op_in: OPIO) -> OPIO:
@@ -290,16 +305,22 @@ class CrawlSectorFlowOP(OP):
         # 保存为 JSON 文件
         output_path = Path(f"/tmp/sector_{detail_choice}_{day_choice}.json")
         with open(output_path, "w", encoding="utf-8") as f:
-            json.dump({
-                "table_name": table_name,
-                "data": data,
-            }, f, ensure_ascii=False)
+            json.dump(
+                {
+                    "table_name": table_name,
+                    "data": data,
+                },
+                f,
+                ensure_ascii=False,
+            )
 
-        return OPIO({
-            "data_file": output_path,
-            "count": len(data),
-            "table_name": table_name,
-        })
+        return OPIO(
+            {
+                "data_file": output_path,
+                "count": len(data),
+                "table_name": table_name,
+            }
+        )
 
     def _fetch_sector_data(self, detail_choice, day_choice, detail_type, period):
         """采集板块资金流数据"""
