@@ -246,7 +246,11 @@ class ReportService:
     @staticmethod
     def list_reports():
         session = SessionLocal()
-        reports = session.query(Report).order_by(Report.created_at.desc()).all()
+        reports = (
+            session.query(Report)
+            .order_by(Report.created_at.desc())
+            .all()
+        )
         session.close()
         return reports
 
