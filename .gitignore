@@ -15,3 +15,6 @@ __pycache__/
 data/
 
 .env
+
+# 忽略上传文件目录
+backend/upload/
