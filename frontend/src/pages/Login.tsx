@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Button, Form, message } from 'antd';
+import { Card, Input, Button, Form, App } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { setToken, removeToken, getUserInfo } from '../auth';
 
 const Login: React.FC = () => {
+  const { message } = App.useApp();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -43,7 +44,7 @@ const Login: React.FC = () => {
           <span style={{ fontSize: 24, fontWeight: 700, color: '#1677ff' }}>智能金融数据平台</span>
         </div>
         <Card
-          bordered={false}
+          variant="borderless"
           style={{
             width: 380,
             borderRadius: 12,

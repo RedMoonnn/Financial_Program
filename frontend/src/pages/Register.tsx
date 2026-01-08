@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Card, Input, Button, Form, message } from 'antd';
+import { Card, Input, Button, Form, App } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Register: React.FC = () => {
+  const { message } = App.useApp();
   const [loading, setLoading] = useState(false);
   const [codeLoading, setCodeLoading] = useState(false);
   const [email, setEmail] = useState('');

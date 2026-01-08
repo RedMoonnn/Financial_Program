@@ -1,25 +1,43 @@
 import React, { useState } from 'react';
-import { Card, Input, Button, Form, message } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { Form, Input, Button, App, Typography } from 'antd';
+import { useNavigate, Link } from 'react-router-dom';
+import {
+  MailOutlined,
+  LockOutlined,
+  SafetyCertificateOutlined,
+  ArrowLeftOutlined,
+  SendOutlined
+} from '@ant-design/icons';
 import axios from 'axios';
+import './Forgot.css';
+
+const { Title, Text } = Typography;
 
 const Forgot: React.FC = () => {
+  const { message } = App.useApp();
   const [loading, setLoading] = useState(false);
   const [codeLoading, setCodeLoading] = useState(false);
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const sendCode = async () => {
-    const email = form.getFieldValue('email');
-    if (!email) return message.warning('请先输入邮箱');
-    setCodeLoading(true);
     try {
+      // Validate email first
+      await form.validateFields(['email']);
+      const email = form.getFieldValue('email');
+
+      setCodeLoading(true);
       await axios.post('/api/auth/forgot', { email });
-      message.success('验证码已发送');
-    } catch {
-      message.error('发送失败');
+      message.success('验证码已发送，请检查您的邮箱');
+    } catch (error: any) {
+      if (error?.errorFields) {
+        // Validation error, do nothing
+      } else {
+        message.error('发送验证码失败，请重试');
+      }
+    } finally {
+      setCodeLoading(false);
     }
-    setCodeLoading(false);
   };
 
   const onFinish = async (values: any) => {
@@ -30,26 +48,64 @@ const Forgot: React.FC = () => {
         new_password: values.new_password,
         code: values.code
       });
-      message.success('密码重置成功');
-      navigate('/login');
+      message.success('密码重置成功！正在跳转登录页...');
+      setTimeout(() => navigate('/login'), 1500);
     } catch {
-      message.error('重置失败');
+      message.error('重置失败，请检查验证码是否正确');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 500 }}>
-      <Card title="找回/重置密码" style={{ width: 360 }}>
-        <Form form={form} layout="vertical" onFinish={onFinish} autoComplete="off">
-          <Form.Item name="email" label="邮箱" rules={[{ required: true, message: '请输入邮箱' }]}> <Input /> </Form.Item>
-          <Form.Item name="new_password" label="新密码" rules={[
-            { required: true, message: '请输入新密码' },
-            { pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,20}$/, message: '密码需包含字母和数字，长度6-20位' }
-          ]}> <Input.Password autoComplete="new-password" /> </Form.Item>
+    <div className="forgot-container">
+      <div className="circle-1"></div>
+      <div className="circle-2"></div>
+
+      <div className="forgot-card">
+        <div className="forgot-header">
+          <Title level={2} className="forgot-title">找回密码</Title>
+          <Text className="forgot-subtitle">请输入您的邮箱以获取验证码重置密码</Text>
+        </div>
+
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          autoComplete="off"
+          size="large"
+          requiredMark={false}
+        >
+          <Form.Item
+            name="email"
+            rules={[
+              { required: true, message: '请输入邮箱地址' },
+              { type: 'email', message: '请输入有效的邮箱地址' }
+            ]}
+          >
+            <Input
+              className="custom-input"
+              prefix={<MailOutlined style={{ color: '#1677ff' }} />}
+              placeholder="请输入邮箱"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="new_password"
+            rules={[
+              { required: true, message: '请输入新密码' },
+              { pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,20}$/, message: '密码需包含字母和数字，长度6-20位' }
+            ]}
+          >
+            <Input.Password
+              className="custom-input"
+              prefix={<LockOutlined style={{ color: '#1677ff' }} />}
+              placeholder="新密码 (包含字母和数字，6-20位)"
+            />
+          </Form.Item>
+
           <Form.Item
             name="confirm_new_password"
-            label="确认新密码"
             dependencies={["new_password"]}
             hasFeedback
             rules={[
@@ -64,24 +120,59 @@ const Forgot: React.FC = () => {
               }),
             ]}
           >
-            <Input.Password autoComplete="new-password" />
-          </Form.Item>
-          <Form.Item name="code" label="验证码" rules={[{ required: true, message: '请输入验证码' }]}>
-            <Input
-              autoComplete="off"
-              addonAfter={
-                <Button size="small" loading={codeLoading} onClick={sendCode}>发送</Button>
-              }
+            <Input.Password
+              className="custom-input"
+              prefix={<LockOutlined style={{ color: '#1677ff' }} />}
+              placeholder="确认新密码"
             />
           </Form.Item>
+
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading} block style={{ background: '#1677ff', borderColor: '#1677ff' }}>重置密码</Button>
+            <div className="code-wrapper">
+              <Form.Item
+                name="code"
+                noStyle
+                rules={[{ required: true, message: '请输入验证码' }]}
+              >
+                <Input
+                  className="custom-input"
+                  prefix={<SafetyCertificateOutlined style={{ color: '#1677ff' }} />}
+                  placeholder="验证码"
+                  style={{ flex: 1 }}
+                />
+              </Form.Item>
+              <Button
+                className="send-code-btn"
+                type="default"
+                loading={codeLoading}
+                onClick={sendCode}
+                icon={!codeLoading && <SendOutlined />}
+              >
+                {codeLoading ? '发送中' : '获取验证码'}
+              </Button>
+            </div>
           </Form.Item>
-          <Form.Item>
-            <Button type="link" onClick={() => navigate('/login')}>返回登录</Button>
+
+          <Form.Item style={{ marginBottom: 0 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              block
+              className="submit-btn"
+            >
+              重置密码
+            </Button>
           </Form.Item>
+
+          <div className="back-link">
+            <Link to="/login">
+              <ArrowLeftOutlined style={{ marginRight: 4 }} />
+              返回登录
+            </Link>
+          </div>
         </Form>
-      </Card>
+      </div>
     </div>
   );
 };
