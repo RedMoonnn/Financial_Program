@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, Input, Button, message, Cascader, Spin, Avatar } from 'antd';
+import { Card, Input, Button, Cascader, Spin, Avatar, App } from 'antd';
 import { UserOutlined, RobotOutlined, ClearOutlined, FileTextOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { getToken } from '../auth';
+import { getToken, getUserInfoSync } from '../auth';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface ChatProps {
   context?: any;
@@ -95,35 +99,111 @@ const cascaderOptions = [
   }
 ];
 
-const CHAT_HISTORY_KEY = 'financial_chat_history';
+const CHAT_HISTORY_KEY_PREFIX = 'financial_chat_history_';
+const LAST_USER_ID_KEY = 'last_chat_user_id';
+
+// 获取当前用户的对话历史记录key
+const getChatHistoryKey = (userId: number | null): string => {
+  if (!userId) return CHAT_HISTORY_KEY_PREFIX + 'guest';
+  return CHAT_HISTORY_KEY_PREFIX + userId;
+};
 
 const Chat: React.FC<ChatProps> = () => {
+  const { message } = App.useApp();
   const [input, setInput] = useState('');
   const [selectedTableArr, setSelectedTableArr] = useState<string[] | undefined>();
   const [chatLoading, setChatLoading] = useState(false);
-  const [chatHistory, setChatHistory] = useState<any[]>(() => {
-    const saved = localStorage.getItem(CHAT_HISTORY_KEY);
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [chatHistory, setChatHistory] = useState<any[]>([]);
   const [streamingAnswer, setStreamingAnswer] = useState<{
     thinking: string;
     text: string;
   }>({ thinking: '', text: '' });
   const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
+  const autoScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  // 初始化：检查用户ID并加载对应的对话历史
+  useEffect(() => {
+    const userInfo = getUserInfoSync();
+    const userId = userInfo?.id || null;
+
+    // 检查用户是否切换
+    const lastUserId = localStorage.getItem(LAST_USER_ID_KEY);
+    const userIdChanged = lastUserId && lastUserId !== String(userId);
+
+    // 如果用户切换了，立即清空当前显示的对话历史
+    if (userIdChanged) {
+      setChatHistory([]);
+    }
+
+    // 更新当前用户ID
+    setCurrentUserId(userId);
+    localStorage.setItem(LAST_USER_ID_KEY, String(userId || 'guest'));
+
+    // 加载当前用户的对话历史
+    const historyKey = getChatHistoryKey(userId);
+    const saved = localStorage.getItem(historyKey);
+    if (saved && !userIdChanged) {
+      // 只有在用户没有切换的情况下才加载历史记录
+      // 如果用户切换了，保持空历史记录
+      try {
+        setChatHistory(JSON.parse(saved));
+      } catch (e) {
+        console.error('解析对话历史失败:', e);
+        setChatHistory([]);
+      }
+    } else {
+      setChatHistory([]);
+    }
+  }, []); // 只在组件挂载时执行一次
+
+  // 检查是否在底部附近（允许100px的误差）
+  const isNearBottom = (element: HTMLElement) => {
+    const threshold = 100;
+    return element.scrollHeight - element.scrollTop - element.clientHeight < threshold;
+  };
+
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    messagesEndRef.current?.scrollIntoView({ behavior });
+  };
+
+  // 处理滚动事件
+  const handleScroll = () => {
+    if (!chatContainerRef.current) return;
+    const nearBottom = isNearBottom(chatContainerRef.current);
+    // 如果不在底部附近，标记为用户正在滚动查看历史
+    setIsUserScrolling(!nearBottom);
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [chatHistory, streamingAnswer]);
+    // 只有在用户没有查看历史（即在底部附近时），才跟随流式输出自动滚动
+    if (!isUserScrolling) {
+      // 使用 requestAnimationFrame 确保 DOM 已更新
+      requestAnimationFrame(() => {
+        scrollToBottom('smooth');
+      });
+    }
+  }, [chatHistory, isUserScrolling]);
 
-  // 聊天记录持久化
+  // 聊天记录持久化（保存到当前用户的key）
   useEffect(() => {
-    localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chatHistory));
-  }, [chatHistory]);
+    if (currentUserId !== null) {
+      const historyKey = getChatHistoryKey(currentUserId);
+      localStorage.setItem(historyKey, JSON.stringify(chatHistory));
+    }
+  }, [chatHistory, currentUserId]);
+
+  // 清理定时器
+  useEffect(() => {
+    return () => {
+      if (autoScrollTimeoutRef.current) {
+        clearTimeout(autoScrollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // 清理历史对话，只保留有效的对话
   const cleanChatHistory = (history: any[]) => {
@@ -155,6 +235,10 @@ const Chat: React.FC<ChatProps> = () => {
     setChatLoading(true);
     setIsStreaming(true);
     setStreamingAnswer({ thinking: '', text: '' });
+    // 开始流式输出时，如果用户在底部附近，重置滚动标记以允许自动滚动
+    if (chatContainerRef.current && isNearBottom(chatContainerRef.current)) {
+      setIsUserScrolling(false);
+    }
 
     try {
       // 传递清理后的历史对话
@@ -220,6 +304,13 @@ const Chat: React.FC<ChatProps> = () => {
               setStreamingAnswer({ thinking: '', text: '' });
               setIsStreaming(false);
               setChatLoading(false);
+              // 流结束后，如果用户在底部附近，自动滚动到底部
+              setTimeout(() => {
+                if (chatContainerRef.current && isNearBottom(chatContainerRef.current)) {
+                  scrollToBottom('smooth');
+                  setIsUserScrolling(false);
+                }
+              }, 100);
               return;
             }
 
@@ -269,7 +360,10 @@ const Chat: React.FC<ChatProps> = () => {
   // 清空聊天
   const handleClearChat = () => {
     setChatHistory([]);
-    localStorage.removeItem(CHAT_HISTORY_KEY);
+    if (currentUserId !== null) {
+      const historyKey = getChatHistoryKey(currentUserId);
+      localStorage.removeItem(historyKey);
+    }
   };
 
   // Generate Report Handler (simplified)
@@ -303,41 +397,24 @@ const Chat: React.FC<ChatProps> = () => {
 
   return (
     <div style={{ maxWidth: 1000, margin: '0 auto', height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {/* 顶部控制栏 */}
-      <Card bordered={false} style={{ marginBottom: 16, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
-          <Cascader
-            options={cascaderOptions}
-            placeholder="请选择要分析的表单数据"
-            value={selectedTableArr}
-            onChange={setSelectedTableArr}
-            expandTrigger="hover"
-            style={{ width: 400 }}
-            size="large"
-          />
-          <div style={{ display: 'flex', gap: 12 }}>
-            <Button
-              type="primary"
-              icon={<FileTextOutlined />}
-              onClick={handleGenerateReport}
-            >生成报告</Button>
-            <Button icon={<ClearOutlined />} danger onClick={handleClearChat}>清空</Button>
-          </div>
-        </div>
-      </Card>
+
 
       {/* 聊天区域 */}
-      <div style={{
-        flex: 1,
-        overflowY: 'auto',
-        padding: '24px',
-        background: '#fff',
-        borderRadius: 12,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-        display: 'flex',
-        flexDirection: 'column',
-        marginBottom: 16
-      }}>
+      <div
+        ref={chatContainerRef}
+        onScroll={handleScroll}
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '24px',
+          background: '#fff',
+          borderRadius: 12,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+          display: 'flex',
+          flexDirection: 'column',
+          marginBottom: 16
+        }}
+      >
         {chatHistory.length === 0 && !isStreaming ? (
           <div style={{ textAlign: 'center', marginTop: 100, color: '#999' }}>
             <RobotOutlined style={{ fontSize: 48, marginBottom: 16, color: '#e6f4ff' }} />
@@ -389,11 +466,33 @@ const Chat: React.FC<ChatProps> = () => {
                       color: '#333',
                       padding: '12px 16px',
                       borderRadius: '0 12px 12px 12px',
-                      lineHeight: 1.6
+                      lineHeight: 1.6,
+                      overflowX: 'auto'
                     }}>
-                      <div style={{ whiteSpace: 'pre-wrap' }}>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          code({ node, inline, className, children, ...props }: any) {
+                            const match = /language-(\w+)/.exec(className || '');
+                            return !inline && match ? (
+                              <SyntaxHighlighter
+                                {...props}
+                                style={oneDark}
+                                language={match[1]}
+                                PreTag="div"
+                              >
+                                {String(children).replace(/\n$/, '')}
+                              </SyntaxHighlighter>
+                            ) : (
+                              <code {...props} className={className} style={{ background: 'rgba(0, 0, 0, 0.06)', padding: '2px 4px', borderRadius: 4, fontFamily: 'monospace' }}>
+                                {children}
+                              </code>
+                            );
+                          }
+                        }}
+                      >
                         {item.answer?.text || item.answer?.advice || item.answer?.answer || '未获取到分析结果'}
-                      </div>
+                      </ReactMarkdown>
                     </div>
                   </div>
                 </div>
@@ -425,13 +524,34 @@ const Chat: React.FC<ChatProps> = () => {
                       color: '#333',
                       padding: '12px 16px',
                       borderRadius: '0 12px 12px 12px',
-                      lineHeight: 1.6
+                      lineHeight: 1.6,
+                      overflowX: 'auto'
                     }}>
                       {streamingAnswer.text ? (
-                        <div style={{ whiteSpace: 'pre-wrap' }}>
-                          {streamingAnswer.text}
-                          <span style={{ display: 'inline-block', width: 8, height: 16, backgroundColor: '#1890ff', marginLeft: 2, animation: 'blink 1s infinite' }} />
-                        </div>
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            code({ node, inline, className, children, ...props }: any) {
+                              const match = /language-(\w+)/.exec(className || '');
+                              return !inline && match ? (
+                                <SyntaxHighlighter
+                                  {...props}
+                                  style={oneDark}
+                                  language={match[1]}
+                                  PreTag="div"
+                                >
+                                  {String(children).replace(/\n$/, '')}
+                                </SyntaxHighlighter>
+                              ) : (
+                                <code {...props} className={className} style={{ background: 'rgba(0, 0, 0, 0.06)', padding: '2px 4px', borderRadius: 4, fontFamily: 'monospace' }}>
+                                  {children}
+                                </code>
+                              );
+                            }
+                          }}
+                        >
+                          {streamingAnswer.text + ' ▍'}
+                        </ReactMarkdown>
                       ) : (
                         <div style={{ color: '#999' }}><Spin size="small" /> 正在分析数据...</div>
                       )}
@@ -446,6 +566,29 @@ const Chat: React.FC<ChatProps> = () => {
       </div>
 
       {/* 输入框 */}
+      {/* 顶部控制栏 */}
+      <Card variant="borderless" style={{ marginBottom: 16, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+          <Cascader
+            options={cascaderOptions}
+            placeholder="请选择要分析的表单数据"
+            value={selectedTableArr}
+            onChange={setSelectedTableArr}
+            expandTrigger="hover"
+            style={{ width: 400 }}
+            size="large"
+          />
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Button
+              type="primary"
+              icon={<FileTextOutlined />}
+              onClick={handleGenerateReport}
+            >生成报告</Button>
+            <Button icon={<ClearOutlined />} danger onClick={handleClearChat}>清空</Button>
+          </div>
+        </div>
+      </Card>
+
       <div style={{ background: '#fff', padding: '16px 24px', borderRadius: 12, boxShadow: '0 -2px 12px rgba(0,0,0,0.03)' }}>
         <Input.Search
           value={input}
