@@ -1,0 +1,52 @@
+# Ruff 配置文件
+# 参考: https://docs.astral.sh/ruff/configuration/
+
+target-version = "py38"
+line-length = 100
+
+[lint]
+# 启用的规则集合
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # flake8-unused-arguments
+    "SIM", # flake8-simplify
+]
+
+# 忽略的规则
+ignore = [
+    "E501",  # 行长度（由 formatter 处理）
+    "B008",  # 函数调用中的默认参数
+    "ARG001", # 未使用的函数参数
+    "ARG002", # 未使用的类方法参数
+]
+
+# 排除的文件和目录
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "env",
+    ".env",
+    "build",
+    "dist",
+    "*.egg-info",
+    "migrations",
+    "backend/tests/utils/test_crawler",  # 测试代码暂时排除
+]
+
+[lint.per-file-ignores]
+"__init__.py" = ["F401"]  # 允许未使用的导入
+"backend/tests/**/*.py" = ["ARG", "S101"]  # 测试文件允许更多灵活性
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
