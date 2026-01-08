@@ -7,13 +7,39 @@ import contextlib
 import logging
 import time
 
+import bcrypt
 from core.config import ADMIN_CONFIG
 from core.database import engine, get_db_session
 from models.models import Base, User
-from passlib.hash import bcrypt
 from sqlalchemy import inspect, text
 
 logger = logging.getLogger(__name__)
+
+
+def _hash_password(password: str) -> str:
+    """
+    对密码进行 bcrypt 哈希
+
+    Args:
+        password: 原始密码
+
+    Returns:
+        哈希后的密码字符串
+
+    Note:
+        bcrypt 限制密码不能超过 72 字节，如果超过会自动截断
+    """
+    # bcrypt 限制密码不能超过 72 字节
+    password_bytes = password.encode("utf-8")
+    if len(password_bytes) > 72:
+        logger.warning(f"密码超过 72 字节限制（当前 {len(password_bytes)} 字节），将截断到 72 字节")
+        password_bytes = password_bytes[:72]
+
+    # 直接使用 bcrypt 库生成哈希，避免 passlib 初始化问题
+    salt = bcrypt.gensalt()
+    password_hash = bcrypt.hashpw(password_bytes, salt)
+    # bcrypt.hashpw 返回 bytes，需要解码为字符串
+    return password_hash.decode("utf-8")
 
 
 def check_database_connection() -> bool:
@@ -81,7 +107,7 @@ def setup_admin_account() -> None:
 
             if not user:
                 # 创建新管理员账号
-                password_hash = bcrypt.hash(admin_password)
+                password_hash = _hash_password(admin_password)
                 user = User(
                     email=admin_email,
                     username=admin_username,
