@@ -66,7 +66,7 @@ const Forgot: React.FC = () => {
           >
             <Input.Password autoComplete="new-password" />
           </Form.Item>
-          <Form.Item name="code" label="验证码" rules={[{ required: true, message: '请输入验证码' }]}> 
+          <Form.Item name="code" label="验证码" rules={[{ required: true, message: '请输入验证码' }]}>
             <Input
               autoComplete="off"
               addonAfter={
@@ -86,4 +86,4 @@ const Forgot: React.FC = () => {
   );
 };
 
-export default Forgot; 
+export default Forgot;

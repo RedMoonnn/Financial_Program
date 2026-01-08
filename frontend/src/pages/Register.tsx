@@ -49,10 +49,10 @@ const Register: React.FC = () => {
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 500 }}>
       <Card title="注册账号" style={{ width: 360 }}>
         <Form layout="vertical" onFinish={onFinish}>
-          <Form.Item name="email" label="邮箱" rules={[{ required: true, message: '请输入邮箱' }]}> 
+          <Form.Item name="email" label="邮箱" rules={[{ required: true, message: '请输入邮箱' }]}>
             <Input onChange={e => setEmail(e.target.value)} />
           </Form.Item>
-          <Form.Item name="password" label="密码" rules={[{ required: true, message: '请输入密码' }]}> 
+          <Form.Item name="password" label="密码" rules={[{ required: true, message: '请输入密码' }]}>
             <Input.Password />
           </Form.Item>
           <Form.Item
@@ -74,7 +74,7 @@ const Register: React.FC = () => {
           >
             <Input.Password />
           </Form.Item>
-          <Form.Item name="code" label="验证码" rules={[{ required: true, message: '请输入验证码' }]}> 
+          <Form.Item name="code" label="验证码" rules={[{ required: true, message: '请输入验证码' }]}>
             <Input addonAfter={<Button size="small" loading={codeLoading} onClick={sendCode}>发送</Button>} />
           </Form.Item>
           <Form.Item>
@@ -89,4 +89,4 @@ const Register: React.FC = () => {
   );
 };
 
-export default Register; 
+export default Register;

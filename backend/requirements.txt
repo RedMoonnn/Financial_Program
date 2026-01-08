@@ -1,21 +1,30 @@
-Flask>=2.2.0
-Flask-Cors>=3.0.10
+# ==================== Web框架 ====================
+fastapi>=0.100.0
+uvicorn>=0.20.0
+
+# ==================== 数据库 ====================
 SQLAlchemy>=2.0.0
 pymysql>=1.0.2
+
+# ==================== 缓存与存储 ====================
 redis>=5.0.0
 minio>=7.1.0
-python-dotenv>=1.0.0
-requests>=2.28.0
-matplotlib>=3.5.0
-numpy>=1.21.0
-uvicorn>=0.20.0
-hypercorn>=0.14.0
-fastapi>=0.100.0
-openai
-cryptography
-apscheduler>=3.10.0
+
+# ==================== 认证与安全 ====================
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
-markdown>=3.4.0
 email-validator
-bcrypt==4.3.0
+
+# ==================== AI与HTTP请求 ====================
+openai
+requests>=2.28.0
+
+# ==================== 任务调度 ====================
+apscheduler>=3.10.0
+
+# ==================== 工具库 ====================
+python-dotenv>=1.0.0
+
+# ==================== 开发工具 ====================
+ruff>=0.1.6
+pre-commit>=3.5.0

@@ -1,9 +1,10 @@
-import os
-import requests
 import json
-import pymysql
-from datetime import datetime, timedelta, timezone
+import os
 import sys
+from datetime import datetime, timedelta, timezone
+
+import pymysql
+import requests
 
 # 东方财富API参数配置
 BASE_URL = "https://push2.eastmoney.com/api/qt/clist/get"
@@ -203,14 +204,10 @@ def fetch_flow_data(
     # 参数校验
     if flow_type == "Stock_Flow":
         if market_choice is None or not (1 <= market_choice <= 8):
-            raise ValueError(
-                "Stock_Flow 采集时，market_choice 必须为 1~8，且不能为None"
-            )
+            raise ValueError("Stock_Flow 采集时，market_choice 必须为 1~8，且不能为None")
     elif flow_type == "Sector_Flow":
         if detail_choice is None or not (1 <= detail_choice <= 3):
-            raise ValueError(
-                "Sector_Flow 采集时，detail_choice 必须为 1~3，且不能为None"
-            )
+            raise ValueError("Sector_Flow 采集时，detail_choice 必须为 1~3，且不能为None")
     else:
         raise ValueError("flow_type 必须为 'Stock_Flow' 或 'Sector_Flow'")
     results = []
@@ -410,7 +407,9 @@ def run_collect(flow_choice, market_choice, detail_choice, day_choice, pages):
         ]
         market_type = market_names[market_choice - 1]
         period = ["today", "3d", "5d", "10d"][day_choice - 1]
-        table_name = f"Stock_Flow_{market_type}_{['Today', '3_Day', '5_Day', '10_Day'][day_choice - 1]}"
+        table_name = (
+            f"Stock_Flow_{market_type}_{['Today', '3_Day', '5_Day', '10_Day'][day_choice - 1]}"
+        )
         data = fetch_flow_data(
             flow_type,
             market_type,
@@ -426,9 +425,7 @@ def run_collect(flow_choice, market_choice, detail_choice, day_choice, pages):
         detail_flows_names = ["Industry_Flow", "Concept_Flow", "Regional_Flow"]
         market_type = detail_flows_names[detail_choice - 1]
         period = ["today", "5d", "10d"][day_choice - 1]
-        table_name = (
-            f"Sector_Flow_{market_type}_{['Today', '5_Day', '10_Day'][day_choice - 1]}"
-        )
+        table_name = f"Sector_Flow_{market_type}_{['Today', '5_Day', '10_Day'][day_choice - 1]}"
         data = fetch_flow_data(
             flow_type,
             market_type,
@@ -469,7 +466,7 @@ def run_collect_all():
 def start_crawler_job():
     print("start_crawler_job called", file=sys.stderr, flush=True)
     from apscheduler.schedulers.background import BackgroundScheduler
-    from services.services import set_data_ready
+    from services.common.cache_service import set_data_ready
 
     # 全局计数器
     start_crawler_job.crawl_count = 0
@@ -484,9 +481,7 @@ def start_crawler_job():
                     flow_choice = 1
                     detail_choice = None
                     pages = 1
-                    res = run_collect(
-                        flow_choice, market_choice, detail_choice, day_choice, pages
-                    )
+                    res = run_collect(flow_choice, market_choice, detail_choice, day_choice, pages)
                     print(
                         f"Stock_Flow | 市场: {market_names[market_choice - 1]} | 周期: {['today', '3d', '5d', '10d'][day_choice - 1]} | 采集条数: {res['count']}",
                         file=sys.stderr,
@@ -498,9 +493,7 @@ def start_crawler_job():
                     flow_choice = 2
                     market_choice = None
                     pages = 1
-                    res = run_collect(
-                        flow_choice, market_choice, detail_choice, day_choice, pages
-                    )
+                    res = run_collect(flow_choice, market_choice, detail_choice, day_choice, pages)
                     print(
                         f"Sector_Flow | 板块: {detail_flows_names[detail_choice - 1]} | 周期: {['today', '5d', '10d'][day_choice - 1]} | 采集条数: {res['count']}",
                         file=sys.stderr,

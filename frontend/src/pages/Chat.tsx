@@ -130,6 +130,11 @@ const Chat: React.FC<ChatProps> = ({ context }) => {
     const saved = localStorage.getItem(CHAT_HISTORY_KEY);
     return saved ? JSON.parse(saved) : [];
   });
+  const [streamingAnswer, setStreamingAnswer] = useState<{
+    thinking: string;
+    text: string;
+  }>({ thinking: '', text: '' });
+  const [isStreaming, setIsStreaming] = useState(false);
 
   // 聊天记录持久化
   useEffect(() => {
@@ -139,17 +144,17 @@ const Chat: React.FC<ChatProps> = ({ context }) => {
   // 清理历史对话，只保留有效的对话
   const cleanChatHistory = (history: any[]) => {
     if (!history || history.length === 0) return [];
-    
+
     // 过滤掉无效对话
     const validHistory = history.filter(item => {
       const question = item.question?.trim() || '';
-      return question.length > 3 && 
+      return question.length > 3 &&
              !question.toLowerCase().includes('你好') &&
              !question.toLowerCase().includes('hello') &&
              !question.toLowerCase().includes('hi') &&
              !question.toLowerCase().includes('test');
     });
-    
+
     // 只保留最近的10条对话
     return validHistory.slice(-10);
   };
@@ -160,26 +165,114 @@ const Chat: React.FC<ChatProps> = ({ context }) => {
       message.warning('请先选择要分析的表单');
       return;
     }
+
+    const question = input;
+    setInput('');
     setChatLoading(true);
+    setIsStreaming(true);
+    setStreamingAnswer({ thinking: '', text: '' });
+
     try {
       // 传递清理后的历史对话
       const cleanedHistory = cleanChatHistory(chatHistory);
-      
-      const res = await axios.post('/api/ai/advice', {
-        message: input,
-        table_name: tableName,
-        history: cleanedHistory  // 传递清理后的历史
+
+      // 使用流式请求
+      const token = getToken();
+      const response = await fetch('/api/ai/advice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          message: question,
+          table_name: tableName,
+          history: cleanedHistory,
+          stream: true,  // 启用流式输出
+        }),
       });
-      let answer = res.data;
-      if (!answer || (typeof answer === 'object' && Object.keys(answer).length === 0)) {
-        answer = { advice: '未获取到分析结果', reasons: [], risks: [], detail: '' };
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      setChatHistory([...chatHistory, { question: input, answer }]);
-      setInput('');
-    } catch (e) {
-      message.error('AI分析失败');
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let currentThinking = '';
+      let currentText = '';
+
+      if (!reader) {
+        throw new Error('无法读取响应流');
+      }
+
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+          break;
+        }
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || ''; // 保留最后一个不完整的行
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6);
+
+            if (data === '[DONE]') {
+              // 流结束，保存到聊天历史
+              if (!currentText && !currentThinking) {
+                message.warning('未获取到有效响应');
+              }
+              const finalAnswer = {
+                advice: currentText || currentThinking || '未获取到分析结果',
+                thinking: currentThinking,
+                text: currentText,
+              };
+              setChatHistory(prev => [...prev, { question, answer: finalAnswer }]);
+              setStreamingAnswer({ thinking: '', text: '' });
+              setIsStreaming(false);
+              setChatLoading(false);
+              return;
+            }
+
+            try {
+              const chunk = JSON.parse(data);
+
+              if (chunk.type === 'thinking') {
+                currentThinking += chunk.content || '';
+                setStreamingAnswer(prev => ({
+                  ...prev,
+                  thinking: currentThinking,
+                }));
+              } else if (chunk.type === 'text') {
+                currentText += chunk.content || '';
+                setStreamingAnswer(prev => ({
+                  ...prev,
+                  text: currentText,
+                }));
+              } else if (chunk.type === 'error') {
+                message.error(chunk.content || 'AI分析失败');
+                setStreamingAnswer({ thinking: '', text: '' });
+                setIsStreaming(false);
+                setChatLoading(false);
+                return;
+              }
+            } catch (e) {
+              console.error('解析流数据失败:', e, data);
+            }
+          }
+        }
+      }
+    } catch (e: any) {
+      console.error('AI分析失败:', e);
+      message.error(e.message || 'AI分析失败');
+      setStreamingAnswer({ thinking: '', text: '' });
+      setIsStreaming(false);
+      setChatLoading(false);
     }
-    setChatLoading(false);
   };
 
   const parseAIAnswer = (answer: any) => {
@@ -258,20 +351,71 @@ const Chat: React.FC<ChatProps> = ({ context }) => {
           dataSource={chatHistory}
           renderItem={item => (
           <List.Item>
-              <div>
-                <b>你：</b>{item.question}
-                <br />
-                <b>AI：</b>{
-                  (item.answer?.advice &&
-                    ["AI未能返回有效分析结果", "未获取到分析结果"].includes(item.answer.advice) &&
-                    item.answer.reasons && item.answer.reasons.length > 0)
-                    ? item.answer.reasons.join('\n')
-                    : (item.answer?.advice || item.answer?.answer || '未获取到分析结果')
-                }
+              <div style={{ width: '100%' }}>
+                <div style={{ marginBottom: 8 }}>
+                  <b>你：</b>{item.question}
+                </div>
+                <div>
+                  <b>AI：</b>
+                  {/* 显示思考过程（如果有） */}
+                  {item.answer?.thinking && (
+                    <div style={{
+                      marginTop: 8,
+                      padding: 8,
+                      backgroundColor: '#f5f5f5',
+                      borderRadius: 4,
+                      fontSize: '0.9em',
+                      color: '#666',
+                      borderLeft: '3px solid #1890ff'
+                    }}>
+                      <div style={{ fontWeight: 'bold', marginBottom: 4, color: '#1890ff' }}>💭 思考过程：</div>
+                      <div style={{ whiteSpace: 'pre-wrap' }}>{item.answer.thinking}</div>
+                    </div>
+                  )}
+                  {/* 显示回答内容 */}
+                  <div style={{ marginTop: item.answer?.thinking ? 8 : 0, whiteSpace: 'pre-wrap' }}>
+                    {item.answer?.text || item.answer?.advice || item.answer?.answer || '未获取到分析结果'}
+                  </div>
+                </div>
             </div>
           </List.Item>
           )}
       />
+      {/* 流式输出显示区域 */}
+      {isStreaming && (
+        <List.Item>
+          <div style={{ width: '100%' }}>
+            <b>AI：</b>
+            {/* 显示思考过程 */}
+            {streamingAnswer.thinking && (
+              <div style={{
+                marginTop: 8,
+                padding: 8,
+                backgroundColor: '#f5f5f5',
+                borderRadius: 4,
+                fontSize: '0.9em',
+                color: '#666',
+                borderLeft: '3px solid #1890ff'
+              }}>
+                <div style={{ fontWeight: 'bold', marginBottom: 4, color: '#1890ff' }}>💭 思考过程：</div>
+                <div style={{ whiteSpace: 'pre-wrap' }}>{streamingAnswer.thinking}</div>
+              </div>
+            )}
+            {/* 显示回答内容 */}
+            {streamingAnswer.text && (
+              <div style={{ marginTop: streamingAnswer.thinking ? 8 : 0, whiteSpace: 'pre-wrap' }}>
+                {streamingAnswer.text}
+                <span style={{ display: 'inline-block', width: 8, height: 16, backgroundColor: '#1890ff', marginLeft: 2, animation: 'blink 1s infinite' }} />
+              </div>
+            )}
+            {!streamingAnswer.thinking && !streamingAnswer.text && (
+              <div style={{ marginTop: 8, color: '#999' }}>
+                <Spin size="small" /> 正在思考...
+              </div>
+            )}
+          </div>
+        </List.Item>
+      )}
         <Input.Search
         value={input}
         onChange={e => setInput(e.target.value)}
@@ -280,7 +424,7 @@ const Chat: React.FC<ChatProps> = ({ context }) => {
           loading={chatLoading}
           placeholder="请输入你的问题，如：主力流入最多的股票有哪些？"
         style={{ marginTop: 16 }}
-          disabled={!selectedTableArr || selectedTableArr.length !== 3}
+          disabled={!selectedTableArr || selectedTableArr.length !== 3 || isStreaming}
       />
       </div>
       {/* AI分析结果结构化展示 */}
@@ -297,4 +441,4 @@ const Chat: React.FC<ChatProps> = ({ context }) => {
   );
 };
 
-export default Chat; 
+export default Chat;

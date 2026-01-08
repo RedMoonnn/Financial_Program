@@ -20,7 +20,7 @@ body {
 
 a {
   color: var(--primary-color);
-} 
+}
 
 /* 表格紧凑、字体大、居中 */
 .custom-tight-table .ant-table-cell {
@@ -95,4 +95,14 @@ a {
 /* 表格单元格不换行，紧凑 */
 .nowrap-cell {
   white-space: nowrap !important;
-} 
+}
+
+/* 流式输出光标闪烁动画 */
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}

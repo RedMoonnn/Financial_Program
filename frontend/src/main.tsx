@@ -32,8 +32,9 @@ axios.interceptors.response.use(
   (error) => {
     console.error('API请求错误:', error);
     if (error.response?.status === 401) {
-      // 未授权，清除token并跳转到登录页
+      // 未授权，清除token和用户信息并跳转到登录页
       localStorage.removeItem('token');
+      localStorage.removeItem('userInfo');
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -44,4 +45,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
-); 
+);

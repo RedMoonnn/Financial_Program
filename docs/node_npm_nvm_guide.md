@@ -96,4 +96,4 @@ nvm 是 Node.js 版本管理工具，支持多版本 Node 并行安装和切换�
 - [npm 官方文档](https://docs.npmjs.com/)
 - [nvm 官方文档](https://github.com/nvm-sh/nvm)
 - [yarn 官网](https://yarnpkg.com/)
-- [pnpm 官网](https://pnpm.io/zh/) 
+- [pnpm 官网](https://pnpm.io/zh/)

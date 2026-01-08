@@ -7,4 +7,4 @@ data/
 node_modules/
 frontend/node_modules/
 .env
-*.log 
+*.log

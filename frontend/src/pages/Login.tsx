@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Input, Button, Form, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { setToken, removeToken } from '../auth';
+import { setToken, removeToken, getUserInfo } from '../auth';
 
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -15,15 +15,16 @@ const Login: React.FC = () => {
   const onFinish = async (values: any) => {
     setLoading(true);
     try {
-      // TODO: 替换为真实API
       const resp = await axios.post('/api/auth/login', values);
-      // 假设后端返回 { token: 'xxx' }
       setToken(resp.data.access_token);
+      // 登录成功后获取用户信息
+      await getUserInfo();
       message.success('登录成功');
       navigate('/');
-    } catch {
+    } catch (error: any) {
       removeToken();
-      message.error('登录失败');
+      const errorMsg = error.response?.data?.detail || '登录失败';
+      message.error(errorMsg);
     }
     setLoading(false);
   };
@@ -66,4 +67,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login; 
+export default Login;

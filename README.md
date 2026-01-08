@@ -10,7 +10,7 @@
 ![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1.svg)
 ![Redis](https://img.shields.io/badge/Redis-6.0+-DC382D.svg)
 
-**🚀 企业级金融数据智能分析平台**  
+**🚀 企业级金融数据智能分析平台**
 **📊 数据采集 + AI分析 + 可视化展示 + 权限管理**
 
 [![GitHub stars](https://img.shields.io/github/stars/your-repo/financial-program)](https://github.com/your-repo/financial-program/stargazers)
@@ -124,7 +124,7 @@ sequenceDiagram
     participant B as ⚙️ 后端
     participant AI as 🤖 AI分析
     participant DB as 💾 数据库
-    
+
     U->>F: 发起AI分析请求
     F->>B: 调用AI分析API
     B->>DB: 查询最新资金流数据
@@ -217,6 +217,12 @@ MINIO_SECURE=False
 
 # 🤖 Deepseek
 DEEPSEEK_API_KEY=your_deepseek_key
+
+# 📧 SMTP邮箱配置（用于发送验证码）
+SMTP_SERVER=smtp.qq.com
+SMTP_PORT=587
+SMTP_USER=chen_hongyue@qq.com
+SMTP_PASSWORD=ragbsbnplldhdcjf
 ```
 
 ---
@@ -226,23 +232,31 @@ DEEPSEEK_API_KEY=your_deepseek_key
 ### 🖥️ 1. 本地开发
 
 ```bash
+# 📦 创建并激活虚拟环境（推荐，避免权限问题）
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate  # Linux/Mac
+# 或 .venv\Scripts\activate  # Windows
+
 # 📦 安装后端依赖
-pip install -r backend/requirements.txt
+pip install -r requirements.txt
 
 # 📦 安装前端依赖
-cd frontend && npm install
+cd ../frontend && npm install
 
 # 🐳 启动MySQL、Redis、MinIO（推荐用docker-compose）
-docker-compose up -d
+cd .. && docker-compose up -d
 
-# 🚀 启动后端
+# 🚀 启动后端（确保虚拟环境已激活）
 cd backend && python run.py
 
 # 🚀 启动前端
-cd frontend && npm run dev
+cd ../frontend && npm run dev
 
 # 🌐 访问前端：http://localhost:5173
 ```
+
+**💡 提示：** 每次开发前都需要激活虚拟环境：`source backend/.venv/bin/activate`
 
 ### 🐳 2. Docker一键部署
 
@@ -355,7 +369,7 @@ docker exec mysql mysqldump -u root -p financial_web_crawler > backup.sql
 
 <div align="center">
 
-**💹 智能金融数据采集分析平台**  
+**💹 智能金融数据采集分析平台**
 **🚀 助力企业级数据驱动决策，AI赋能金融洞察**
 
 [![GitHub stars](https://img.shields.io/github/stars/your-repo/financial-program?style=social)](https://github.com/your-repo/financial-program/stargazers)
@@ -364,4 +378,3 @@ docker exec mysql mysqldump -u root -p financial_web_crawler > backup.sql
 **⭐ 如果这个项目对你有帮助，请给我们一个Star！**
 
 </div>
-

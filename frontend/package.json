@@ -7,7 +7,9 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "vite --host 0.0.0.0"
+    "start": "vite --host 0.0.0.0",
+    "lint": "eslint src/ --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint src/ --ext .ts,.tsx,.js,.jsx --fix"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.5",
@@ -25,7 +27,12 @@
   "devDependencies": {
     "@types/react": "^18.2.62",
     "@types/react-dom": "^18.2.19",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-react": "^4.6.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "typescript": "^5.4.5",
     "vite": "^7.0.0"
   }

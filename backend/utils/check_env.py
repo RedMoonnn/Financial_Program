@@ -1,9 +1,10 @@
 import os
-from dotenv import load_dotenv
-import redis
-from minio import Minio
 import socket
+
 import pymysql
+import redis
+from dotenv import load_dotenv
+from minio import Minio
 from openai import OpenAI
 
 # 加载.env
@@ -46,9 +47,7 @@ def check_redis():
     if not check_socket(host, port, "Redis"):
         return
     try:
-        r = redis.Redis(
-            host=host, port=port, password=REDIS_PASSWORD, socket_connect_timeout=3
-        )
+        r = redis.Redis(host=host, port=port, password=REDIS_PASSWORD, socket_connect_timeout=3)
         r.ping()
         print("[OK] Redis连接成功")
     except Exception as e:

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs, Card, Button, Spin, message, Row, Col, Empty, Table } from 'antd';
+import { Tabs, Card, Button, Spin, message, Row, Col, Empty, Table, Tag } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import axios from 'axios';
 import type { ColumnsType } from 'antd/es/table';
+import { isAdminSync, getUserInfo } from '../auth';
 
 // 后端参数映射 - 与后端完全对齐
 const flowTypes = [
@@ -348,6 +349,20 @@ const Home: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string>('');
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // 检查管理员权限
+  useEffect(() => {
+    const checkAdmin = async () => {
+      let adminStatus = isAdminSync();
+      if (adminStatus === false) {
+        const userInfo = await getUserInfo();
+        adminStatus = userInfo?.is_admin === true;
+      }
+      setIsAdmin(adminStatus);
+    };
+    checkAdmin();
+  }, []);
 
   // 获取数据
   const fetchData = async () => {
@@ -370,10 +385,10 @@ const Home: React.FC = () => {
           period: periodTabsSector[dayChoice].value
         };
       }
-      
+
       console.log('请求参数:', params);
       const res = await axios.get('/api/flow', { params });
-      
+
       if (res.data && res.data.data) {
         setTableData(res.data.data);
         if (res.data.data.length > 0) {
@@ -381,7 +396,7 @@ const Home: React.FC = () => {
         } else {
           setCrawlTime('');
         }
-        
+
         // 构建Echarts配置
         setChartOption(getSortedChartOption(res.data.data));
       } else {
@@ -389,7 +404,7 @@ const Home: React.FC = () => {
         setChartOption(getSortedChartOption([]));
         setCrawlTime('');
       }
-      
+
       // 检查是否有错误信息
       if (res.data && res.data.error) {
         setError(res.data.error);
@@ -410,8 +425,13 @@ const Home: React.FC = () => {
     // eslint-disable-next-line
   }, [flowChoice, marketChoice, detailChoice, dayChoice]);
 
-  // 手动采集
+  // 手动采集（仅管理员可用）
   const handleManualUpdate = async () => {
+    if (!isAdmin) {
+      message.warning('此功能仅管理员可用');
+      return;
+    }
+
     setUpdating(true);
     try {
       let body: any = { flow_choice: flowChoice, pages: 1 };
@@ -422,7 +442,7 @@ const Home: React.FC = () => {
         body.detail_choice = detailChoice + 1;
         body.day_choice = dayChoice + 1;
       }
-      
+
       console.log('采集参数:', body);
       const res = await axios.post('/api/collect_v2', body);
       // 直接用采集返回数据渲染
@@ -439,7 +459,8 @@ const Home: React.FC = () => {
       message.success('采集任务已完成');
     } catch (e: any) {
       console.error('采集失败:', e);
-      message.error(e.response?.data?.detail || '采集失败');
+      const errorMsg = e.response?.data?.detail || '采集失败';
+      message.error(errorMsg);
     }
     setUpdating(false);
   };
@@ -484,21 +505,28 @@ const Home: React.FC = () => {
     <div>
                             <Row gutter={16} align="middle" style={{ marginBottom: 16 }}>
                               <Col flex="auto">
-                                <span style={{ fontWeight: 500, fontSize: 16 }}>
-                                  {crawlTime ? `爬取时间：${crawlTime}` : '暂无采集数据'}
-                                </span>
+                                <Space>
+                                  <span style={{ fontWeight: 500, fontSize: 16 }}>
+                                    {crawlTime ? `爬取时间：${crawlTime}` : '暂无采集数据'}
+                                  </span>
+                                  {isAdmin && (
+                                    <Tag color="orange">管理员</Tag>
+                                  )}
+                                </Space>
                                 {error && (
                                   <div style={{ color: '#ff4d4f', fontSize: 14, marginTop: 8 }}>
                                     错误: {error}
                                   </div>
                                 )}
                               </Col>
-                              <Col>
-                                <Button type="primary" loading={updating} onClick={handleManualUpdate}>
-                                  {updating ? '正在更新...' : '手动更新'}
-                                </Button>
-        </Col>
-      </Row>
+                              {isAdmin && (
+                                <Col>
+                                  <Button type="primary" loading={updating} onClick={handleManualUpdate}>
+                                    {updating ? '正在更新...' : '手动更新'}
+                                  </Button>
+                                </Col>
+                              )}
+                            </Row>
                             <Card variant="outlined" style={cardContainerStyle}>
                               {loading ? (
                                 <div style={{ textAlign: 'center', padding: '40px' }}>
@@ -560,4 +588,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home; 
+export default Home;
