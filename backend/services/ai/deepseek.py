@@ -1,8 +1,9 @@
+import json
 import os
+import re
+
 from dotenv import load_dotenv
 from openai import OpenAI
-import re
-import json
 
 load_dotenv()
 
@@ -74,11 +75,7 @@ class DeepseekAgent:
                 )
                 a = item.get("answer", "")
                 if isinstance(a, dict):
-                    a = (
-                        a.get("advice", str(a))[:100] + "..."
-                        if len(str(a)) > 100
-                        else str(a)
-                    )
+                    a = a.get("advice", str(a))[:100] + "..." if len(str(a)) > 100 else str(a)
                 history_summary.append(f"Q: {q} | A: {a}")
 
             prompt += "\n【最近对话】\n" + "\n".join(history_summary)
@@ -137,6 +134,78 @@ class DeepseekAgent:
             # 新增：如果content为自然语言，直接返回advice字段
             return {"advice": content.strip()}
 
+    @staticmethod
+    def analyze_stream(flow_data, user_message=None, history=None, style="专业"):
+        """
+        流式分析，支持区分 Thinking 和 text
+        返回一个生成器，每次 yield 一个包含 type 和 content 的字典
+        type 可以是 'thinking' 或 'text'
+        """
+        prompt = DeepseekAgent.build_prompt(flow_data, user_message, history, style)
+
+        # 检查prompt长度，如果过长则截断
+        if len(prompt) > 8000:
+            print(
+                f"Warning: Prompt too long ({len(prompt)} chars), truncating...",
+                flush=True,
+            )
+            prompt = prompt[:8000] + "\n\n[提示：对话历史过长，已截断]"
+
+        request_payload = {
+            "model": "deepseek-chat",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "你是一名专业金融分析师，善于资金流分析和投资建议。",
+                },
+                {"role": "user", "content": prompt},
+            ],
+            "stream": True,
+        }
+
+        client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
+
+        try:
+            stream = client.chat.completions.create(**request_payload)
+
+            for chunk in stream:
+                if not chunk.choices or len(chunk.choices) == 0:
+                    continue
+
+                delta = chunk.choices[0].delta
+                if not delta:
+                    continue
+
+                # 检查是否有 thinking 内容（Deepseek 可能在不同字段中）
+                # 尝试多种可能的字段名
+                thinking_content = None
+                if hasattr(delta, "thinking"):
+                    thinking_content = getattr(delta, "thinking", None)
+                elif hasattr(delta, "reasoning"):
+                    thinking_content = getattr(delta, "reasoning", None)
+                elif isinstance(delta, dict) and "thinking" in delta:
+                    thinking_content = delta.get("thinking")
+
+                if thinking_content:
+                    yield {"type": "thinking", "content": thinking_content}
+
+                # 检查是否有 text 内容
+                text_content = None
+                if hasattr(delta, "content"):
+                    text_content = getattr(delta, "content", None)
+                elif isinstance(delta, dict) and "content" in delta:
+                    text_content = delta.get("content")
+
+                if text_content:
+                    yield {"type": "text", "content": text_content}
+
+        except Exception as e:
+            import traceback
+
+            error_detail = traceback.format_exc()
+            print(f"Stream error: {e}\n{error_detail}", flush=True)
+            yield {"type": "error", "content": f"流式输出错误: {str(e)}"}
+
 
 if __name__ == "__main__":
     # 构造测试数据
@@ -167,6 +236,4 @@ if __name__ == "__main__":
     ]
     user_message = "请帮我分析一下浦发银行今日的资金流情况"
     print("\n=== 本地测试AI对话 ===\n")
-    result = DeepseekAgent.analyze(
-        flow_data, user_message=user_message, history=None, style="专业"
-    )
+    result = DeepseekAgent.analyze(flow_data, user_message=user_message, history=None, style="专业")

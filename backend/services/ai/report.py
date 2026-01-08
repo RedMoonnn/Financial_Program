@@ -1,8 +1,10 @@
-import os
 import json
-from ai.deepseek import DeepseekAgent
+import os
 from datetime import datetime, timedelta, timezone
-from storage.storage import minio_storage
+
+from core.storage import minio_storage
+
+from services.ai.deepseek import DeepseekAgent
 
 
 def chat_history_to_markdown(chat_history):
@@ -75,9 +77,7 @@ def generate_report(table_name, chat_history, user_id=None):
             r = Redis(**redis_kwargs)
             r.lpush(
                 f"report:{user_id}",
-                json.dumps(
-                    {"url": file_url, "file_name": file_name, "created_at": now}
-                ),
+                json.dumps({"url": file_url, "file_name": file_name, "created_at": now}),
             )
     except Exception as e:
         print(f"[report.py] Redis存储报告路径失败: {e}")

@@ -1,12 +1,11 @@
-import pymysql
-import sys
 import os
+import sys
+
+import pymysql
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
-load_dotenv(
-    dotenv_path=os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.env"))
-)
+load_dotenv(dotenv_path=os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.env")))
 
 
 def get_all_latest_flow_data():
@@ -190,15 +189,13 @@ def query_stock_flow_data(stock_name, limit=100):
 
 
 if __name__ == "__main__":
-    table_name = input(
-        "请输入要分析的表名（如Sector_Flow_Concept_Flow_10_Day）："
-    ).strip()
+    table_name = input("请输入要分析的表名（如Sector_Flow_Concept_Flow_10_Day）：").strip()
     if table_name:
         table_data = query_table_data(table_name, limit=50)
         print(f"表{table_name}最新50条数据：{table_data[:2]} ... 共{len(table_data)}条")
         if table_data:
             try:
-                from ai.deepseek import DeepseekAgent
+                from services.ai.deepseek import DeepseekAgent
 
                 # 只传递核心字段，防止token溢出
                 slim_data = [
@@ -211,9 +208,7 @@ if __name__ == "__main__":
                             "code": d["data"]["code"],
                             "name": d["data"]["name"],
                             "main_flow_net_amount": d["data"]["main_flow_net_amount"],
-                            "main_flow_net_percentage": d["data"][
-                                "main_flow_net_percentage"
-                            ],
+                            "main_flow_net_percentage": d["data"]["main_flow_net_percentage"],
                             "change_percentage": d["data"]["change_percentage"],
                             "crawl_time": d["data"]["crawl_time"],
                         },
@@ -221,9 +216,7 @@ if __name__ == "__main__":
                     for d in table_data
                 ]
                 user_message = f"请帮我分析一下表 {table_name} 的资金流情况"
-                result = DeepseekAgent.analyze(
-                    slim_data, user_message=user_message, style="专业"
-                )
+                result = DeepseekAgent.analyze(slim_data, user_message=user_message, style="专业")
                 print("\n=== Deepseek分析结果 ===\n")
                 print(result)
             except Exception as e:
