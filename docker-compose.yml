@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./backend:/app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
     environment:
@@ -62,7 +62,7 @@ services:
       - ./my.cnf:/etc/mysql/conf.d/custom.cnf
       - ./scripts/init-mysql.sh:/docker-entrypoint-initdb.d/init-mysql.sh
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -87,4 +87,4 @@ services:
     volumes:
       - ./data/redis:/data
       - ./redis.conf:/etc/redis/redis.conf
-    command: ["redis-server", "/etc/redis/redis.conf", "--requirepass", "${REDIS_PASSWORD}"]
+    command: [ "redis-server", "/etc/redis/redis.conf", "--requirepass", "${REDIS_PASSWORD}" ]
