@@ -314,19 +314,19 @@ function getSortedChartOption(data: TableRow[]): any {
     dataZoom: [
       { type: 'slider', show: true, xAxisIndex: 0, height: 20, bottom: 30, start: 0, end: 50 }
     ],
-  series: [
-    {
-      name: '主力净流入',
-      type: 'bar',
+    series: [
+      {
+        name: '主力净流入',
+        type: 'bar',
         stack: 'total',
         data: inflowData,
         itemStyle: { color: '#e60000' },
         barMaxWidth: 14,
         barGap: 0
-    },
-    {
-      name: '主力净流出',
-      type: 'bar',
+      },
+      {
+        name: '主力净流出',
+        type: 'bar',
         stack: 'total',
         data: outflowData,
         itemStyle: { color: '#009933' },
@@ -434,7 +434,7 @@ const Home: React.FC = () => {
 
     setUpdating(true);
     try {
-      let body: any = { flow_choice: flowChoice, pages: 1 };
+      const body: any = { flow_choice: flowChoice, pages: 1 };
       if (flowChoice === 1) {
         body.market_choice = marketChoice + 1; // 后端从1开始
         body.day_choice = dayChoice + 1;
@@ -467,8 +467,8 @@ const Home: React.FC = () => {
 
   // 多级Tab渲染
   return (
-    <div style={mainContainerStyle}>
-      <Card variant="outlined" style={{ marginBottom: 16 }}>
+    <div style={{ width: '100%', paddingBottom: 32 }}>
+      <Card bordered={false} style={{ marginBottom: 24, borderRadius: 8 }}>
         <Tabs
           className="custom-tabs"
           activeKey={String(flowChoice)}
@@ -502,75 +502,55 @@ const Home: React.FC = () => {
                         key: String(index),
                         label: pt.label,
                         children: (
-    <div>
-                            <Row gutter={16} align="middle" style={{ marginBottom: 16 }}>
-                              <Col flex="auto">
-                                <Space>
-                                  <span style={{ fontWeight: 500, fontSize: 16 }}>
-                                    {crawlTime ? `爬取时间：${crawlTime}` : '暂无采集数据'}
+                          <div style={{ marginTop: 16 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                {crawlTime && (
+                                  <span style={{ color: '#888', fontSize: 14 }}>
+                                    更新时间：{crawlTime}
                                   </span>
-                                  {isAdmin && (
-                                    <Tag color="orange">管理员</Tag>
-                                  )}
-                                </Space>
-                                {error && (
-                                  <div style={{ color: '#ff4d4f', fontSize: 14, marginTop: 8 }}>
-                                    错误: {error}
-                                  </div>
                                 )}
-                              </Col>
+                                {isAdmin && <Tag color="blue">管理员模式</Tag>}
+                                {error && <span style={{ color: '#ff4d4f' }}>{error}</span>}
+                              </div>
                               {isAdmin && (
-                                <Col>
-                                  <Button type="primary" loading={updating} onClick={handleManualUpdate}>
-                                    {updating ? '正在更新...' : '手动更新'}
-                                  </Button>
-                                </Col>
+                                <Button type="primary" loading={updating} onClick={handleManualUpdate} style={{ borderRadius: 6 }}>
+                                  {updating ? '更新中' : '手动更新数据'}
+                                </Button>
                               )}
-                            </Row>
-                            <Card variant="outlined" style={cardContainerStyle}>
+                            </div>
+
+                            <Card bordered={false} style={{ marginBottom: 24, boxShadow: 'none', border: '1px solid #f0f0f0' }}>
                               {loading ? (
-                                <div style={{ textAlign: 'center', padding: '40px' }}>
+                                <div style={{ textAlign: 'center', padding: '60px' }}>
                                   <Spin size="large" />
-                                  <div style={{ marginTop: 16 }}>加载中...</div>
+                                  <div style={{ marginTop: 16, color: '#666' }}>数据加载中...</div>
                                 </div>
                               ) : tableData.length > 0 ? (
                                 <ReactECharts
                                   option={chartOption}
-                                  style={{ height: 420, width: '100%', background: '#fff' }}
+                                  style={{ height: 450, width: '100%' }}
                                   notMerge={true}
                                 />
                               ) : (
-                                <Empty description="暂无数据" style={{ padding: '40px' }} />
+                                <Empty description="暂无图表数据" style={{ padding: '60px' }} />
                               )}
                             </Card>
-                            <Card
-                              variant="outlined"
-                              style={{
-                                maxWidth: '100%',
-                                margin: '0 auto',
-                                marginBottom: 32,
-                                background: '#fff',
-                                borderRadius: 12,
-                                boxShadow: '0 2px 12px #f0f1f2',
-                                padding: '24px 32px',
-                                overflowX: 'auto'
-                              }}
-                            >
+
+                            <Card bordered={false} style={{ padding: 0, boxShadow: 'none' }}>
                               {tableData.length > 0 ? (
-                                <div style={{ overflowX: 'auto' }}>
-        <Table
-          columns={columns}
-                                    dataSource={tableData}
-          rowKey="code"
-          bordered
-                                    pagination={{ pageSize: 100 }}
-                                    rowClassName={() => 'custom-row'}
-                                    scroll={{ x: 'max-content' }}
-                                    style={{ width: '100%', margin: '0 auto', textAlign: 'center' }}
-                                  />
-                                </div>
+                                <Table
+                                  className="custom-tight-table"
+                                  columns={columns}
+                                  dataSource={tableData}
+                                  rowKey="code"
+                                  bordered={false}
+                                  pagination={{ pageSize: 50, showSizeChanger: true }}
+                                  scroll={{ x: 'max-content' }}
+                                  size="middle"
+                                />
                               ) : (
-                                <Empty description="暂无数据" />
+                                <Empty description="暂无表格数据" />
                               )}
                             </Card>
                           </div>

@@ -86,7 +86,7 @@ const UserCenter: React.FC = () => {
                 <ul style={{ margin: 0, paddingLeft: 20 }}>
                   <li>可以访问数据采集管理页面</li>
                   <li>可以访问报告管理页面</li>
-                  <li>可以在首页使用"手动更新"功能</li>
+                  <li>可以在首页使用“手动更新”功能</li>
                   <li>可以查看和删除所有用户的报告</li>
                 </ul>
               </Space>

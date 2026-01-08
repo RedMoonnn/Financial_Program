@@ -10,9 +10,8 @@ import string
 from email.header import Header
 from email.mime.text import MIMEText
 
-import redis
+from core.cache import redis_client
 from core.config import (
-    REDIS_CONFIG,
     SMTP_CONFIG,
     VERIFICATION_CODE_CONFIG,
     validate_smtp_config,
@@ -21,9 +20,6 @@ from core.config import (
 from services.exceptions import EmailServiceException
 
 logger = logging.getLogger(__name__)
-
-# Redis客户端
-redis_client = redis.Redis(**REDIS_CONFIG)
 
 
 class EmailService:

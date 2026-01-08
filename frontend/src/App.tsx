@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, ConfigProvider, theme } from 'antd';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
   HomeOutlined,
@@ -7,7 +7,8 @@ import {
   MessageOutlined,
   UserOutlined,
   DatabaseOutlined,
-  FolderOutlined
+  FolderOutlined,
+  LogoutOutlined
 } from '@ant-design/icons';
 import Home from './pages/Home';
 import Reports from './pages/Reports';
@@ -19,7 +20,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Forgot from './pages/Forgot';
 import './index.css';
-import { isLogin, removeToken, getUserInfoSync, isAdminSync, getUserInfo } from './auth';
+import { isLogin, removeToken, isAdminSync, getUserInfo } from './auth';
 
 const { Header, Content, Footer } = Layout;
 
@@ -69,6 +70,9 @@ const MainLayout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
+  const {
+    token: { colorBgContainer, colorPrimary },
+  } = theme.useToken();
 
   // 检查管理员权限
   useEffect(() => {
@@ -117,19 +121,48 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#f5f8fa' }}>
-      <Header style={{ background: '#1677ff', padding: 0, height: 56, display: 'flex', alignItems: 'center' }}>
-        <div style={{ width: '100%', maxWidth: 1400, margin: '0 auto', padding: '0 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <Layout style={{ minHeight: '100vh', background: '#f0f2f5' }}>
+      <Header style={{
+        background: colorBgContainer,
+        padding: '0 24px',
+        height: 64,
+        display: 'flex',
+        alignItems: 'center',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+      }}>
+        <div style={{ width: '100%', maxWidth: 1400, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {/* LOGO */}
-          <div style={{ fontWeight: 700, color: '#fff', fontSize: 22, flex: '0 0 auto' }}>
+          <div style={{
+            fontWeight: 700,
+            color: colorPrimary,
+            fontSize: 24,
+            flex: '0 0 auto',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            cursor: 'pointer'
+          }} onClick={() => navigate('/')}>
+            <span style={{ fontSize: 28 }}>⚡</span>
             智能金融数据采集分析平台
           </div>
+
           {/* 菜单 */}
           <Menu
-            theme="dark"
+            theme="light"
             mode="horizontal"
             selectedKeys={[selectedKey]}
-            style={{ background: 'transparent', flex: 1, minWidth: 400, justifyContent: 'center', borderBottom: 'none', fontSize: 16 }}
+            style={{
+              flex: 1,
+              minWidth: 400,
+              justifyContent: 'flex-end',
+              borderBottom: 'none',
+              fontSize: 15,
+              background: 'transparent',
+              marginRight: 24
+            }}
             items={menuItems.map(item => ({
               key: item.key,
               icon: item.icon,
@@ -137,26 +170,56 @@ const MainLayout: React.FC = () => {
             }))}
             onClick={handleMenuClick}
           />
+
           {/* 用户/设置 */}
           {isLogin() && (
-            <div style={{ color: '#fff', fontWeight: 500, fontSize: 16, marginLeft: 32, cursor: 'pointer', flex: '0 0 auto' }} onClick={() => handleMenuClick({ key: 'logout' })}>
+            <div
+              style={{
+                color: '#666',
+                fontWeight: 500,
+                fontSize: 14,
+                cursor: 'pointer',
+                flex: '0 0 auto',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '4px 12px',
+                borderRadius: 20,
+                background: '#f5f5f5',
+                transition: 'all 0.3s'
+              }}
+              className="logout-btn"
+              onClick={() => handleMenuClick({ key: 'logout' })}
+            >
+              <LogoutOutlined />
               退出登录
             </div>
           )}
         </div>
       </Header>
-      <Content style={{ width: '100%', maxWidth: 1400, margin: '32px auto 0 auto', padding: '0 32px', minHeight: 600, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Routes>
-          <Route path="/" element={<PrivateRoute element={<Home />} />} />
-          <Route path="/reports" element={<PrivateRoute element={<Reports />} />} />
-          <Route path="/chat" element={<PrivateRoute element={<Chat />} />} />
-          <Route path="/user" element={<PrivateRoute element={<UserCenter />} />} />
-          <Route path="/admin/collect" element={<AdminRoute element={<AdminCollect />} />} />
-          <Route path="/admin/reports" element={<AdminRoute element={<AdminReports />} />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+      <Content style={{
+        width: '100%',
+        maxWidth: 1400,
+        margin: '24px auto',
+        padding: '0 24px',
+        minHeight: 'calc(100vh - 64px - 70px)',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <div style={{ flex: 1 }}>
+          <Routes>
+            <Route path="/" element={<PrivateRoute element={<Home />} />} />
+            <Route path="/reports" element={<PrivateRoute element={<Reports />} />} />
+            <Route path="/chat" element={<PrivateRoute element={<Chat />} />} />
+            <Route path="/user" element={<PrivateRoute element={<UserCenter />} />} />
+            <Route path="/admin/collect" element={<AdminRoute element={<AdminCollect />} />} />
+            <Route path="/admin/reports" element={<AdminRoute element={<AdminReports />} />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </div>
       </Content>
-      <Footer style={{ textAlign: 'center', background: '#f5f8fa', width: '100%', maxWidth: 1400, margin: '0 auto', padding: 0 }}>
+      <Footer style={{ textAlign: 'center', background: 'transparent', color: '#888' }}>
         智能金融数据采集分析平台 ©2025 金融综设小组
       </Footer>
     </Layout>
@@ -164,14 +227,38 @@ const MainLayout: React.FC = () => {
 };
 
 const App: React.FC = () => (
-  <Router>
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot" element={<Forgot />} />
-      <Route path="/*" element={<MainLayout />} />
-    </Routes>
-  </Router>
+  <ConfigProvider
+    theme={{
+      token: {
+        colorPrimary: '#1677ff',
+        borderRadius: 8,
+        wireframe: false,
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      },
+      components: {
+        Layout: {
+          colorBgHeader: '#ffffff',
+          colorBgBody: '#f0f2f5',
+        },
+        Menu: {
+          itemColor: '#666',
+          itemHoverColor: '#1677ff',
+        },
+        Button: {
+          algorithm: true, // Enable automatic algorithm derivation
+        }
+      }
+    }}
+  >
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot" element={<Forgot />} />
+        <Route path="/*" element={<MainLayout />} />
+      </Routes>
+    </Router>
+  </ConfigProvider>
 );
 
 export default App;

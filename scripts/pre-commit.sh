@@ -83,20 +83,31 @@ if [ -n "$FRONTEND_FILES" ]; then
     else
         # 检查是否有 eslint
         if [ -f "node_modules/.bin/eslint" ]; then
-            echo "运行 eslint..."
-            ESLINT_OUTPUT=$(npm run lint 2>&1)
-            ESLINT_EXIT=$?
-            if [ $ESLINT_EXIT -ne 0 ]; then
-                # 如果没有 lint 脚本，直接运行 eslint
-                ESLINT_OUTPUT=$(npx eslint src/ --ext .ts,.tsx,.js,.jsx 2>&1)
-                ESLINT_EXIT=$?
-                if [ $ESLINT_EXIT -ne 0 ]; then
-                    echo "$ESLINT_OUTPUT"
-                    echo -e "${RED}eslint 检查失败，请修复错误后重试${NC}"
-                    ERRORS=$((ERRORS + 1))
-                fi
+            echo "运行 eslint --fix..."
+
+            # 运行 lint:fix (npm 脚本) 或者直接调用 eslint --fix
+            if npm run | grep -q "lint:fix"; then
+                ESLINT_OUTPUT=$(npm run lint:fix 2>&1)
             else
+                ESLINT_OUTPUT=$(npx eslint src/ --ext .ts,.tsx,.js,.jsx --fix 2>&1)
+            fi
+
+            ESLINT_EXIT=$?
+
+            # 检查是否有文件被修改（ESLint 修复了文件）
+            # 注意：这里假设用户在 commit 前已将所有修改暂存。如果有原本未暂存的修改，这里也会触发。
+            # 这是为了防止 "修复了但未提交" 的情况。
+            if ! git diff --quiet src/; then
                 echo "$ESLINT_OUTPUT"
+                echo -e "${YELLOW}⚠️  ESLint 自动修复了一些代码。${NC}"
+                echo -e "${RED}❌ 请运行 'git add .' 将修复后的代码加入暂存区，然后重新提交。${NC}"
+                ERRORS=$((ERRORS + 1))
+            elif [ $ESLINT_EXIT -ne 0 ]; then
+                echo "$ESLINT_OUTPUT"
+                echo -e "${RED}eslint 检查失败（无法自动修复），请手动修复错误后重试${NC}"
+                ERRORS=$((ERRORS + 1))
+            else
+                echo -e "${GREEN}ESLint 检查通过${NC}"
             fi
         else
             echo -e "${YELLOW}eslint 未安装，跳过前端检查${NC}"

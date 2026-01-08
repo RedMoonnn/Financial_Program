@@ -20,3 +20,15 @@ repos:
       - id: check-toml
       - id: check-merge-conflict
       - id: debug-statements
+
+  # 前端代码检查 (本地 hooks)
+  - repo: local
+    hooks:
+      - id: frontend-lint
+        name: Frontend Lint (ESLint)
+        # 尝试运行 lint:fix，如果失败则回退到 lint，只针对 frontend 目录下的文件
+        entry: bash -c 'cd frontend && (npm run lint:fix || npm run lint)'
+        language: system
+        types_or: [javascript, jsx, ts, tsx]
+        files: ^frontend/
+        pass_filenames: false

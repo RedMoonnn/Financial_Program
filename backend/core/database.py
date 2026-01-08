@@ -4,12 +4,13 @@
 """
 
 import logging
-import os
 from contextlib import contextmanager
 from typing import Generator
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
+
+from core.config import database_settings
 
 logger = logging.getLogger(__name__)
 
@@ -17,12 +18,13 @@ logger = logging.getLogger(__name__)
 # 创建数据库引擎
 def create_db_engine():
     """创建数据库引擎"""
+    db_config = database_settings.config_dict
     db_url = (
-        f"mysql+pymysql://{os.getenv('MYSQL_USER', 'root')}:"
-        f"{os.getenv('MYSQL_PASSWORD', '')}@"
-        f"{os.getenv('MYSQL_HOST', 'localhost')}:"
-        f"{os.getenv('MYSQL_PORT', '3306')}/"
-        f"{os.getenv('MYSQL_DATABASE', 'test')}?charset=utf8mb4"
+        f"mysql+pymysql://{db_config['user']}:"
+        f"{db_config['password']}@"
+        f"{db_config['host']}:"
+        f"{db_config['port']}/"
+        f"{db_config['database']}?charset={db_config['charset']}"
     )
     return create_engine(db_url, echo=False, pool_pre_ping=True)
 

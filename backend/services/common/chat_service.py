@@ -7,13 +7,10 @@ import json
 import logging
 from typing import Any, Dict, List
 
-import redis
-from core.config import CACHE_EXPIRE, REDIS_CONFIG
+from core.cache import redis_client
+from core.config import CACHE_EXPIRE
 
 logger = logging.getLogger(__name__)
-
-# Redis客户端
-redis_client = redis.Redis(**REDIS_CONFIG)
 
 
 class ChatService:

@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 from contextlib import asynccontextmanager
 from threading import Thread
 
@@ -30,7 +29,9 @@ async def lifespan(app: FastAPI):
     """
     # 启动时执行
     logger.info("应用启动中...")
-    print("startup ok", file=sys.stderr, flush=True)
+
+    # 初始化数据库
+    init_db()
 
     # 启动爬虫任务
     Thread(target=start_crawler_job, daemon=True).start()
@@ -45,7 +46,6 @@ async def lifespan(app: FastAPI):
         logger.info("应用关闭中...")
         if scheduler:
             scheduler.shutdown()
-        # print("shutdown ok", file=sys.stderr, flush=True)
 
 
 app = FastAPI(
@@ -79,9 +79,6 @@ app.add_middleware(
 app.include_router(api_router, prefix="/api/v1")  # 所有 v1 API 路由
 # 保持向后兼容，同时注册旧路径
 app.include_router(api_router, prefix="/api")  # 兼容旧路径
-
-# 初始化数据库
-init_db()
 
 
 if __name__ == "__main__":

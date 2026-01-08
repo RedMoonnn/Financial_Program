@@ -1,7 +1,7 @@
 import re
 from datetime import datetime, timedelta
 
-from core.config import get_jwt_config
+from core.config import JWT_CONFIG
 from core.database import get_db_session_dependency
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
@@ -14,11 +14,11 @@ from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
+
 # 从配置获取JWT设置
-_jwt_config = get_jwt_config()
-SECRET_KEY = _jwt_config["secret_key"]
-ALGORITHM = _jwt_config["algorithm"]
-ACCESS_TOKEN_EXPIRE_MINUTES = _jwt_config["access_token_expire_minutes"]
+SECRET_KEY = JWT_CONFIG["secret_key"]
+ALGORITHM = JWT_CONFIG["algorithm"]
+ACCESS_TOKEN_EXPIRE_MINUTES = JWT_CONFIG["access_token_expire_minutes"]
 
 
 def create_access_token(data: dict, expires_delta: timedelta = None):

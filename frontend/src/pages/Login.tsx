@@ -30,39 +30,61 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 500 }}>
-      <Card title="登录" style={{ width: 360 }}>
-        <Form layout="vertical" onFinish={onFinish} onFinishFailed={({ errorFields }) => {
-          if (errorFields && errorFields.length > 0) {
-            message.error(errorFields[0].errors[0]);
-          }
-        }}>
-          <Form.Item
-            name="email"
-            label="邮箱"
-            rules={[
-              { required: true, message: '请输入邮箱' },
-              { type: 'email', message: '邮箱格式不正确' }
-            ]}
-          >
-            <Input autoComplete="off" />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            label="密码"
-            rules={[{ required: true, message: '请输入密码' }]}
-          >
-            <Input.Password autoComplete="off" />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading} block style={{ background: '#1677ff', borderColor: '#1677ff' }}>登录</Button>
-          </Form.Item>
-          <Form.Item>
-            <Button type="link" onClick={() => navigate('/register')}>注册账号</Button>
-            <Button type="link" onClick={() => navigate('/forgot')}>忘记密码</Button>
-          </Form.Item>
-        </Form>
-      </Card>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%)'
+    }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+          <span style={{ fontSize: 36 }}>⚡</span>
+          <span style={{ fontSize: 24, fontWeight: 700, color: '#1677ff' }}>智能金融数据平台</span>
+        </div>
+        <Card
+          bordered={false}
+          style={{
+            width: 380,
+            borderRadius: 12,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.05)'
+          }}
+        >
+          <div style={{ marginBottom: 24, fontSize: 18, fontWeight: 600, color: '#333' }}>
+            账号登录
+          </div>
+          <Form layout="vertical" onFinish={onFinish} size="large" onFinishFailed={({ errorFields }) => {
+            if (errorFields && errorFields.length > 0) {
+              message.error(errorFields[0].errors[0]);
+            }
+          }}>
+            <Form.Item
+              name="email"
+              rules={[
+                { required: true, message: '请输入邮箱' },
+                { type: 'email', message: '邮箱格式不正确' }
+              ]}
+            >
+              <Input placeholder="请输入邮箱" autoComplete="username" />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: '请输入密码' }]}
+            >
+              <Input.Password placeholder="请输入密码" autoComplete="current-password" />
+            </Form.Item>
+            <Form.Item style={{ marginBottom: 12 }}>
+              <Button type="primary" htmlType="submit" loading={loading} block>
+                立即登录
+              </Button>
+            </Form.Item>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Button type="link" onClick={() => navigate('/register')} style={{ padding: 0 }}>注册账号</Button>
+              <Button type="link" onClick={() => navigate('/forgot')} style={{ padding: 0 }}>忘记密码</Button>
+            </div>
+          </Form>
+        </Card>
+      </div>
     </div>
   );
 };

@@ -67,7 +67,7 @@ const AdminCollect: React.FC = () => {
                 采集指定组合的数据。默认采集：<strong>个股资金流 - 全部A股 - 今日</strong>
               </Text>
               <Text type="secondary" style={{ fontSize: '12px' }}>
-                提示：如需采集其他组合，请在首页使用"手动更新"功能
+                提示：如需采集其他组合，请在首页使用&quot;手动更新&quot;功能
               </Text>
               <Button
                 type="primary"

@@ -4,7 +4,7 @@
 
 import logging
 
-from core.config import get_database_config
+from core.config import DATABASE_CONFIG
 from core.database import get_db_session_dependency
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import inspect, text
@@ -30,9 +30,7 @@ async def get_flow(
     注意：period格式需与爬虫创建的表名格式一致
     """
     table_name = f"{flow_type}_{market_type}_{period}".replace("-", "_")
-    db_config = get_database_config()
-
-    logger.info(f"查询表: {table_name}, 数据库: {db_config['database']}")
+    logger.info(f"查询表: {table_name}, 数据库: {DATABASE_CONFIG['database']}")
 
     try:
         # 检查表是否存在
