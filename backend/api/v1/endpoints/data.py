@@ -5,7 +5,7 @@
 from fastapi import APIRouter
 from services.common.cache_service import get_data_ready
 
-router = APIRouter(prefix="/api", tags=["data"])
+router = APIRouter(prefix="/data", tags=["data"])
 
 
 @router.get("/data_ready")

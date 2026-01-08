@@ -11,7 +11,7 @@ from sqlalchemy import inspect, text
 from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/flow", tags=["flow"])
+router = APIRouter(prefix="/flow", tags=["flow"])
 
 
 @router.get("")

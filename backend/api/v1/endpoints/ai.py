@@ -11,7 +11,7 @@ from fastapi.responses import StreamingResponse
 
 from api.v1.endpoints.auth import get_current_user
 
-router = APIRouter(prefix="/api/ai", tags=["ai"])
+router = APIRouter(prefix="/ai", tags=["ai"])
 
 
 async def generate_stream_response(flow_data, user_message, style, history=None):

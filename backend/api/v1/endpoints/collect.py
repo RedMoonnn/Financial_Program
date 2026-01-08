@@ -7,7 +7,7 @@ from fastapi import APIRouter, BackgroundTasks, Body, Depends, HTTPException, st
 
 from api.v1.endpoints.auth import get_admin_user
 
-router = APIRouter(prefix="/api", tags=["collect"])
+router = APIRouter(prefix="/collect", tags=["collect"])
 
 
 @router.post("/collect_v2")
