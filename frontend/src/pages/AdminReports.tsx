@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, message, Popconfirm, Space, Typography, Divider } from 'antd';
-import { DeleteOutlined, FileTextOutlined, DownloadOutlined } from '@ant-design/icons';
+import { Card, Table, Button, Popconfirm, Space, Typography, Divider, App, Tag } from 'antd';
+import { DeleteOutlined, FileTextOutlined, DownloadOutlined, UserOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import { getToken } from '../auth';
 import type { ColumnsType } from 'antd/es/table';
 
 const { Title, Text } = Typography;
@@ -9,9 +10,14 @@ const { Title, Text } = Typography;
 interface ReportFile {
   file_name: string;
   url: string;
+  created_at?: string;
+  user_id?: number;
+  user_email?: string;
+  username?: string;
 }
 
 const AdminReports: React.FC = () => {
+  const { message } = App.useApp();
   const [reports, setReports] = useState<ReportFile[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -19,9 +25,26 @@ const AdminReports: React.FC = () => {
   const fetchReports = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/report/minio_list');
+      const token = getToken();
+      const response = await axios.get('/api/report/minio_list', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       if (response.data) {
-        setReports(response.data);
+        // 按创建时间倒序排序
+        const sorted = [...response.data].sort((a, b) => {
+          if (a.created_at && b.created_at) {
+            return b.created_at.localeCompare(a.created_at);
+          } else if (a.created_at) {
+            return -1;
+          } else if (b.created_at) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        setReports(sorted);
       }
     } catch (error: any) {
       const errorMsg = error.response?.data?.detail || '获取报告列表失败';
@@ -37,11 +60,19 @@ const AdminReports: React.FC = () => {
   // 删除报告
   const handleDelete = async (fileName: string) => {
     try {
-      await axios.delete('/api/report/delete', {
-        params: { file_name: fileName }
+      const token = getToken();
+      const res = await axios.delete('/api/report/delete', {
+        params: { file_name: fileName },
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
-      message.success(`已删除 ${fileName}`);
-      fetchReports(); // 刷新列表
+      if (res.data && res.data.success) {
+        message.success(`已删除 ${fileName}`);
+        fetchReports(); // 刷新列表
+      } else {
+        message.error(res.data?.msg || '删除失败');
+      }
     } catch (error: any) {
       const errorMsg = error.response?.data?.detail || error.response?.data?.msg || '删除失败';
       message.error(errorMsg);
@@ -64,6 +95,29 @@ const AdminReports: React.FC = () => {
           <span>{text}</span>
         </Space>
       ),
+    },
+    {
+      title: '所有者',
+      key: 'owner',
+      width: 200,
+      render: (_, record) => {
+        if (record.user_email) {
+          return (
+            <Space>
+              <UserOutlined />
+              <span>{record.username || record.user_email}</span>
+            </Space>
+          );
+        }
+        return <Tag>未知</Tag>;
+      },
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      width: 180,
+      render: (text: string) => text ? new Date(text).toLocaleString('zh-CN') : '-',
     },
     {
       title: '操作',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, ConfigProvider, theme } from 'antd';
+import { Layout, Menu, ConfigProvider, theme, App as AntdApp } from 'antd';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
   HomeOutlined,
@@ -8,7 +8,8 @@ import {
   UserOutlined,
   DatabaseOutlined,
   FolderOutlined,
-  LogoutOutlined
+  LogoutOutlined,
+  TeamOutlined
 } from '@ant-design/icons';
 import Home from './pages/Home';
 import Reports from './pages/Reports';
@@ -16,9 +17,11 @@ import Chat from './pages/Chat';
 import UserCenter from './pages/UserCenter';
 import AdminCollect from './pages/AdminCollect';
 import AdminReports from './pages/AdminReports';
+import AdminUsers from './pages/AdminUsers';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Forgot from './pages/Forgot';
+import EmailPreview from './pages/EmailPreview';
 import './index.css';
 import { isLogin, removeToken, isAdminSync, getUserInfo } from './auth';
 
@@ -102,7 +105,8 @@ const MainLayout: React.FC = () => {
   // 管理员专属菜单项
   const adminMenuItems = [
     { key: 'admin-collect', icon: <DatabaseOutlined />, label: '数据采集', path: '/admin/collect' },
-    { key: 'admin-reports', icon: <FolderOutlined />, label: '报告管理', path: '/admin/reports' }
+    { key: 'admin-reports', icon: <FolderOutlined />, label: '报告管理', path: '/admin/reports' },
+    { key: 'admin-users', icon: <TeamOutlined />, label: '用户管理', path: '/admin/users' }
   ];
 
   // 合并菜单项
@@ -215,6 +219,7 @@ const MainLayout: React.FC = () => {
             <Route path="/user" element={<PrivateRoute element={<UserCenter />} />} />
             <Route path="/admin/collect" element={<AdminRoute element={<AdminCollect />} />} />
             <Route path="/admin/reports" element={<AdminRoute element={<AdminReports />} />} />
+            <Route path="/admin/users" element={<AdminRoute element={<AdminUsers />} />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
@@ -237,8 +242,8 @@ const App: React.FC = () => (
       },
       components: {
         Layout: {
-          colorBgHeader: '#ffffff',
-          colorBgBody: '#f0f2f5',
+          headerBg: '#ffffff',
+          bodyBg: '#f0f2f5',
         },
         Menu: {
           itemColor: '#666',
@@ -250,14 +255,17 @@ const App: React.FC = () => (
       }
     }}
   >
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot" element={<Forgot />} />
-        <Route path="/*" element={<MainLayout />} />
-      </Routes>
-    </Router>
+    <AntdApp>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot" element={<Forgot />} />
+          <Route path="/email-preview" element={<EmailPreview />} />
+          <Route path="/*" element={<MainLayout />} />
+        </Routes>
+      </Router>
+    </AntdApp>
   </ConfigProvider>
 );
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs, Card, Button, Spin, message, Empty, Table, Tag } from 'antd';
+import { Tabs, Card, Button, Spin, Empty, Table, Tag, App } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import axios from 'axios';
 import type { ColumnsType } from 'antd/es/table';
@@ -305,6 +305,7 @@ function getSortedChartOption(data: TableRow[]): any {
 }
 
 const Home: React.FC = () => {
+  const { message } = App.useApp();
   // 多级Tab状态
   const [flowChoice, setFlowChoice] = useState(1); // 1:个股 2:板块
   const [marketChoice, setMarketChoice] = useState(0); // 0~7
@@ -411,7 +412,7 @@ const Home: React.FC = () => {
       }
 
       console.log('采集参数:', body);
-      const res = await axios.post('/api/collect_v2', body);
+      const res = await axios.post('/api/collect/collect_v2', body);
       // 直接用采集返回数据渲染
       if (res.data && res.data.data) {
         setTableData(res.data.data);
@@ -435,7 +436,7 @@ const Home: React.FC = () => {
   // 多级Tab渲染
   return (
     <div style={{ width: '100%', paddingBottom: 32 }}>
-      <Card bordered={false} style={{ marginBottom: 24, borderRadius: 8 }}>
+      <Card variant="borderless" style={{ marginBottom: 24, borderRadius: 8 }}>
         <Tabs
           className="custom-tabs"
           activeKey={String(flowChoice)}
@@ -487,7 +488,7 @@ const Home: React.FC = () => {
                               )}
                             </div>
 
-                            <Card bordered={false} style={{ marginBottom: 24, boxShadow: 'none', border: '1px solid #f0f0f0' }}>
+                            <Card variant="borderless" style={{ marginBottom: 24, boxShadow: 'none', border: '1px solid #f0f0f0' }}>
                               {loading ? (
                                 <div style={{ textAlign: 'center', padding: '60px' }}>
                                   <Spin size="large" />
@@ -504,14 +505,14 @@ const Home: React.FC = () => {
                               )}
                             </Card>
 
-                            <Card bordered={false} style={{ padding: 0, boxShadow: 'none' }}>
+                            <Card variant="borderless" style={{ padding: 0, boxShadow: 'none' }}>
                               {tableData.length > 0 ? (
                                 <Table
                                   className="custom-tight-table"
                                   columns={columns}
                                   dataSource={tableData}
                                   rowKey="code"
-                                  bordered={false}
+                                  variant="borderless"
                                   pagination={{ pageSize: 50, showSizeChanger: true }}
                                   scroll={{ x: 'max-content' }}
                                   size="middle"

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Card, Button, message, Space, Typography, Divider, Tag } from 'antd';
+import { Card, Button, Space, Typography, Divider, Tag, App } from 'antd';
 import { PlayCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 const { Title, Text } = Typography;
 
 const AdminCollect: React.FC = () => {
+  const { message } = App.useApp();
   const [loading, setLoading] = useState(false);
   const [collectAllLoading, setCollectAllLoading] = useState(false);
 
@@ -14,7 +15,7 @@ const AdminCollect: React.FC = () => {
     setLoading(true);
     try {
       // 默认采集：个股资金流 - 全部A股 - 今日 - 1页
-      const response = await axios.post('/api/collect_v2', {
+      const response = await axios.post('/api/collect/collect_v2', {
         flow_choice: 1,
         market_choice: 1,
         day_choice: 1,
@@ -35,7 +36,7 @@ const AdminCollect: React.FC = () => {
   const handleCollectAll = async () => {
     setCollectAllLoading(true);
     try {
-      await axios.post('/api/collect_all_v2');
+      await axios.post('/api/collect/collect_all_v2');
       message.success('全量采集任务已启动，正在后台执行...');
     } catch (error: any) {
       const errorMsg = error.response?.data?.detail || '启动全量采集失败';

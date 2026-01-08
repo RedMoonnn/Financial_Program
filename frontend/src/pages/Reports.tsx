@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { List, Button, message, Popconfirm } from 'antd';
+import { List, Button, Popconfirm, App } from 'antd';
 import axios from 'axios';
+import { getToken } from '../auth';
 
 interface Report {
   file_name: string;
@@ -13,11 +14,17 @@ const getMinioDownloadUrl = (fileName: string) =>
   `http://192.168.211.99:9001/api/v1/buckets/data-financial-agent/objects/download?prefix=${encodeURIComponent(fileName)}&version_id=null`;
 
 const Reports: React.FC = () => {
+  const { message } = App.useApp();
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchReports = () => {
-    axios.get('/api/report/minio_list')
+    const token = getToken();
+    axios.get('/api/report/minio_list', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
       .then(res => {
         // 严格按created_at时间戳倒序排序，无created_at的排在最后
         const sorted = [...res.data].sort((a, b) => {
@@ -45,7 +52,13 @@ const Reports: React.FC = () => {
   const handleDelete = async (fileName: string) => {
     setLoading(true);
     try {
-      const res = await axios.delete('/api/report/delete', { params: { file_name: fileName } });
+      const token = getToken();
+      const res = await axios.delete('/api/report/delete', {
+        params: { file_name: fileName },
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       if (res.data && res.data.success) {
         message.success('删除成功');
         fetchReports();
