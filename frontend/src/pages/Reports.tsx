@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { List, Button, message, Tag, Popconfirm } from 'antd';
+import { List, Button, message, Popconfirm } from 'antd';
 import axios from 'axios';
 
 interface Report {

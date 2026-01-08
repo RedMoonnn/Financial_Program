@@ -56,7 +56,7 @@ const Forgot: React.FC = () => {
               { required: true, message: '请再次输入新密码' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || form.getFieldValue('new_password') === value) {
+                  if (!value || getFieldValue('new_password') === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject(new Error('两次输入的新密码不一致'));

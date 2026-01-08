@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, message, Popconfirm, Space, Typography, Tag, Divider } from 'antd';
+import { Card, Table, Button, message, Popconfirm, Space, Typography, Divider } from 'antd';
 import { DeleteOutlined, FileTextOutlined, DownloadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import type { ColumnsType } from 'antd/es/table';
@@ -49,7 +49,7 @@ const AdminReports: React.FC = () => {
   };
 
   // 下载报告
-  const handleDownload = (url: string, fileName: string) => {
+  const handleDownload = (url: string) => {
     window.open(url, '_blank');
   };
 
@@ -74,7 +74,7 @@ const AdminReports: React.FC = () => {
           <Button
             type="link"
             icon={<DownloadOutlined />}
-            onClick={() => handleDownload(record.url, record.file_name)}
+            onClick={() => handleDownload(record.url)}
           >
             下载
           </Button>

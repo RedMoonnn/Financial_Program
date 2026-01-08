@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs, Card, Button, Spin, message, Row, Col, Empty, Table, Tag } from 'antd';
+import { Tabs, Card, Button, Spin, message, Empty, Table, Tag } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import axios from 'axios';
 import type { ColumnsType } from 'antd/es/table';
@@ -218,39 +218,6 @@ const columns: ColumnsType<TableRow> = [
     ]
   }
 ];
-
-// 主内容区样式
-const mainContainerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  width: '100%',
-  minHeight: '100vh',
-  padding: '32px 0',
-  boxSizing: 'border-box',
-};
-
-// 表格样式
-const tableStyle: React.CSSProperties = {
-  fontSize: 16,
-  textAlign: 'center',
-  minWidth: 900,
-};
-
-// 统一内容区宽度和padding
-const CONTENT_MAX_WIDTH = 1400;
-const CONTENT_PADDING = 40;
-
-// 定义统一的Card样式
-const cardContainerStyle = {
-  maxWidth: 1400,
-  margin: '0 auto',
-  marginBottom: 32,
-  background: '#fff',
-  borderRadius: 12,
-  boxShadow: '0 2px 12px #f0f1f2',
-  padding: '24px 64px'
-};
 
 function getSortedChartOption(data: TableRow[]): any {
   const sorted = [...data].sort((a, b) => b.main_flow_net_amount - a.main_flow_net_amount);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, Input, Button, List, message, Cascader, Spin, Avatar } from 'antd';
+import { Card, Input, Button, message, Cascader, Spin, Avatar } from 'antd';
 import { UserOutlined, RobotOutlined, ClearOutlined, FileTextOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { getToken } from '../auth';
@@ -7,14 +7,6 @@ import { getToken } from '../auth';
 interface ChatProps {
   context?: any;
 }
-
-// 自动生成41种表单组合
-const flowTypes = ['Stock_Flow', 'Sector_Flow'];
-const marketTypes = [
-  'All_Stocks', 'SH&SZ_A_Shares', 'SH_A_Shares', 'STAR_Market', 'SZ_A_Shares', 'ChiNext_Market', 'SH_B_Shares', 'SZ_B_Shares'
-];
-const detailTypes = ['Industry_Flow', 'Concept_Flow', 'Regional_Flow'];
-const periods = ['today', '3d', '5d', '10d'];
 
 // 中文多级表单映射
 const cascaderOptions = [
@@ -105,7 +97,7 @@ const cascaderOptions = [
 
 const CHAT_HISTORY_KEY = 'financial_chat_history';
 
-const Chat: React.FC<ChatProps> = ({ context }) => {
+const Chat: React.FC<ChatProps> = () => {
   const [input, setInput] = useState('');
   const [selectedTableArr, setSelectedTableArr] = useState<string[] | undefined>();
   const [chatLoading, setChatLoading] = useState(false);
