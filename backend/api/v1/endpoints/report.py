@@ -6,14 +6,16 @@ import json
 
 import redis
 from core.config import REDIS_CONFIG
+from core.database import get_db_session
 from core.storage import minio_storage
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
+from models.models import User
 from services.ai import report
 from services.report.report_service import ReportService
 
-from api.v1.endpoints.auth import get_admin_user, get_current_user
+from api.v1.endpoints.auth import get_current_user
 
-router = APIRouter(prefix="/api/report", tags=["report"])
+router = APIRouter(prefix="/report", tags=["report"])
 
 
 @router.get("/list")
@@ -98,40 +100,97 @@ def report_history(user=Depends(get_current_user)):
 
 
 @router.get("/minio_list")
-def report_minio_list(admin_user=Depends(get_admin_user)):
+def report_minio_list(user=Depends(get_current_user)):
     """
-    获取MinIO中的报告文件列表（需要管理员权限）
+    获取报告文件列表
+    - 管理员：返回所有用户的报告，包含用户信息
+    - 普通用户：只返回自己的报告
     """
     try:
-        bucket = minio_storage.bucket
-        files = minio_storage.list_files(bucket)
+        is_admin = user.is_admin == 1
+
+        # 根据权限获取报告列表
+        if is_admin:
+            reports = ReportService.list_all_reports()
+        else:
+            reports = ReportService.list_reports(user.id)
+
+        # 获取用户信息映射（管理员需要显示报告所有者）
+        user_map = {}
+        if is_admin:
+            with get_db_session() as session:
+                user_ids = {r.user_id for r in reports}
+                users = session.query(User).filter(User.id.in_(user_ids)).all()
+                user_map = {
+                    u.id: {"id": u.id, "email": u.email, "username": u.username} for u in users
+                }
+
         result = []
-        for f in files:
-            if f.endswith(".md"):
-                try:
-                    url = minio_storage.get_image_url(f)
-                except Exception as e:
-                    url = f"error: {e}"
-                result.append({"file_name": f, "url": url})
+        for r in reports:
+            try:
+                url = minio_storage.get_image_url(r.file_name)
+            except Exception as e:
+                url = f"error: {e}"
+
+            report_item = {
+                "file_name": r.file_name,
+                "url": url,
+                "created_at": str(r.created_at) if r.created_at else None,
+            }
+
+            # 管理员可以看到报告所有者信息
+            if is_admin:
+                owner = user_map.get(r.user_id, {})
+                report_item["user_id"] = r.user_id
+                report_item["user_email"] = owner.get("email", "未知")
+                report_item["username"] = owner.get("username")
+
+            result.append(report_item)
+
         return result
     except Exception as e:
-        print(f"[report_minio_list] error: {e}")
+        import logging
+
+        logging.getLogger(__name__).error(f"[report_minio_list] error: {e}", exc_info=True)
         return []
 
 
 @router.delete("/delete")
 def report_delete(
     file_name: str = Query(..., description="文件名"),
-    admin_user=Depends(get_admin_user),  # 需要管理员权限
+    user=Depends(get_current_user),
 ):
     """
-    删除报告文件（需要管理员权限）
+    删除报告文件
+    - 管理员：可以删除任何报告
+    - 普通用户：只能删除自己的报告
 
     - **file_name**: 要删除的文件名
     """
     try:
-        bucket = minio_storage.bucket
-        minio_storage.client.remove_object(bucket, file_name)
+        is_admin = user.is_admin == 1
+
+        # 验证权限并删除数据库记录
+        try:
+            ReportService.delete_report(file_name, user.id, is_admin)
+        except PermissionError as e:
+            return {"success": False, "msg": str(e)}
+        except Exception as e:
+            return {"success": False, "msg": f"删除数据库记录失败: {str(e)}"}
+
+        # 删除MinIO中的文件
+        try:
+            bucket = minio_storage.bucket
+            minio_storage.client.remove_object(bucket, file_name)
+        except Exception as e:
+            # 即使MinIO删除失败，数据库记录已删除，记录错误但不返回失败
+            import logging
+
+            logging.getLogger(__name__).error(f"删除MinIO文件失败: {e}", exc_info=True)
+
         return {"success": True, "msg": f"已删除 {file_name}"}
     except Exception as e:
+        import logging
+
+        logging.getLogger(__name__).error(f"[report_delete] error: {e}", exc_info=True)
         return {"success": False, "msg": str(e)}
