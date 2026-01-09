@@ -59,7 +59,7 @@ const AdminReports: React.FC = () => {
           <Button
             type="link"
             icon={<DownloadOutlined />}
-            onClick={() => downloadReport(record.url)}
+            onClick={() => downloadReport(record.url, record.file_name)}
           >
             下载
           </Button>

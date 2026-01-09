@@ -1,6 +1,5 @@
 import json
 import os
-import re
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -9,6 +8,23 @@ load_dotenv()
 
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
 DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
+
+# 从配置中获取DeepSeek参数设置
+try:
+    from core.config import deepseek_settings
+
+    DEFAULT_MAX_TOKENS = deepseek_settings.max_tokens
+    DEFAULT_TEMPERATURE = deepseek_settings.temperature
+    DEFAULT_TOP_P = deepseek_settings.top_p
+    DEFAULT_FREQUENCY_PENALTY = deepseek_settings.frequency_penalty
+    DEFAULT_PRESENCE_PENALTY = deepseek_settings.presence_penalty
+except ImportError:
+    # 如果配置模块不可用，使用默认值
+    DEFAULT_MAX_TOKENS = 8192
+    DEFAULT_TEMPERATURE = 0.7
+    DEFAULT_TOP_P = 0.95
+    DEFAULT_FREQUENCY_PENALTY = 0.0
+    DEFAULT_PRESENCE_PENALTY = 0.0
 
 
 class DeepseekAgent:
@@ -27,18 +43,16 @@ class DeepseekAgent:
             except (json.JSONDecodeError, ValueError):
                 return None
 
-        # 过滤掉无效对话（如只有"你好"的简单对话）
+        # 过滤掉无效对话
         valid_history = []
-        for item in history:
+        for i, item in enumerate(history):
             if isinstance(item, dict):
                 question = item.get("question", "").strip()
+                # 保留最后一条消息，即使是简单的问候
+                is_last = i == len(history) - 1
 
-                # 过滤掉过于简单的对话
-                if (
-                    len(question) > 3
-                    and question.lower() not in ["你好", "hello", "hi", "test"]
-                    and not question.startswith("你好")
-                ):
+                # 过滤条件
+                if len(question) > 1 or is_last:
                     valid_history.append(item)
 
         # 只保留最近的几条对话
@@ -47,111 +61,271 @@ class DeepseekAgent:
     @staticmethod
     def build_prompt(flow_data, user_message, history=None, style="专业"):
         """
-        优化的prompt构建：限制历史对话长度，避免token溢出
+        优化的prompt构建：优先回答用户的具体问题，然后结合资金流数据给出分析
         """
         # 清理历史对话
         cleaned_history = DeepseekAgent.clean_history(history)
 
-        prompt = f"""
-你是一名专业金融智能顾问，请结合下方资金流数据，用自然、通俗的语言为用户分析并给出建议。
-如数据不足，请温和提示用户补充信息。
-
-【资金流数据】
-{json.dumps(flow_data, ensure_ascii=False, indent=2)}
-
-【用户问题】
-{user_message}
+        # 构建数据部分 - 仅在有数据时添加
+        data_section = ""
+        if flow_data:
+            data_str = json.dumps(flow_data, ensure_ascii=False, indent=2)
+            data_section = f"""
+### 📊 相关资金流数据
+以下数据仅作为回答的参考依据，请根据用户问题判断是否需要使用：
+```json
+{data_str}
+```
 """
 
-        # 只添加清理后的历史对话
+        # 优化后的 prompt 结构：采用结构化提示词
+        prompt = f"""
+### 🎯 用户核心问题
+{user_message}
+
+{data_section}
+
+### 📝 回答原则
+1. **优先响应问题**：直接针对用户的核心问题进行回答，不要顾左右而言他。
+2. **数据驱动分析**：
+   - 如果用户问题涉及具体的股票/板块，且上方【相关资金流数据】中有对应数据，请务必结合数据（如主力净流入、超大单占比等）进行量化分析。
+   - 如果数据与问题无关（例如用户问"什么是股票"），请忽略数据，仅利用你的专业知识回答。
+3. **输出风格**：
+   - 请使用**{style}**风格。
+   - 语言简练，逻辑清晰，关键结论可以加粗。
+   - 避免堆砌过于晦涩的术语，必要时进行解释。
+"""
+
+        # 添加历史对话上下文
         if cleaned_history:
             # 只保留关键信息，减少token消耗
             history_summary = []
             for item in cleaned_history:
                 q = (
-                    item.get("question", "")[:50] + "..."
-                    if len(item.get("question", "")) > 50
+                    item.get("question", "")[:100] + "..."
+                    if len(item.get("question", "")) > 100
                     else item.get("question", "")
                 )
                 a = item.get("answer", "")
+                # 处理 answer 可能是 dict 的情况
                 if isinstance(a, dict):
-                    a = a.get("advice", str(a))[:100] + "..." if len(str(a)) > 100 else str(a)
-                history_summary.append(f"Q: {q} | A: {a}")
+                    advice = a.get("text") or a.get("advice") or str(a)
+                    a_text = str(advice)[:200]
+                else:
+                    a_text = str(a)[:200]
 
-            prompt += "\n【最近对话】\n" + "\n".join(history_summary)
+                history_summary.append(f"User: {q}\nAssistant: {a_text}...")
 
-        prompt += f"\n请用{style}风格作答。"
-        # 检查prompt长度，如果过长则截断
-        if len(prompt) > 8000:  # 设置合理的长度限制
+            prompt += "\n### 🕒 最近对话上下文\n" + "\n".join(history_summary)
+
+        # 检查prompt长度限制（基于token估算，1 token ≈ 4字符，64k tokens ≈ 256k字符）
+        # 但为了安全起见，设置一个合理的字符限制（约50k字符，对应约12.5k tokens的输入）
+        max_prompt_chars = 50000
+        if len(prompt) > max_prompt_chars:
             print(
-                f"Warning: Prompt too long ({len(prompt)} chars), truncating...",
+                f"Warning: Prompt too long ({len(prompt)} chars), truncating to {max_prompt_chars} chars...",
                 flush=True,
             )
-            prompt = prompt[:8000] + "\n\n[提示：对话历史过长，已截断]"
+            prompt = prompt[:max_prompt_chars] + "\n\n[提示：由于上下文过长，部分内容已截断]"
         return prompt
 
     @staticmethod
-    def analyze(flow_data, user_message=None, history=None, style="专业"):
-        prompt = DeepseekAgent.build_prompt(flow_data, user_message, history, style)
+    def chat(
+        user_message,
+        system_message=None,
+        stream=False,
+        max_tokens=None,
+        temperature=None,
+        top_p=None,
+        frequency_penalty=None,
+        presence_penalty=None,
+    ):
+        """
+        使用 deepseek-chat 模型进行快速对话（非推理模型，速度更快）
+        适用于报告生成等不需要推理过程的场景
+
+        Args:
+            user_message: 用户消息
+            system_message: 系统消息（可选）
+            stream: 是否使用流式输出
+            max_tokens: 最大输出token数（默认8192，最大支持8192）
+            temperature: 温度参数，控制输出的随机性（0-2，越高越随机，默认0.7）
+            top_p: 核采样参数，控制采样的多样性（0-1，默认0.95）
+            frequency_penalty: 频率惩罚，减少重复内容（-2到2，默认0.0）
+            presence_penalty: 存在惩罚，鼓励新话题（-2到2，默认0.0）
+
+        Returns:
+            如果 stream=False: 返回完整文本字符串
+            如果 stream=True: 返回生成器，每次yield文本内容
+        """
+        client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
+
+        messages = []
+        if system_message:
+            messages.append({"role": "system", "content": system_message})
+        messages.append({"role": "user", "content": user_message})
+
+        # 使用配置的默认值或传入的参数
+        if max_tokens is None:
+            max_tokens = DEFAULT_MAX_TOKENS
+        if temperature is None:
+            temperature = DEFAULT_TEMPERATURE
+        if top_p is None:
+            top_p = DEFAULT_TOP_P
+        if frequency_penalty is None:
+            frequency_penalty = DEFAULT_FREQUENCY_PENALTY
+        if presence_penalty is None:
+            presence_penalty = DEFAULT_PRESENCE_PENALTY
 
         request_payload = {
             "model": "deepseek-chat",
-            "messages": [
-                {
-                    "role": "system",
-                    "content": "你是一名专业金融分析师，善于资金流分析和投资建议。",
-                },
-                {"role": "user", "content": prompt},
-            ],
-            "stream": False,
+            "messages": messages,
+            "stream": stream,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "top_p": top_p,
+            "frequency_penalty": frequency_penalty,
+            "presence_penalty": presence_penalty,
         }
-        print(
-            "\n===== Deepseek Request Payload =====\n"
-            + json.dumps(request_payload, ensure_ascii=False, indent=2)
-            + "\n===============================\n",
-            flush=True,
-        )
-        client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
-        response = client.chat.completions.create(**request_payload)
-        print(
-            "\n===== Deepseek Response Object =====\n"
-            + str(response)
-            + "\n===============================\n",
-            flush=True,
-        )
-        content = response.choices[0].message.content
-        # 自动清洗和提取标准JSON
+
         try:
-            return json.loads(content)
-        except Exception:
-            match = re.search(r"\{[\s\S]*\}", content)
-            if match:
-                try:
-                    return json.loads(match.group(0))
-                except Exception:
-                    pass
-            # 新增：如果content为自然语言，直接返回advice字段
-            return {"advice": content.strip()}
+            if stream:
+                # 流式输出
+                response = client.chat.completions.create(**request_payload)
+                for chunk in response:
+                    if not chunk.choices or len(chunk.choices) == 0:
+                        continue
+                    delta = chunk.choices[0].delta
+                    if delta and hasattr(delta, "content") and delta.content:
+                        yield delta.content
+            else:
+                # 非流式输出，直接返回完整结果
+                response = client.chat.completions.create(**request_payload)
+                return response.choices[0].message.content
+        except Exception as e:
+            import traceback
+
+            error_detail = traceback.format_exc()
+            print(f"Chat error: {e}\n{error_detail}", flush=True)
+            if stream:
+                yield f"AI服务调用失败: {str(e)}"
+            else:
+                return f"AI服务调用失败: {str(e)}"
 
     @staticmethod
-    def analyze_stream(flow_data, user_message=None, history=None, style="专业"):
+    def analyze(
+        flow_data,
+        user_message=None,
+        history=None,
+        style="专业",
+        max_tokens=None,
+        temperature=None,
+        top_p=None,
+        frequency_penalty=None,
+        presence_penalty=None,
+    ):
+        """
+        非流式分析，直接返回完整结果
+        使用 deepseek-reasoner 模型（推理模型，速度较慢但更准确）
+
+        Args:
+            flow_data: 资金流数据
+            user_message: 用户消息
+            history: 历史对话记录
+            style: 输出风格
+            max_tokens: 最大输出token数（默认8192，最大支持8192）
+            temperature: 温度参数，控制输出的随机性（0-2，越高越随机，默认0.7）
+            top_p: 核采样参数，控制采样的多样性（0-1，默认0.95）
+            frequency_penalty: 频率惩罚，减少重复内容（-2到2，默认0.0）
+            presence_penalty: 存在惩罚，鼓励新话题（-2到2，默认0.0）
+        """
+        full_text = ""
+        full_thinking = ""
+
+        # 复用 analyze_stream 获取结果
+        try:
+            stream = DeepseekAgent.analyze_stream(
+                flow_data,
+                user_message,
+                history,
+                style,
+                max_tokens,
+                temperature,
+                top_p,
+                frequency_penalty,
+                presence_penalty,
+            )
+
+            for chunk in stream:
+                if chunk["type"] == "text":
+                    full_text += chunk["content"]
+                elif chunk["type"] == "thinking":
+                    full_thinking += chunk["content"]
+                elif chunk["type"] == "error":
+                    return {"advice": f"AI分析出错: {chunk['content']}", "thinking": full_thinking}
+
+            return {"advice": full_text, "thinking": full_thinking}
+
+        except Exception as e:
+            return {"advice": f"AI服务调用失败: {str(e)}", "thinking": ""}
+
+    @staticmethod
+    def analyze_stream(
+        flow_data,
+        user_message=None,
+        history=None,
+        style="专业",
+        max_tokens=None,
+        temperature=None,
+        top_p=None,
+        frequency_penalty=None,
+        presence_penalty=None,
+    ):
         """
         流式分析，支持区分 Thinking 和 text
         返回一个生成器，每次 yield 一个包含 type 和 content 的字典
         type 可以是 'thinking' 或 'text'
+
+        Args:
+            flow_data: 资金流数据
+            user_message: 用户消息
+            history: 历史对话记录
+            style: 输出风格
+            max_tokens: 最大输出token数（默认8192，最大支持8192）
+            temperature: 温度参数，控制输出的随机性（0-2，越高越随机，默认0.7）
+            top_p: 核采样参数，控制采样的多样性（0-1，默认0.95）
+            frequency_penalty: 频率惩罚，减少重复内容（-2到2，默认0.0）
+            presence_penalty: 存在惩罚，鼓励新话题（-2到2，默认0.0）
         """
         prompt = DeepseekAgent.build_prompt(flow_data, user_message, history, style)
 
+        # 使用配置的默认值或传入的参数
+        if max_tokens is None:
+            max_tokens = DEFAULT_MAX_TOKENS
+        if temperature is None:
+            temperature = DEFAULT_TEMPERATURE
+        if top_p is None:
+            top_p = DEFAULT_TOP_P
+        if frequency_penalty is None:
+            frequency_penalty = DEFAULT_FREQUENCY_PENALTY
+        if presence_penalty is None:
+            presence_penalty = DEFAULT_PRESENCE_PENALTY
+
         request_payload = {
-            "model": "deepseek-chat",
+            "model": "deepseek-reasoner",
             "messages": [
                 {
                     "role": "system",
-                    "content": "你是一名专业金融分析师，善于资金流分析和投资建议。",
+                    "content": "你是一名专业金融分析师，善于资金流分析和投资建议。请优先直接回答用户的具体问题，然后结合数据给出详细分析。",
                 },
                 {"role": "user", "content": prompt},
             ],
             "stream": True,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "top_p": top_p,
+            "frequency_penalty": frequency_penalty,
+            "presence_penalty": presence_penalty,
         }
 
         client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
@@ -168,14 +342,14 @@ class DeepseekAgent:
                     continue
 
                 # 检查是否有 thinking 内容（Deepseek 可能在不同字段中）
-                # 尝试多种可能的字段名
+                # DeepSeek API 返回 reasoning_content
                 thinking_content = None
-                if hasattr(delta, "thinking"):
-                    thinking_content = getattr(delta, "thinking", None)
-                elif hasattr(delta, "reasoning"):
-                    thinking_content = getattr(delta, "reasoning", None)
-                elif isinstance(delta, dict) and "thinking" in delta:
-                    thinking_content = delta.get("thinking")
+                if hasattr(delta, "reasoning_content") and delta.reasoning_content:
+                    thinking_content = delta.reasoning_content
+                elif hasattr(delta, "thinking") and delta.thinking:
+                    thinking_content = delta.thinking
+                elif hasattr(delta, "reasoning") and delta.reasoning:
+                    thinking_content = delta.reasoning
 
                 if thinking_content:
                     yield {"type": "thinking", "content": thinking_content}
@@ -227,4 +401,4 @@ if __name__ == "__main__":
     ]
     user_message = "请帮我分析一下浦发银行今日的资金流情况"
     print("\n=== 本地测试AI对话 ===\n")
-    result = DeepseekAgent.analyze(flow_data, user_message=user_message, history=None, style="专业")
+    print("请使用 analyze_stream 进行流式分析测试")

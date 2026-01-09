@@ -1,6 +1,4 @@
 import os
-from datetime import timedelta
-from urllib.parse import urlparse, urlunparse
 
 from dotenv import load_dotenv
 from minio import Minio
@@ -37,35 +35,23 @@ class MinioStorage:
 
     def get_image_url(self, object_name):
         """
-        生成预签名URL，默认1天有效
-        如果设置了MINIO_PUBLIC_ENDPOINT，会将URL中的主机名替换为公共端点
-        这样浏览器就可以访问了（例如：将 minio:9000 替换为 localhost:9000）
+        [已弃用预签名URL] 改为返回后端代理下载地址
+
+        弃用原因：
+        1. 签名不匹配 (SignatureDoesNotMatch): Docker容器内(minio:9000)生成的签名基于内部Host，
+           但在宿主机(localhost:9000)访问时Host不一致，导致MinIO拒绝请求。
+        2. 网络隔离: 浏览器可能无法直接访问Docker内部网络中的MinIO地址。
+        3. 浏览器行为: 预签名URL通常会导致浏览器尝试预览而不是下载。
+
+        当前方案:
+        返回指向后端 /api/v1/report/download 的代理接口。
+        由后端在内网直接读取MinIO流并转发给前端，支持自定义文件名和强制下载。
         """
-        # 生成预签名URL
-        url = self.client.presigned_get_object(
-            self.bucket, object_name, expires=timedelta(seconds=60 * 60 * 24)
-        )
+        import urllib.parse
 
-        # 如果公共端点与内部端点不同，替换URL中的主机名
-        internal_endpoint = os.getenv("MINIO_ENDPOINT", "localhost:9000")
-        if self.public_endpoint != internal_endpoint:
-            parsed = urlparse(url)
-            # 替换主机名和端口
-            new_netloc = self.public_endpoint
-            # 保持协议（http/https）
-            new_url = urlunparse(
-                (
-                    parsed.scheme,
-                    new_netloc,
-                    parsed.path,
-                    parsed.params,
-                    parsed.query,
-                    parsed.fragment,
-                )
-            )
-            return new_url
-
-        return url
+        encoded_name = urllib.parse.quote(object_name)
+        # 返回相对路径，前端配合API_BASE或直接使用
+        return f"/api/v1/report/download?file_name={encoded_name}"
 
     def list_files(self, bucket=None):
         bucket = bucket or self.bucket

@@ -134,6 +134,34 @@ class DatabaseSettings(BaseSettings):
         }
 
 
+class DeepSeekSettings(BaseSettings):
+    """DeepSeek AI 配置"""
+
+    model_config = SettingsConfigDict(env_prefix="DEEPSEEK_")
+
+    max_tokens: int = Field(
+        default=8192, description="最大输出token数（默认8192，最大支持8192，上下文窗口64k）"
+    )
+    max_context_tokens: int = Field(
+        default=64000, description="最大上下文token数（DeepSeek模型支持64k上下文）"
+    )
+    temperature: float = Field(
+        default=0.7,
+        ge=0.0,
+        le=2.0,
+        description="温度参数，控制输出的随机性（0-2，越高越随机，默认0.7）",
+    )
+    top_p: float = Field(
+        default=0.95, ge=0.0, le=1.0, description="核采样参数，控制采样的多样性（0-1，默认0.95）"
+    )
+    frequency_penalty: float = Field(
+        default=0.0, ge=-2.0, le=2.0, description="频率惩罚，减少重复内容（-2到2，默认0.0）"
+    )
+    presence_penalty: float = Field(
+        default=0.0, ge=-2.0, le=2.0, description="存在惩罚，鼓励新话题（-2到2，默认0.0）"
+    )
+
+
 class AppSettings(BaseSettings):
     """应用配置"""
 
@@ -177,6 +205,7 @@ admin_settings = AdminSettings()
 jwt_settings = JWTSettings()
 database_settings = DatabaseSettings()
 app_settings = AppSettings()
+deepseek_settings = DeepSeekSettings()
 
 # 向后兼容的配置字典（保持原有接口）
 REDIS_CONFIG = redis_settings.config_dict

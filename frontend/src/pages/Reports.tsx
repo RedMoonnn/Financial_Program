@@ -20,7 +20,7 @@ const Reports: React.FC = () => {
         renderItem={item => (
           <List.Item
             actions={[
-              <Button type="link" onClick={() => downloadReport(item.url)} key="download">下载</Button>,
+              <Button type="link" onClick={() => downloadReport(item.url, item.file_name)} key="download">下载</Button>,
               <Popconfirm
                 title="确定要删除该报告吗？"
                 onConfirm={() => handleDelete(item.file_name)}

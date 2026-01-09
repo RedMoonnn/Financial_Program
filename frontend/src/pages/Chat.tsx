@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, Input, Button, Cascader, Spin, Avatar, App } from 'antd';
-import { UserOutlined, RobotOutlined, ClearOutlined, FileTextOutlined } from '@ant-design/icons';
+import { UserOutlined, RobotOutlined, ClearOutlined, FileTextOutlined, StopOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { getToken, getUserInfoSync } from '../auth';
 import { getErrorMessage } from '../utils/errorHandler';
@@ -94,15 +94,7 @@ const Chat: React.FC<ChatProps> = () => {
     setIsUserScrolling(!nearBottom);
   };
 
-  useEffect(() => {
-    // 只有在用户没有查看历史（即在底部附近时），才跟随流式输出自动滚动
-    if (!isUserScrolling) {
-      // 使用 requestAnimationFrame 确保 DOM 已更新
-      requestAnimationFrame(() => {
-        scrollToBottom('smooth');
-      });
-    }
-  }, [chatHistory, isUserScrolling]);
+
 
   // 聊天记录持久化（保存到当前用户的key）
   useEffect(() => {
@@ -139,15 +131,51 @@ const Chat: React.FC<ChatProps> = () => {
     return validHistory.slice(-10);
   };
 
+  // 用于控制中断请求
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const handleStopGeneration = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsStreaming(false);
+    setChatLoading(false);
+    setStreamingAnswer({ thinking: '', text: '' });
+    // 更新最后一条消息状态，移除 loading 状态（保留已生成的内容或显示已停止）
+    setChatHistory(prev => {
+      const newHistory = [...prev];
+      if (newHistory.length > 0) {
+        const lastMsg = newHistory[newHistory.length - 1];
+        // 如果已经被标记为完成或错误，就不动了
+        // 否则标记为手动停止
+        newHistory[newHistory.length - 1] = {
+          ...lastMsg,
+          answer: {
+            ...lastMsg.answer, // 保留已生成的 thinking 和 text
+            advice: lastMsg.answer.text || lastMsg.answer.advice || '已停止生成',
+          }
+        };
+      }
+      return newHistory;
+    });
+  };
+
   const handleSend = async () => {
+    // 表名可选
     const tableName = getTableName(selectedTableArr);
-    if (!input.trim() || !tableName) {
-      message.warning('请先选择要分析的表单');
+    if (!input.trim()) {
+      message.warning('请输入问题');
       return;
     }
 
     const question = input;
     setInput('');
+
+    // 立即将用户问题添加到聊天历史中
+    const tempAnswer = { advice: '', thinking: '', text: '' };
+    setChatHistory(prev => [...prev, { question, answer: tempAnswer }]);
+
     setChatLoading(true);
     setIsStreaming(true);
     setStreamingAnswer({ thinking: '', text: '' });
@@ -156,8 +184,16 @@ const Chat: React.FC<ChatProps> = () => {
       setIsUserScrolling(false);
     }
 
+    // 创建新的 AbortController
+    abortControllerRef.current = new AbortController();
+
+    // 滚动到底部显示用户问题
+    setTimeout(() => {
+      scrollToBottom('smooth');
+    }, 100);
+
     try {
-      // 传递清理后的历史对话
+      // 传递清理后的历史对话（不包含刚添加的临时消息）
       const cleanedHistory = cleanChatHistory(chatHistory);
 
       // 使用流式请求
@@ -172,8 +208,9 @@ const Chat: React.FC<ChatProps> = () => {
           message: question,
           table_name: tableName,
           history: cleanedHistory,
-          stream: true,  // 启用流式输出
+          stream: true,
         }),
+        signal: abortControllerRef.current?.signal,
       });
 
       if (!response.ok) {
@@ -207,7 +244,7 @@ const Chat: React.FC<ChatProps> = () => {
             const data = line.slice(6);
 
             if (data === '[DONE]') {
-              // 流结束，保存到聊天历史
+              // 流结束，更新最后一条消息的答案
               if (!currentText && !currentThinking) {
                 message.warning('未获取到有效响应');
               }
@@ -216,17 +253,17 @@ const Chat: React.FC<ChatProps> = () => {
                 thinking: currentThinking,
                 text: currentText,
               };
-              setChatHistory(prev => [...prev, { question, answer: finalAnswer }]);
-              setStreamingAnswer({ thinking: '', text: '' });
-              setIsStreaming(false);
-              setChatLoading(false);
-              // 流结束后，如果用户在底部附近，自动滚动到底部
-              setTimeout(() => {
-                if (chatContainerRef.current && isNearBottom(chatContainerRef.current)) {
-                  scrollToBottom('smooth');
-                  setIsUserScrolling(false);
+              // 更新最后一条消息的答案，而不是添加新消息
+              setChatHistory(prev => {
+                const newHistory = [...prev];
+                if (newHistory.length > 0) {
+                  newHistory[newHistory.length - 1] = { question, answer: finalAnswer };
                 }
-              }, 100);
+                return newHistory;
+              });
+              setStreamingAnswer({ thinking: '', text: '' });
+              setChatLoading(false);
+              setIsStreaming(false);
               return;
             }
 
@@ -239,14 +276,59 @@ const Chat: React.FC<ChatProps> = () => {
                   ...prev,
                   thinking: currentThinking,
                 }));
+                // 实时更新最后一条消息的思考过程
+                setChatHistory(prev => {
+                  const newHistory = [...prev];
+                  if (newHistory.length > 0) {
+                    newHistory[newHistory.length - 1] = {
+                      question,
+                      answer: {
+                        advice: currentText || '',
+                        thinking: currentThinking,
+                        text: currentText,
+                      },
+                    };
+                  }
+                  return newHistory;
+                });
               } else if (chunk.type === 'text') {
                 currentText += chunk.content || '';
                 setStreamingAnswer(prev => ({
                   ...prev,
                   text: currentText,
                 }));
+                // 实时更新最后一条消息的文本内容
+                setChatHistory(prev => {
+                  const newHistory = [...prev];
+                  if (newHistory.length > 0) {
+                    newHistory[newHistory.length - 1] = {
+                      question,
+                      answer: {
+                        advice: currentText || '正在回答...',
+                        thinking: currentThinking,
+                        text: currentText,
+                      },
+                    };
+                  }
+                  return newHistory;
+                });
               } else if (chunk.type === 'error') {
                 message.error(chunk.content || 'AI分析失败');
+                // 更新最后一条消息为错误状态
+                setChatHistory(prev => {
+                  const newHistory = [...prev];
+                  if (newHistory.length > 0) {
+                    newHistory[newHistory.length - 1] = {
+                      question,
+                      answer: {
+                        advice: `错误: ${chunk.content || 'AI分析失败'}`,
+                        thinking: '',
+                        text: '',
+                      },
+                    };
+                  }
+                  return newHistory;
+                });
                 setStreamingAnswer({ thinking: '', text: '' });
                 setIsStreaming(false);
                 setChatLoading(false);
@@ -258,9 +340,36 @@ const Chat: React.FC<ChatProps> = () => {
           }
         }
       }
+
+      // 如果循环正常结束但没有收到 [DONE]（虽然不应该发生，但作为兜底）
+      setStreamingAnswer({ thinking: '', text: '' });
+      setIsStreaming(false);
+      setChatLoading(false);
     } catch (e: any) {
+      if (e.name === 'AbortError') {
+        console.log('生成已因为用户停止而中断');
+        setIsStreaming(false);
+        setChatLoading(false);
+        return;
+      }
       console.error('AI分析失败:', e);
-      message.error(e.message || 'AI分析失败');
+      const errorMsg = e.message || 'AI分析失败';
+      message.error(errorMsg);
+      // 更新最后一条消息为错误状态
+      setChatHistory(prev => {
+        const newHistory = [...prev];
+        if (newHistory.length > 0) {
+          newHistory[newHistory.length - 1] = {
+            question,
+            answer: {
+              advice: `错误: ${errorMsg}`,
+              thinking: '',
+              text: '',
+            },
+          };
+        }
+        return newHistory;
+      });
       setStreamingAnswer({ thinking: '', text: '' });
       setIsStreaming(false);
       setChatLoading(false);
@@ -336,7 +445,7 @@ const Chat: React.FC<ChatProps> = () => {
         {chatHistory.length === 0 && !isStreaming ? (
           <div style={{ textAlign: 'center', marginTop: 100, color: '#999' }}>
             <RobotOutlined style={{ fontSize: 48, marginBottom: 16, color: '#e6f4ff' }} />
-            <p>请选择左上角的表单，然后开始询问AI分析助手</p>
+            <p>请选择上方的表单，然后开始询问AI分析助手</p>
           </div>
         ) : (
           <>
@@ -379,73 +488,16 @@ const Chat: React.FC<ChatProps> = () => {
                       </div>
                     )}
                     {/* Final Answer */}
-                    <div style={{
-                      background: '#f5f5f5',
-                      color: '#333',
-                      padding: '12px 16px',
-                      borderRadius: '0 12px 12px 12px',
-                      lineHeight: 1.6,
-                      overflowX: 'auto'
-                    }}>
-                      <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        components={{
-                          code({ node, inline, className, children, ...props }: any) {
-                            const match = /language-(\w+)/.exec(className || '');
-                            return !inline && match ? (
-                              <SyntaxHighlighter
-                                {...props}
-                                style={oneDark}
-                                language={match[1]}
-                                PreTag="div"
-                              >
-                                {String(children).replace(/\n$/, '')}
-                              </SyntaxHighlighter>
-                            ) : (
-                              <code {...props} className={className} style={{ background: 'rgba(0, 0, 0, 0.06)', padding: '2px 4px', borderRadius: 4, fontFamily: 'monospace' }}>
-                                {children}
-                              </code>
-                            );
-                          }
-                        }}
-                      >
-                        {item.answer?.text || item.answer?.advice || item.answer?.answer || '未获取到分析结果'}
-                      </ReactMarkdown>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {/* Streaming Message */}
-            {isStreaming && (
-              <div style={{ display: 'flex', justifyContent: 'flex-start', gap: 12, marginBottom: 24 }}>
-                <Avatar icon={<RobotOutlined />} style={{ backgroundColor: '#52c41a' }} />
-                <div style={{ maxWidth: '85%' }}>
-                  {streamingAnswer.thinking && (
-                    <div style={{
-                      background: '#f9f9f9',
-                      padding: '8px 12px',
-                      borderRadius: 8,
-                      marginBottom: 8,
-                      fontSize: '0.9em',
-                      color: '#666',
-                      borderLeft: '3px solid #52c41a'
-                    }}>
-                      <div style={{ fontWeight: 'bold', marginBottom: 4, color: '#52c41a' }}>💭 思考中...</div>
-                      <div style={{ whiteSpace: 'pre-wrap' }}>{streamingAnswer.thinking}</div>
-                    </div>
-                  )}
-                  {(streamingAnswer.text || (!streamingAnswer.thinking && !streamingAnswer.text)) && (
-                    <div style={{
-                      background: '#f5f5f5',
-                      color: '#333',
-                      padding: '12px 16px',
-                      borderRadius: '0 12px 12px 12px',
-                      lineHeight: 1.6,
-                      overflowX: 'auto'
-                    }}>
-                      {streamingAnswer.text ? (
+                    {/* Final Answer */}
+                    {(item.answer?.text || item.answer?.advice || item.answer?.answer) && (
+                      <div style={{
+                        background: '#f5f5f5',
+                        color: '#333',
+                        padding: '12px 16px',
+                        borderRadius: '0 12px 12px 12px',
+                        lineHeight: 1.6,
+                        overflowX: 'auto'
+                      }}>
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           components={{
@@ -468,16 +520,14 @@ const Chat: React.FC<ChatProps> = () => {
                             }
                           }}
                         >
-                          {streamingAnswer.text + ' ▍'}
+                          {item.answer?.text || item.answer?.advice || item.answer?.answer || ''}
                         </ReactMarkdown>
-                      ) : (
-                        <div style={{ color: '#999' }}><Spin size="small" /> 正在分析数据...</div>
-                      )}
-                    </div>
-                  )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            )}
+            ))}
             <div ref={messagesEndRef} />
           </>
         )}
@@ -508,18 +558,31 @@ const Chat: React.FC<ChatProps> = () => {
       </Card>
 
       <div style={{ background: '#fff', padding: '16px 24px', borderRadius: 12, boxShadow: '0 -2px 12px rgba(0,0,0,0.03)' }}>
-        <Input.Search
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onSearch={handleSend}
-          enterButton="发送"
-          size="large"
-          loading={chatLoading}
-          placeholder={selectedTableArr && selectedTableArr.length === 3 ? "请输入你的问题..." : "请先选择上方表单数据"}
-          disabled={!selectedTableArr || selectedTableArr.length !== 3 || isStreaming}
-        />
+        <div style={{ display: 'flex', gap: 12 }}>
+          {isStreaming ? (
+            <Button
+              danger
+              size="large"
+              shape="circle"
+              icon={<StopOutlined />}
+              onClick={handleStopGeneration}
+              title="停止生成"
+            />
+          ) : null}
+          <Input.Search
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onSearch={handleSend}
+            enterButton={isStreaming ? false : "发送"}
+            size="large"
+            loading={chatLoading}
+            placeholder={isStreaming ? "AI正在生成回复..." : "请输入你的问题... (可选：先选择下方表单以分析特定数据)"}
+            disabled={isStreaming}
+            style={{ flex: 1 }}
+          />
+        </div>
       </div>
-    </div>
+    </div >
   );
 };
 

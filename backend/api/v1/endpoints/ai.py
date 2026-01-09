@@ -9,7 +9,6 @@ from typing import Optional
 from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 
-from api.middleware import APIResponse
 from api.v1.endpoints.auth import get_current_user
 
 router = APIRouter(prefix="/ai", tags=["ai"])
@@ -68,7 +67,7 @@ async def ai_advice(
             file=sys.stderr,
             flush=True,
         )
-        from services.ai.deepseek import DeepseekAgent
+
         from services.flow.flow_data_query import query_table_data
 
         style = "专业"
@@ -84,52 +83,18 @@ async def ai_advice(
                     "risks": [],
                     "detail": f"请检查爬虫采集与入库流程，确保 {table_name} 有数据。",
                 }
-                if stream:
-                    # 流式返回错误
-                    async def error_stream():
-                        error_chunk = {
-                            "type": "error",
-                            "content": json.dumps(error_response, ensure_ascii=False),
-                        }
-                        yield f"data: {json.dumps(error_chunk, ensure_ascii=False)}\n\n"
-                        yield "data: [DONE]\n\n"
 
-                    return StreamingResponse(
-                        error_stream(),
-                        media_type="text/event-stream",
-                        headers={
-                            "Cache-Control": "no-cache",
-                            "Connection": "keep-alive",
-                            "X-Accel-Buffering": "no",
-                        },
-                    )
-                # 非流式返回错误
-                return APIResponse.error(message="数据缺失", code=404, data=error_response)
+                # 流式返回错误
+                async def error_stream():
+                    error_chunk = {
+                        "type": "error",
+                        "content": json.dumps(error_response, ensure_ascii=False),
+                    }
+                    yield f"data: {json.dumps(error_chunk, ensure_ascii=False)}\n\n"
+                    yield "data: [DONE]\n\n"
 
-            # 只传递核心字段，防止token溢出
-            slim_data = [
-                {
-                    "type": d["type"],
-                    "flow_type": d["flow_type"],
-                    "market_type": d["market_type"],
-                    "period": d["period"],
-                    "data": {
-                        "code": d["data"]["code"],
-                        "name": d["data"]["name"],
-                        "main_flow_net_amount": d["data"]["main_flow_net_amount"],
-                        "main_flow_net_percentage": d["data"]["main_flow_net_percentage"],
-                        "change_percentage": d["data"]["change_percentage"],
-                        "crawl_time": d["data"]["crawl_time"],
-                    },
-                }
-                for d in flow_data
-            ]
-            user_message = message or f"请帮我分析一下表 {table_name} 的资金流情况"
-
-            # 如果启用流式输出
-            if stream:
                 return StreamingResponse(
-                    generate_stream_response(slim_data, user_message, style, history),
+                    error_stream(),
                     media_type="text/event-stream",
                     headers={
                         "Cache-Control": "no-cache",
@@ -138,35 +103,31 @@ async def ai_advice(
                     },
                 )
 
-            # 非流式输出
-            result = DeepseekAgent.analyze(
-                slim_data, user_message=user_message, history=history, style=style
-            )
-            if isinstance(result, dict):
-                return APIResponse.success(data=result, message="分析完成")
-            else:
-                return APIResponse.success(data={"answer": result}, message="分析完成")
-
-        # 未传表名时的处理逻辑
-        # 如果没有指定表名，返回提示信息
-        error_response = {
-            "advice": "请指定要分析的数据表",
-            "reasons": ["未提供表名参数，无法进行数据分析"],
-            "risks": [],
-            "detail": "请在请求中提供 table_name 参数，指定要分析的数据库表名。",
-        }
-        if stream:
-
-            async def error_stream():
-                error_chunk = {
-                    "type": "error",
-                    "content": json.dumps(error_response, ensure_ascii=False),
-                }
-                yield f"data: {json.dumps(error_chunk, ensure_ascii=False)}\n\n"
-                yield "data: [DONE]\n\n"
+            # 只传递核心字段，防止token溢出
+            slim_data = []
+            for d in flow_data:
+                # Use .get() for safer access, provide defaults if needed
+                item_data = d.get("data", {})
+                slim_data.append(
+                    {
+                        "type": d.get("type"),
+                        "flow_type": d.get("flow_type"),
+                        "market_type": d.get("market_type"),
+                        "period": d.get("period"),
+                        "data": {
+                            "code": item_data.get("code"),
+                            "name": item_data.get("name"),
+                            "main_flow_net_amount": item_data.get("main_flow_net_amount"),
+                            "main_flow_net_percentage": item_data.get("main_flow_net_percentage"),
+                            "change_percentage": item_data.get("change_percentage"),
+                            "crawl_time": item_data.get("crawl_time"),
+                        },
+                    }
+                )
+            user_message = message or f"请帮我分析一下表 {table_name} 的资金流情况"
 
             return StreamingResponse(
-                error_stream(),
+                generate_stream_response(slim_data, user_message, style, history),
                 media_type="text/event-stream",
                 headers={
                     "Cache-Control": "no-cache",
@@ -174,8 +135,20 @@ async def ai_advice(
                     "X-Accel-Buffering": "no",
                 },
             )
-        # 非流式返回错误
-        return APIResponse.error(message="请指定要分析的数据表", code=400, data=error_response)
+
+        # 场景二：未传表名，进行通用问答
+        user_message = message
+
+        return StreamingResponse(
+            generate_stream_response(flow_data, user_message, style, history),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            },
+        )
+
     except Exception as e:
         import traceback
 

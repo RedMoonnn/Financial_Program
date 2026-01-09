@@ -71,9 +71,43 @@ export function useReports(options: UseReportsOptions = {}) {
   );
 
   // 下载报告
-  const downloadReport = useCallback((url: string) => {
-    window.open(url, '_blank');
-  }, []);
+  const downloadReport = useCallback((url: string, fileName?: string) => {
+    // 如果没有提供文件名，尝试从url中获取（虽然现在后端代理不再依赖url）
+    // 为了兼容旧逻辑，我们优先使用文件名调用后端下载接口
+    if (fileName) {
+      // 使用 fetch 进行下载，以便带上 Authorization 头
+      const token = localStorage.getItem('token');
+      const downloadUrl = `/api/v1/report/download?file_name=${encodeURIComponent(fileName)}`;
+
+      fetch(downloadUrl, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          if (!response.ok) throw new Error("下载失败");
+          return response.blob();
+        })
+        .then(blob => {
+          // 创建临时下载链接
+          const blobUrl = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = fileName; // 设置下载文件名
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(blobUrl);
+        })
+        .catch(err => {
+          console.error("Download error:", err);
+          message.error("下载失败，请稍后重试");
+        });
+    } else {
+      // 如果没有文件名，回退到打开URL（旧逻辑）
+      window.open(url, '_blank');
+    }
+  }, [message]);
 
   useEffect(() => {
     if (autoLoad) {

@@ -44,11 +44,11 @@ def generate_report(table_name, chat_history, user_id=None):
         "请直接输出最终Markdown正文，不要再嵌套任何markdown结构，也不要要求用户补充信息。"
         "\n\n" + md_content
     )
-    summary = DeepseekAgent.analyze([], user_message=summary_prompt, style="专业")
-    if isinstance(summary, dict) and "advice" in summary:
-        summary_md = summary["advice"]
-    else:
-        summary_md = str(summary)
+    # 使用 deepseek-chat 模型加快响应速度（非推理模型，速度更快）
+    system_message = "你是一名专业金融分析师，善于资金流分析和投资建议。"
+    summary_md = DeepseekAgent.chat(
+        user_message=summary_prompt, system_message=system_message, stream=False
+    )
     # 合并原始对话和AI总结
     final_md = f"{md_content}\n---\n{summary_md}"
     # 使用东八区时间

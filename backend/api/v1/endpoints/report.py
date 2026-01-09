@@ -155,3 +155,33 @@ def report_delete(
     except Exception as e:
         logger.error(f"[report_delete] 错误: {e}", exc_info=True)
         return APIResponse.error(message=str(e), code=500)
+
+
+@router.get("/download")
+async def report_download(
+    file_name: str = Query(..., description="文件名"),
+    user=Depends(get_current_user),
+):
+    """
+    下载报告文件（后端代理下载，解决签名和跨域问题）
+    """
+    try:
+        import urllib.parse
+
+        from core.storage import minio_storage
+        from fastapi.responses import StreamingResponse
+
+        # 获取文件对象
+        response = minio_storage.client.get_object(minio_storage.bucket, file_name)
+
+        # 生成流式响应
+        return StreamingResponse(
+            response,
+            media_type="application/octet-stream",
+            headers={
+                "Content-Disposition": f"attachment; filename*=UTF-8''{urllib.parse.quote(file_name)}"
+            },
+        )
+    except Exception as e:
+        logger.error(f"下载文件失败: {e}", exc_info=True)
+        return APIResponse.error(message=f"下载文件失败: {str(e)}", code=500)
