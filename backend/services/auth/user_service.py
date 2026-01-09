@@ -185,6 +185,40 @@ class UserService:
             return True
 
     @staticmethod
+    def update_username(user_id: int, username: str | None) -> bool:
+        """
+        更新用户名
+
+        Args:
+            user_id: 用户ID
+            username: 新用户名（可以为None，表示清空用户名）
+
+        Returns:
+            True if successful
+
+        Raises:
+            UserServiceException: 如果用户不存在或用户名已被使用
+        """
+        with get_db_session() as session:
+            user = session.query(User).filter_by(id=user_id).first()
+            if not user:
+                raise UserServiceException("用户不存在")
+
+            # 检查用户名是否已被其他用户使用（仅当提供用户名时）
+            if username:
+                existing_user = (
+                    session.query(User)
+                    .filter(User.username == username, User.id != user_id)
+                    .first()
+                )
+                if existing_user:
+                    raise UserServiceException("用户名已被使用")
+
+            user.username = username if username else None
+            logger.info(f"用户名已更新: 用户ID {user_id}, 新用户名: {username or '(清空)'}")
+            return True
+
+    @staticmethod
     def user_to_dict(user: User) -> dict:
         """
         将User对象转换为字典

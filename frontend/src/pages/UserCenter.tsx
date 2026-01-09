@@ -1,24 +1,83 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Descriptions, Tag, Typography, Space } from 'antd';
-import { UserOutlined, MailOutlined, CrownOutlined } from '@ant-design/icons';
+import { Card, Descriptions, Tag, Typography, Space, Input, Button } from 'antd';
+import { UserOutlined, MailOutlined, CrownOutlined, EditOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import axios from 'axios';
 import { getUserInfo } from '../auth';
 import type { User } from '../types';
+import { callAPIWithErrorHandling } from '../utils/apiUtils';
 
 const { Title } = Typography;
 
 const UserCenter: React.FC = () => {
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editingUsername, setEditingUsername] = useState(false);
+  const [usernameValue, setUsernameValue] = useState('');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       setLoading(true);
       const info = await getUserInfo();
       setUserInfo(info);
+      if (info) {
+        setUsernameValue(info.username || '');
+      }
       setLoading(false);
     };
     fetchUserInfo();
   }, []);
+
+  const handleEditUsername = () => {
+    setEditingUsername(true);
+    setUsernameValue(userInfo?.username || '');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingUsername(false);
+    setUsernameValue(userInfo?.username || '');
+  };
+
+  const handleSaveUsername = async () => {
+    const trimmedUsername = usernameValue.trim();
+    const newUsername = trimmedUsername || null;
+
+    // 如果用户名没有变化，直接退出编辑模式
+    if (newUsername === (userInfo?.username || null)) {
+      setEditingUsername(false);
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const updatedUserData = await callAPIWithErrorHandling<User>(
+        async () => {
+          const response = await axios.put('/api/v1/auth/me/username', {
+            username: newUsername,
+          });
+          return response; // 返回完整的 axios 响应对象 { data: APIResponse<User> }
+        },
+        {
+          successMsg: '用户名更新成功',
+          showSuccess: true,
+          showError: true,
+        }
+      );
+
+      // callAPIWithErrorHandling 已经返回了 data 字段（User 类型）
+      if (updatedUserData) {
+        setUserInfo(updatedUserData);
+        // 更新缓存
+        localStorage.setItem('userInfo', JSON.stringify(updatedUserData));
+        setEditingUsername(false);
+      }
+    } catch (error: any) {
+      console.error('更新用户名失败:', error);
+      // 错误信息已经由 callAPIWithErrorHandling 显示，这里不需要额外处理
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -55,7 +114,47 @@ const UserCenter: React.FC = () => {
               </Space>
             </Descriptions.Item>
             <Descriptions.Item label="用户名">
-              {userInfo.username || '未设置'}
+              {editingUsername ? (
+                <Space>
+                  <Input
+                    value={usernameValue}
+                    onChange={(e) => setUsernameValue(e.target.value)}
+                    placeholder="请输入用户名"
+                    maxLength={64}
+                    style={{ width: 200 }}
+                    onPressEnter={handleSaveUsername}
+                  />
+                  <Button
+                    type="primary"
+                    icon={<CheckOutlined />}
+                    onClick={handleSaveUsername}
+                    loading={saving}
+                    size="small"
+                  >
+                    保存
+                  </Button>
+                  <Button
+                    icon={<CloseOutlined />}
+                    onClick={handleCancelEdit}
+                    disabled={saving}
+                    size="small"
+                  >
+                    取消
+                  </Button>
+                </Space>
+              ) : (
+                <Space>
+                  <span>{userInfo.username || '未设置'}</span>
+                  <Button
+                    type="link"
+                    icon={<EditOutlined />}
+                    onClick={handleEditUsername}
+                    size="small"
+                  >
+                    编辑
+                  </Button>
+                </Space>
+              )}
             </Descriptions.Item>
             <Descriptions.Item label="账户状态">
               {userInfo.is_active ? (

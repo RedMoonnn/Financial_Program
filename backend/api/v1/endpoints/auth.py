@@ -10,6 +10,7 @@ from models.models import User
 from pydantic import BaseModel, EmailStr
 from services.auth.email_service import EmailService
 from services.auth.user_service import UserService
+from services.exceptions import UserServiceException
 from sqlalchemy.orm import Session
 
 from api.middleware import APIResponse
@@ -89,6 +90,10 @@ class ResetModel(BaseModel):
     email: EmailStr
     code: str
     new_password: str
+
+
+class UpdateUsernameModel(BaseModel):
+    username: str | None = None
 
 
 class UserOut(BaseModel):
@@ -194,3 +199,31 @@ def delete_user(user_id: int, current_user: User = Depends(get_admin_user)):
         return APIResponse.success(message="用户已删除")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
+
+
+@router.put("/me/username")
+def update_username(data: UpdateUsernameModel, current_user: User = Depends(get_current_user)):
+    """
+    更新当前用户的用户名
+    """
+    try:
+        # 处理空字符串：将空字符串转换为 None
+        username = data.username
+        if username is not None:
+            username = username.strip()
+            if username == "":
+                username = None
+
+        # 验证用户名长度（如果提供）
+        if username is not None and len(username) > 64:
+            raise HTTPException(status_code=400, detail="用户名长度不能超过64个字符")
+
+        UserService.update_username(current_user.id, username)
+        # 重新获取用户信息
+        updated_user = UserService.get_user(current_user.email)
+        user_data = UserService.user_to_dict(updated_user)
+        return APIResponse.success(data=user_data, message="用户名更新成功")
+    except UserServiceException as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"更新用户名失败: {str(e)}") from e

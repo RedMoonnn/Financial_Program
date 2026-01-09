@@ -96,8 +96,8 @@ const MainLayout: React.FC = () => {
   // 基础菜单项
   const baseMenuItems = [
     { key: 'home', icon: <HomeOutlined />, label: '首页', path: '/' },
-    { key: 'reports', icon: <FileTextOutlined />, label: '历史报告', path: '/reports' },
     { key: 'chat', icon: <MessageOutlined />, label: '对话助手', path: '/chat' },
+    { key: 'reports', icon: <FileTextOutlined />, label: '历史报告', path: '/reports' },
     { key: 'user', icon: <UserOutlined />, label: '用户中心', path: '/user' }
   ];
 
