@@ -341,7 +341,7 @@ cd ../frontend && npm run dev
 **💡 提示：**
 - 每次开发前都需要激活虚拟环境：`source backend/.venv/bin/activate`
 - 后端API文档访问：http://localhost:8000/docs（Swagger UI）或 http://localhost:8000/redoc（ReDoc）
-- API基础路径：`/api/v1`（同时兼容旧路径 `/api`）
+- API基础路径：`/api/v1`
 
 ### 🐳 2. Docker一键部署
 
@@ -369,8 +369,8 @@ docker-compose logs -f
 - 用户认证：`POST /api/v1/auth/login`、`POST /api/v1/auth/register`
 - 资金流查询：`GET /api/v1/flow`
 - AI分析：`POST /api/v1/ai/advice`
-- 数据采集：`POST /api/v1/collect_v2`（需管理员权限）
-- 报告管理：`GET /api/v1/report/list`、`GET /api/v1/report/download`
+- 数据采集：`POST /api/v1/collect/collect_v2`（需管理员权限）
+- 报告管理：`GET /api/v1/report/minio_list`、`DELETE /api/v1/report/delete`
 
 ### 📊 服务端口映射
 

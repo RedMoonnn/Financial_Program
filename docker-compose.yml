@@ -15,6 +15,7 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_PUBLIC_ENDPOINT=${MINIO_PUBLIC_ENDPOINT:-localhost:9000}
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
       - REDIS_HOST=${REDIS_HOST}
@@ -44,6 +45,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./frontend:/app
+    environment:
+      - VITE_API_TARGET=${VITE_API_TARGET:-http://backend:8000}
     command: npx vite --host 0.0.0.0
     ports:
       - "5173:5173"
