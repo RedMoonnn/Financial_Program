@@ -13,10 +13,10 @@
 **🚀 企业级金融数据智能分析平台**
 **📊 数据采集 + AI分析 + 可视化展示 + 权限管理**
 
-[![GitHub stars](https://img.shields.io/github/stars/your-repo/financial-program)](https://github.com/your-repo/financial-program/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/your-repo/financial-program)](https://github.com/your-repo/financial-program/network)
-[![GitHub issues](https://img.shields.io/github/issues/your-repo/financial-program)](https://github.com/your-repo/financial-program/issues)
-[![GitHub license](https://img.shields.io/github/license/your-repo/financial-program)](https://github.com/your-repo/financial-program/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/RedMoonnn/Financial_Program)](https://github.com/RedMoonnn/Financial_Program/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/RedMoonnn/Financial_Program)](https://github.com/RedMoonnn/Financial_Program/network)
+[![GitHub issues](https://img.shields.io/github/issues/RedMoonnn/Financial_Program)](https://github.com/RedMoonnn/Financial_Program/issues)
+[![GitHub license](https://img.shields.io/github/license/RedMoonnn/Financial_Program)](https://github.com/RedMoonnn/Financial_Program/blob/main/LICENSE)
 
 </div>
 
@@ -220,7 +220,7 @@ sequenceDiagram
 
 ```bash
 # 1. 克隆项目
-git clone https://github.com/your-repo/financial-program.git
+git clone https://github.com/RedMoonnn/Financial_Program.git
 cd financial-program
 
 # 2. 配置环境变量
@@ -776,8 +776,8 @@ git push origin feature/your-feature-name
 **💹 智能金融数据采集分析平台**
 **🚀 助力企业级数据驱动决策，AI赋能金融洞察**
 
-[![GitHub stars](https://img.shields.io/github/stars/your-repo/financial-program?style=social)](https://github.com/your-repo/financial-program/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/your-repo/financial-program?style=social)](https://github.com/your-repo/financial-program/network)
+[![GitHub stars](https://img.shields.io/github/stars/RedMoonnn/Financial_Program?style=social)](https://github.com/RedMoonnn/Financial_Program/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/RedMoonnn/Financial_Program?style=social)](https://github.com/RedMoonnn/Financial_Program/network)
 
 **⭐ 如果这个项目对你有帮助，请给我们一个Star！**
 
