@@ -190,14 +190,24 @@ class DeepseekAgent:
 
         try:
             if stream:
-                # 流式输出
-                response = client.chat.completions.create(**request_payload)
-                for chunk in response:
-                    if not chunk.choices or len(chunk.choices) == 0:
-                        continue
-                    delta = chunk.choices[0].delta
-                    if delta and hasattr(delta, "content") and delta.content:
-                        yield delta.content
+                # 定义内部生成器函数用于流式输出
+                def stream_generator():
+                    try:
+                        response = client.chat.completions.create(**request_payload)
+                        for chunk in response:
+                            if not chunk.choices or len(chunk.choices) == 0:
+                                continue
+                            delta = chunk.choices[0].delta
+                            if delta and hasattr(delta, "content") and delta.content:
+                                yield delta.content
+                    except Exception as e:
+                        import traceback
+
+                        error_detail = traceback.format_exc()
+                        print(f"Chat stream error: {e}\n{error_detail}", flush=True)
+                        yield f"AI服务调用失败: {str(e)}"
+
+                return stream_generator()
             else:
                 # 非流式输出，直接返回完整结果
                 response = client.chat.completions.create(**request_payload)
@@ -208,7 +218,11 @@ class DeepseekAgent:
             error_detail = traceback.format_exc()
             print(f"Chat error: {e}\n{error_detail}", flush=True)
             if stream:
-                yield f"AI服务调用失败: {str(e)}"
+
+                def error_gen(err=e):
+                    yield f"AI服务调用失败: {str(err)}"
+
+                return error_gen()
             else:
                 return f"AI服务调用失败: {str(e)}"
 

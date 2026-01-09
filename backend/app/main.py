@@ -33,8 +33,15 @@ async def lifespan(app: FastAPI):
     # 初始化数据库
     init_db()
 
-    # 启动爬虫任务
-    Thread(target=start_crawler_job, daemon=True).start()
+    # 启动爬虫任务（延迟30秒启动，避免阻塞API服务初始化）
+    def delayed_start():
+        import time
+
+        logger.info("等待30秒后启动爬虫任务，以避免阻塞服务初始化...")
+        time.sleep(30)
+        start_crawler_job()
+
+    Thread(target=delayed_start, daemon=True).start()
 
     # 启动定时任务调度器
     scheduler = init_scheduler()

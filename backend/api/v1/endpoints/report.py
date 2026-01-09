@@ -165,6 +165,7 @@ async def report_download(
     """
     下载报告文件（后端代理下载，解决签名和跨域问题）
     """
+    # minio预签名方式存在跨域错误, localhost:8000 -> backend:8000
     try:
         import urllib.parse
 

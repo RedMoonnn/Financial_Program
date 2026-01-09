@@ -46,9 +46,10 @@ def generate_daily_reports():
 
 请直接生成并返回Markdown格式的完整报告内容。
 """
-                advice = DeepseekAgent.analyze(flow_data, style="专业", user_message=prompt)
+                result = DeepseekAgent.analyze(flow_data, style="专业", user_message=prompt)
+                advice_text = result.get("advice", "")
                 # 生成Markdown
-                md_content = f"# {user.email} 每日分析报告\n\n{advice}"
+                md_content = f"# {user.email} 每日分析报告\n\n{advice_text}"
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".md") as f:
                     f.write(md_content.encode("utf-8"))
                     md_path = f.name
