@@ -16,7 +16,7 @@ def chat_history_to_markdown(chat_history):
         # 过滤掉过于简单的对话
         if (
             len(question) > 3
-            and question.lower() not in ["你好", "hello", "hi", "test"]
+            and question.lower() not in ["你是谁", "你好", "hello", "hi", "test"]
             and not question.startswith("你好")
         ):
             cleaned_history.append(item)

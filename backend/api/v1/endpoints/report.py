@@ -20,7 +20,7 @@ router = APIRouter(prefix="/report", tags=["report"])
 
 
 @router.post("/generate")
-async def generate_report_api(
+def generate_report_api(
     table_name: str = Body(..., description="表名"),
     chat_history: list = Body(..., description="聊天历史"),
     user=Depends(get_current_user),
@@ -158,7 +158,7 @@ def report_delete(
 
 
 @router.get("/download")
-async def report_download(
+def report_download(
     file_name: str = Query(..., description="文件名"),
     user=Depends(get_current_user),
 ):
