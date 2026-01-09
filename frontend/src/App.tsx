@@ -21,7 +21,6 @@ import AdminUsers from './pages/AdminUsers';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Forgot from './pages/Forgot';
-import EmailPreview from './pages/EmailPreview';
 import './index.css';
 import { isLogin, removeToken, isAdminSync, getUserInfo } from './auth';
 
@@ -261,7 +260,6 @@ const App: React.FC = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<Forgot />} />
-          <Route path="/email-preview" element={<EmailPreview />} />
           <Route path="/*" element={<MainLayout />} />
         </Routes>
       </Router>

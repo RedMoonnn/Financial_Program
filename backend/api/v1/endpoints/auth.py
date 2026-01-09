@@ -129,16 +129,6 @@ def send_code(data: ForgotModel, session: Session = Depends(get_db_session_depen
         raise HTTPException(status_code=500, detail=str(e)) from e
 
 
-@router.get("/email-preview-template")
-def get_email_preview_template():
-    """获取邮件预览模板（仅供前端预览使用）"""
-    # 生成一个示例验证码用于展示
-    sample_code = "123456"
-    return APIResponse.success(
-        data={"html": EmailService.get_email_template(sample_code)}, message="获取模板成功"
-    )
-
-
 @router.post("/login")
 def login(data: LoginModel):
     if not UserService.verify_password(data.email, data.password):
