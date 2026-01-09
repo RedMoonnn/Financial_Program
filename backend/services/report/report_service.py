@@ -7,7 +7,7 @@ import logging
 from typing import List, Optional
 
 from core.database import get_db_session
-from models.models import Report
+from models.models import Report, User
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ class ReportService:
         Returns:
             报告列表
         """
-        with get_db_session() as session:
+        with get_db_session(auto_commit=False) as session:
             reports = (
                 session.query(Report)
                 .filter_by(user_id=user_id)
@@ -68,7 +68,7 @@ class ReportService:
         Returns:
             所有报告列表
         """
-        with get_db_session() as session:
+        with get_db_session(auto_commit=False) as session:
             reports = session.query(Report).order_by(Report.created_at.desc()).all()
             return reports
 
@@ -83,23 +83,9 @@ class ReportService:
         Returns:
             报告对象，如果不存在则返回None
         """
-        with get_db_session() as session:
+        with get_db_session(auto_commit=False) as session:
             report = session.query(Report).filter_by(file_name=file_name).first()
             return report
-
-    @staticmethod
-    def get_report_owner(file_name: str) -> Optional[int]:
-        """
-        获取报告的所有者ID
-
-        Args:
-            file_name: 文件名
-
-        Returns:
-            用户ID，如果报告不存在则返回None
-        """
-        report = ReportService.get_report_by_filename(file_name)
-        return report.user_id if report else None
 
     @staticmethod
     def delete_report(file_name: str, user_id: int, is_admin: bool = False) -> bool:
@@ -129,3 +115,48 @@ class ReportService:
             session.delete(report)
             logger.info(f"报告已删除: {file_name} (用户ID: {user_id}, 管理员: {is_admin})")
             return True
+
+    @staticmethod
+    def get_user_info_map(user_ids: set[int]) -> dict[int, dict]:
+        """
+        获取用户信息映射（用于管理员查看报告所有者）
+
+        Args:
+            user_ids: 用户ID集合
+
+        Returns:
+            用户信息字典，key为用户ID，value为用户信息字典
+        """
+        if not user_ids:
+            return {}
+
+        with get_db_session() as session:
+            users = session.query(User).filter(User.id.in_(user_ids)).all()
+            return {u.id: {"id": u.id, "email": u.email, "username": u.username} for u in users}
+
+    @staticmethod
+    def report_to_dict(report: Report, include_user: bool = False, user_map: dict = None) -> dict:
+        """
+        将Report对象转换为字典
+
+        Args:
+            report: Report对象
+            include_user: 是否包含用户信息（管理员模式）
+            user_map: 用户信息映射字典
+
+        Returns:
+            报告信息字典
+        """
+        result = {
+            "id": report.id,
+            "type": report.report_type,
+            "file_url": report.file_url,
+            "file_name": report.file_name,
+            "created_at": str(report.created_at) if report.created_at else None,
+        }
+        if include_user and user_map:
+            owner = user_map.get(report.user_id, {})
+            result["user_id"] = report.user_id
+            result["user_email"] = owner.get("email", "未知")
+            result["username"] = owner.get("username")
+        return result

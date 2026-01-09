@@ -5,6 +5,8 @@
 from fastapi import APIRouter
 from services.common.cache_service import get_data_ready
 
+from api.middleware import APIResponse
+
 router = APIRouter(prefix="/data", tags=["data"])
 
 
@@ -15,4 +17,4 @@ def data_ready():
 
     返回数据采集状态
     """
-    return {"data_ready": get_data_ready()}
+    return APIResponse.success(data={"data_ready": get_data_ready()}, message="获取数据状态成功")

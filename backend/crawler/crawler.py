@@ -1,5 +1,4 @@
 import json
-import os
 import sys
 from datetime import datetime, timedelta, timezone
 
@@ -308,14 +307,18 @@ def fetch_flow_data(
 
 
 def get_db_config():
-    return {
-        "host": os.getenv("MYSQL_HOST", "mysql"),
-        "user": os.getenv("MYSQL_USER", "root"),
-        "password": os.getenv("MYSQL_PASSWORD", "123456"),
-        "database": os.getenv("MYSQL_DATABASE", "financial_web_crawler"),
-        "port": int(os.getenv("MYSQL_PORT", 3306)),
-        "charset": "utf8mb4",
-    }
+    """
+    获取数据库配置
+    统一使用core.config中的配置，但保留此函数以兼容现有代码
+    注意：爬虫模块使用PyMySQL直接连接，因为需要动态创建表
+    """
+    from core.config import database_settings
+
+    config = database_settings.config_dict
+    # 爬虫默认使用mysql作为host（Docker环境），如果配置为localhost则使用mysql
+    if config["host"] == "localhost":
+        config["host"] = "mysql"  # Docker环境下的服务名
+    return config
 
 
 def store_data_to_db(data, table_name):

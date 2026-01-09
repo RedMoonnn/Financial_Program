@@ -78,16 +78,21 @@ def check_minio():
 
 
 def check_mysql():
+    """检查MySQL连接"""
     host, port = LOCAL_SERVICES["mysql"]["host"], LOCAL_SERVICES["mysql"]["port"]
     if not check_socket(host, port, "MySQL"):
         return
     try:
+        # 统一使用core.config中的配置
+        from core.config import database_settings
+
+        db_config = database_settings.config_dict
         conn = pymysql.connect(
             host=host,
             port=port,
-            user=MYSQL_USER,
-            password=MYSQL_PASSWORD,
-            database=MYSQL_DATABASE,
+            user=db_config["user"],
+            password=db_config["password"],
+            database=db_config["database"],
             connect_timeout=3,
         )
         print("[OK] MySQL连接成功")

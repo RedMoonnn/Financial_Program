@@ -87,6 +87,28 @@ def apply_migrations() -> None:
                     logger.info("成功添加 username 列到 user 表")
                 except Exception as e:
                     logger.warning(f"执行数据库迁移时出错: {e}")
+
+        # 检查 report 表的 file_url 字段类型，如果是 VARCHAR(256) 则改为 TEXT
+        if "report" in inspector.get_table_names():
+            columns = inspector.get_columns("report")
+            for col in columns:
+                if col["name"] == "file_url":
+                    # 检查字段类型，如果是 VARCHAR 类型，需要改为 TEXT
+                    col_type = str(col["type"]).upper()
+                    if "VARCHAR" in col_type or "CHAR" in col_type:
+                        logger.info(
+                            "检测到 report.file_url 字段为 VARCHAR 类型，正在改为 TEXT 类型..."
+                        )
+                        try:
+                            with engine.begin() as conn:
+                                # MySQL 中修改字段类型
+                                conn.execute(
+                                    text("ALTER TABLE report MODIFY COLUMN file_url TEXT NOT NULL")
+                                )
+                            logger.info("成功将 report.file_url 字段改为 TEXT 类型")
+                        except Exception as e:
+                            logger.warning(f"修改 report.file_url 字段类型时出错: {e}")
+                    break
     except Exception as e:
         logger.warning(f"执行数据库迁移时出错: {e}")
 

@@ -75,10 +75,9 @@ app.add_middleware(
 
 # ==================== 注册所有路由模块 ====================
 # 路由模块化组织，按功能分类，便于维护和扩展
+# 统一使用 /api/v1 作为API路径前缀
 
-app.include_router(api_router, prefix="/api/v1")  # 所有 v1 API 路由
-# 保持向后兼容，同时注册旧路径
-app.include_router(api_router, prefix="/api")  # 兼容旧路径
+app.include_router(api_router, prefix="/api/v1", tags=["v1"])
 
 
 if __name__ == "__main__":

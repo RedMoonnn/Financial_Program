@@ -119,7 +119,7 @@ class Report(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     report_type = Column(String(32), nullable=False)  # pdf/markdown
-    file_url = Column(String(256), nullable=False)  # MinIO URL
+    file_url = Column(Text, nullable=False)  # MinIO URL (使用Text类型以支持预签名URL的长查询参数)
     file_name = Column(String(128), nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.datetime.now(timezone.utc))
     # 可扩展字段：摘要、状态等

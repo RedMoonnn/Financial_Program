@@ -19,10 +19,11 @@ from api.v1.endpoints import (
 api_router = APIRouter()
 
 # 注册所有端点
-api_router.include_router(health.router, tags=["health"])
-api_router.include_router(auth.router, tags=["auth"])
-api_router.include_router(flow.router, tags=["flow"])
-api_router.include_router(ai.router, tags=["ai"])
-api_router.include_router(report.router, tags=["report"])
-api_router.include_router(collect.router, tags=["collect"])
-api_router.include_router(data.router, tags=["data"])
+# 注意：每个endpoint文件中的router已经定义了tags，这里不需要重复设置
+api_router.include_router(health.router)
+api_router.include_router(auth.router)
+api_router.include_router(flow.router)
+api_router.include_router(ai.router)
+api_router.include_router(report.router)
+api_router.include_router(collect.router)
+api_router.include_router(data.router)

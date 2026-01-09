@@ -1,6 +1,5 @@
 import re
 from datetime import datetime, timedelta
-from typing import List
 
 from core.config import JWT_CONFIG
 from core.database import get_db_session_dependency
@@ -12,6 +11,8 @@ from pydantic import BaseModel, EmailStr
 from services.auth.email_service import EmailService
 from services.auth.user_service import UserService
 from sqlalchemy.orm import Session
+
+from api.middleware import APIResponse
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -31,7 +32,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 
 
 def get_current_user(
-    token: str = Depends(OAuth2PasswordBearer(tokenUrl="/api/auth/login")),
+    token: str = Depends(OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")),
 ):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -46,13 +47,25 @@ def get_current_user(
         raise HTTPException(status_code=401, detail="token无效或过期") from e
 
 
+def is_admin_user(user: User) -> bool:
+    """
+    检查用户是否为管理员（辅助函数）
+
+    Args:
+        user: 用户对象
+
+    Returns:
+        True if admin, False otherwise
+    """
+    return user.is_admin == 1
+
+
 def get_admin_user(current_user: User = Depends(get_current_user)):
     """
-    管理员权限验证函数
+    管理员权限验证函数（统一权限检查）
     只有管理员才能访问的接口使用此依赖
     """
-    # 直接检查 is_admin 是否等于 1，避免访问已分离对象的属性
-    if current_user.is_admin != 1:
+    if not is_admin_user(current_user):
         raise HTTPException(status_code=403, detail="需要管理员权限")
     return current_user
 
@@ -96,7 +109,7 @@ def register(data: RegisterModel):
         raise HTTPException(status_code=400, detail="验证码错误或已过期")
     try:
         UserService.register(data.email, data.password)
-        return {"msg": "注册成功"}
+        return APIResponse.success(message="注册成功")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
 
@@ -111,7 +124,7 @@ def send_code(data: ForgotModel, session: Session = Depends(get_db_session_depen
     code = EmailService.gen_and_store_code(data.email)
     try:
         EmailService.send_code(data.email, code)
-        return {"msg": "验证码已发送"}
+        return APIResponse.success(message="验证码已发送")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) from e
 
@@ -121,7 +134,9 @@ def get_email_preview_template():
     """获取邮件预览模板（仅供前端预览使用）"""
     # 生成一个示例验证码用于展示
     sample_code = "123456"
-    return {"html": EmailService.get_email_template(sample_code)}
+    return APIResponse.success(
+        data={"html": EmailService.get_email_template(sample_code)}, message="获取模板成功"
+    )
 
 
 @router.post("/login")
@@ -129,7 +144,7 @@ def login(data: LoginModel):
     if not UserService.verify_password(data.email, data.password):
         raise HTTPException(status_code=401, detail="邮箱或密码错误")
     access_token = create_access_token({"sub": data.email})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return APIResponse.success(data={"access_token": access_token, "token_type": "bearer"})
 
 
 @router.post("/forgot")
@@ -137,7 +152,7 @@ def forgot(data: ForgotModel):
     code = EmailService.gen_and_store_code(data.email)
     try:
         EmailService.send_code(data.email, code)
-        return {"msg": "验证码已发送"}
+        return APIResponse.success(message="验证码已发送")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) from e
 
@@ -151,7 +166,7 @@ def reset(data: ResetModel):
         raise HTTPException(status_code=400, detail="验证码错误或已过期")
     try:
         UserService.set_password(data.email, data.new_password)
-        return {"msg": "密码重置成功"}
+        return APIResponse.success(message="密码重置成功")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
 
@@ -161,36 +176,19 @@ def get_current_user_info(current_user: User = Depends(get_current_user)):
     """
     获取当前登录用户信息
     """
-    return {
-        "id": current_user.id,
-        "email": current_user.email,
-        "username": current_user.username,
-        "is_admin": bool(current_user.is_admin == 1),
-        "is_active": bool(current_user.is_active == 1),
-        "created_at": str(current_user.created_at) if current_user.created_at else None,
-    }
+    user_data = UserService.user_to_dict(current_user)
+    return APIResponse.success(data=user_data, message="获取用户信息成功")
 
 
-@router.get("/users", response_model=List[UserOut])
-def get_users(skip: int = 0, limit: int = 100, current_user: User = Depends(get_admin_user)):
+@router.get("/users")
+def get_users(current_user: User = Depends(get_admin_user)):
     """
     获取所有用户列表（仅管理员）
     """
     users = UserService.get_all_users()
-    # 简单的转换，实际项目中可以使用 AutoMapper 或 Pydantic 的 from_orm
-    result = []
-    for u in users:
-        result.append(
-            {
-                "id": u.id,
-                "email": u.email,
-                "username": u.username,
-                "is_admin": u.is_admin == 1,
-                "is_active": u.is_active == 1,
-                "created_at": u.created_at,
-            }
-        )
-    return result
+    result = [UserService.user_to_dict(u) for u in users]
+    # 统一使用 APIResponse 格式
+    return APIResponse.success(data=result, message="获取用户列表成功")
 
 
 @router.delete("/users/{user_id}")
@@ -203,6 +201,6 @@ def delete_user(user_id: int, current_user: User = Depends(get_admin_user)):
 
     try:
         UserService.delete_user(user_id)
-        return {"msg": "用户已删除"}
+        return APIResponse.success(message="用户已删除")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e)) from e

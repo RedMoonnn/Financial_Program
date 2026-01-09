@@ -34,19 +34,23 @@ SessionLocal = sessionmaker(bind=engine)
 
 
 @contextmanager
-def get_db_session() -> Generator[Session, None, None]:
+def get_db_session(auto_commit: bool = True) -> Generator[Session, None, None]:
     """
     数据库会话上下文管理器
+
+    Args:
+        auto_commit: 是否自动提交事务，默认为True
 
     使用示例:
         with get_db_session() as session:
             user = session.query(User).first()
-            session.commit()
+            # 自动提交
     """
     session = SessionLocal()
     try:
         yield session
-        session.commit()
+        if auto_commit:
+            session.commit()
     except Exception:
         session.rollback()
         raise
@@ -57,9 +61,14 @@ def get_db_session() -> Generator[Session, None, None]:
 def get_db_session_dependency():
     """
     用于FastAPI依赖注入的数据库会话生成器
+    注意：此函数不会自动提交，需要在路由中手动提交或使用get_db_session
     """
     session = SessionLocal()
     try:
         yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
     finally:
         session.close()

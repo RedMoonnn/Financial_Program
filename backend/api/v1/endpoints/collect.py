@@ -3,9 +3,11 @@
 """
 
 from crawler.crawler import run_collect, run_collect_all
-from fastapi import APIRouter, BackgroundTasks, Body, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Body, Depends
 
+from api.middleware import APIResponse
 from api.v1.endpoints.auth import get_admin_user
+from api.v1.endpoints.collect_validators import validate_collect_params
 
 router = APIRouter(prefix="/collect", tags=["collect"])
 
@@ -34,33 +36,11 @@ async def collect_v2(
     - **day_choice**: 日期选项
     - **pages**: 采集页数（默认1）
     """
-    # 参数校验
-    if flow_choice == 1:
-        if market_choice is None or not (1 <= market_choice <= 8):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="flow_choice=1时，market_choice必须为1~8",
-            )
-        if day_choice not in [1, 2, 3, 4]:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="day_choice必须为1~4"
-            )
-    elif flow_choice == 2:
-        if detail_choice is None or not (1 <= detail_choice <= 3):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="flow_choice=2时，detail_choice必须为1~3",
-            )
-        if day_choice not in [1, 2, 3]:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="flow_choice=2时，day_choice必须为1~3",
-            )
-    else:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="flow_choice必须为1或2")
+    # 统一使用验证函数进行参数校验
+    validate_collect_params(flow_choice, market_choice, detail_choice, day_choice)
 
     result = run_collect(flow_choice, market_choice, detail_choice, day_choice, pages)
-    return result
+    return APIResponse.success(data=result, message="采集成功")
 
 
 @router.post("/collect_all_v2")
@@ -74,4 +54,4 @@ async def collect_all_v2(
     启动后台任务进行全量数据采集
     """
     background_tasks.add_task(run_collect_all)
-    return {"msg": "全量采集任务已启动"}
+    return APIResponse.success(message="全量采集任务已启动")

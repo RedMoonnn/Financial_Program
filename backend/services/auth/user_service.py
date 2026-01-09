@@ -183,3 +183,23 @@ class UserService:
             session.delete(user)
             logger.info(f"用户已删除: ID {user_id}")
             return True
+
+    @staticmethod
+    def user_to_dict(user: User) -> dict:
+        """
+        将User对象转换为字典
+
+        Args:
+            user: User对象
+
+        Returns:
+            用户信息字典
+        """
+        return {
+            "id": user.id,
+            "email": user.email,
+            "username": user.username,
+            "is_admin": bool(user.is_admin == 1),
+            "is_active": bool(user.is_active == 1),
+            "created_at": str(user.created_at) if user.created_at else None,
+        }

@@ -81,12 +81,6 @@ class DeepseekAgent:
             prompt += "\n【最近对话】\n" + "\n".join(history_summary)
 
         prompt += f"\n请用{style}风格作答。"
-        return prompt
-
-    @staticmethod
-    def analyze(flow_data, user_message=None, history=None, style="专业"):
-        prompt = DeepseekAgent.build_prompt(flow_data, user_message, history, style)
-
         # 检查prompt长度，如果过长则截断
         if len(prompt) > 8000:  # 设置合理的长度限制
             print(
@@ -94,6 +88,11 @@ class DeepseekAgent:
                 flush=True,
             )
             prompt = prompt[:8000] + "\n\n[提示：对话历史过长，已截断]"
+        return prompt
+
+    @staticmethod
+    def analyze(flow_data, user_message=None, history=None, style="专业"):
+        prompt = DeepseekAgent.build_prompt(flow_data, user_message, history, style)
 
         request_payload = {
             "model": "deepseek-chat",
@@ -142,14 +141,6 @@ class DeepseekAgent:
         type 可以是 'thinking' 或 'text'
         """
         prompt = DeepseekAgent.build_prompt(flow_data, user_message, history, style)
-
-        # 检查prompt长度，如果过长则截断
-        if len(prompt) > 8000:
-            print(
-                f"Warning: Prompt too long ({len(prompt)} chars), truncating...",
-                flush=True,
-            )
-            prompt = prompt[:8000] + "\n\n[提示：对话历史过长，已截断]"
 
         request_payload = {
             "model": "deepseek-chat",
