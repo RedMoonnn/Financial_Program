@@ -8,29 +8,8 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
-    environment:
-      - MYSQL_HOST=${MYSQL_HOST}
-      - MYSQL_PORT=${MYSQL_PORT}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
-      - MINIO_PUBLIC_ENDPOINT=${MINIO_PUBLIC_ENDPOINT:-localhost:9000}
-      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_DB=${REDIS_DB}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - SMTP_SERVER=${SMTP_SERVER}
-      - SMTP_PORT=${SMTP_PORT}
-      - SMTP_USER=${SMTP_USER}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
-      - JWT_SECRET=${JWT_SECRET}
-      - ADMIN_EMAIL=${ADMIN_EMAIL}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      - ADMIN_USERNAME=${ADMIN_USERNAME}
+    env_file:
+      - .env
     depends_on:
       mysql:
         condition: service_healthy
@@ -45,14 +24,18 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./frontend:/app
+    env_file:
+      - .env
     environment:
-      - VITE_API_TARGET=${VITE_API_TARGET:-http://backend:8000}
+      VITE_API_TARGET: ${VITE_API_TARGET:-http://backend:8000}
     command: npx vite --host 0.0.0.0
     ports:
       - "5173:5173"
 
   mysql:
     image: mysql:8.0
+    env_file:
+      - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -74,6 +57,8 @@ services:
   minio:
     image: minio/minio
     command: server /data --console-address ":9001"
+    env_file:
+      - .env
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}

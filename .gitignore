@@ -16,7 +16,11 @@ __pycache__/
 
 data/
 
+# 环境变量文件
+# 忽略 .env 文件（包含敏感信息）
 .env
+# 但跟踪 .env.example 文件（作为配置模板）
+!.env.example
 
 # 忽略上传文件目录
 backend/upload/
