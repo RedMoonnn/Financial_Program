@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, Input, Button, Form, App } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { getErrorMessage } from '../utils/errorHandler';
 
 const Register: React.FC = () => {
   const { message } = App.useApp();
@@ -14,13 +15,19 @@ const Register: React.FC = () => {
     if (!email) return message.warning('请先输入邮箱');
     setCodeLoading(true);
     try {
-      await axios.post('/api/auth/send_code', { email });
-      message.success('验证码已发送');
+      const response = await axios.post('/api/v1/auth/send_code', { email });
+      // 后端返回的是 APIResponse 格式
+      if (response.data?.success) {
+        message.success(response.data.message || '验证码已发送');
+      } else {
+        throw new Error(response.data?.message || '发送失败');
+      }
     } catch (err: any) {
-      if (err?.response?.data?.detail?.includes('已注册')) {
+      const errorMsg = getErrorMessage(err, '发送失败');
+      if (errorMsg.includes('已注册')) {
         message.error('该邮箱已注册，请直接登录或找回密码');
       } else {
-        message.error('发送失败');
+        message.error(errorMsg);
       }
     }
     setCodeLoading(false);
@@ -29,18 +36,24 @@ const Register: React.FC = () => {
   const onFinish = async (values: any) => {
     setLoading(true);
     try {
-      await axios.post('/api/auth/register', {
+      const response = await axios.post('/api/v1/auth/register', {
         email: values.email,
         password: values.password,
         code: values.code
       });
-      message.success('注册成功');
-      navigate('/login');
+      // 后端返回的是 APIResponse 格式
+      if (response.data?.success) {
+        message.success(response.data.message || '注册成功');
+        navigate('/login');
+      } else {
+        throw new Error(response.data?.message || '注册失败');
+      }
     } catch (err: any) {
-      if (err?.response?.data?.detail?.includes('邮箱已注册')) {
+      const errorMsg = getErrorMessage(err, '注册失败');
+      if (errorMsg.includes('邮箱已注册') || errorMsg.includes('已注册')) {
         message.error('该邮箱已注册，请直接登录或找回密码');
       } else {
-        message.error('注册失败');
+        message.error(errorMsg);
       }
     }
     setLoading(false);

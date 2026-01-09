@@ -1,50 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Popconfirm, Tag, App, Typography } from 'antd';
+import React from 'react';
+import { Card, Table, Button, Popconfirm, Tag, Typography } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
-import axios from 'axios';
-import dayjs from 'dayjs';
+import { useUsers } from '../hooks/useUsers';
+import { formatDateTime } from '../utils/dateUtils';
+import type { User } from '../types';
 
 const { Title } = Typography;
 
-interface User {
-    id: number;
-    email: string;
-    username: string | null;
-    is_admin: boolean;
-    is_active: boolean;
-    created_at: string | null;
-}
-
 const AdminUsers: React.FC = () => {
-    const { message } = App.useApp();
-    const [loading, setLoading] = useState(false);
-    const [data, setData] = useState<User[]>([]);
-
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const resp = await axios.get('/api/auth/users');
-            setData(resp.data);
-        } catch (error: any) {
-            if (error.response?.status !== 401) {
-                message.error('获取用户列表失败');
-            }
-        }
-        setLoading(false);
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
+    const { users, loading, fetchUsers, deleteUser } = useUsers();
 
     const handleDelete = async (id: number) => {
-        try {
-            await axios.delete(`/api/auth/users/${id}`);
-            message.success('用户已注销');
-            fetchData(); // reload
-        } catch (error: any) {
-            message.error(error.response?.data?.detail || '注销失败');
-        }
+        await deleteUser(id);
     };
 
     const columns = [
@@ -71,7 +38,7 @@ const AdminUsers: React.FC = () => {
             title: '注册时间',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (date: string) => date ? dayjs(date).format('YYYY-MM-DD HH:mm') : '-'
+            render: (date: string) => formatDateTime(date)
         },
         {
             title: '操作',
@@ -98,11 +65,11 @@ const AdminUsers: React.FC = () => {
             <Card>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                     <Title level={2} style={{ margin: 0 }}>用户管理</Title>
-                    <Button onClick={fetchData} loading={loading}>刷新</Button>
+                    <Button onClick={fetchUsers} loading={loading}>刷新</Button>
                 </div>
                 <Table
                     columns={columns}
-                    dataSource={data}
+                    dataSource={users}
                     rowKey="id"
                     loading={loading}
                     pagination={{ pageSize: 20 }}

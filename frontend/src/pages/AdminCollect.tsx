@@ -1,48 +1,39 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, Button, Space, Typography, Divider, Tag, App } from 'antd';
 import { PlayCircleOutlined, ReloadOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import { useSingleCollect, useCollectAll } from '../hooks/useCollect';
 
 const { Title, Text } = Typography;
 
 const AdminCollect: React.FC = () => {
   const { message } = App.useApp();
-  const [loading, setLoading] = useState(false);
-  const [collectAllLoading, setCollectAllLoading] = useState(false);
 
   // 单组合数据采集
+  const { execute: executeSingleCollect, loading } = useSingleCollect();
   const handleSingleCollect = async () => {
-    setLoading(true);
     try {
-      // 默认采集：个股资金流 - 全部A股 - 今日 - 1页
-      const response = await axios.post('/api/collect/collect_v2', {
+      const result = await executeSingleCollect({
         flow_choice: 1,
         market_choice: 1,
         day_choice: 1,
-        pages: 1
+        pages: 1,
       });
-
-      if (response.data) {
-        message.success(`采集成功！采集了 ${response.data.count || 0} 条数据`);
+      if (result?.success && result.data?.count !== undefined) {
+        message.success(`采集成功！采集了 ${result.data.count} 条数据`);
       }
-    } catch (error: any) {
-      const errorMsg = error.response?.data?.detail || '采集失败';
-      message.error(errorMsg);
+    } catch (error) {
+      // 错误已在hook中处理
     }
-    setLoading(false);
   };
 
   // 全量数据采集
+  const { execute: executeCollectAll, loading: collectAllLoading } = useCollectAll();
   const handleCollectAll = async () => {
-    setCollectAllLoading(true);
     try {
-      await axios.post('/api/collect/collect_all_v2');
-      message.success('全量采集任务已启动，正在后台执行...');
-    } catch (error: any) {
-      const errorMsg = error.response?.data?.detail || '启动全量采集失败';
-      message.error(errorMsg);
+      await executeCollectAll();
+    } catch (error) {
+      // 错误已在useCollectAll中处理
     }
-    setCollectAllLoading(false);
   };
 
   return (

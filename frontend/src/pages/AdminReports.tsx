@@ -1,87 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Popconfirm, Space, Typography, Divider, App, Tag } from 'antd';
+import React from 'react';
+import { Card, Table, Button, Popconfirm, Space, Typography, Divider, Tag } from 'antd';
 import { DeleteOutlined, FileTextOutlined, DownloadOutlined, UserOutlined } from '@ant-design/icons';
-import axios from 'axios';
-import { getToken } from '../auth';
+import { useReports } from '../hooks/useReports';
+import type { ReportFile } from '../types';
+import { formatDateTimeLocal } from '../utils/dateUtils';
 import type { ColumnsType } from 'antd/es/table';
 
 const { Title, Text } = Typography;
 
-interface ReportFile {
-  file_name: string;
-  url: string;
-  created_at?: string;
-  user_id?: number;
-  user_email?: string;
-  username?: string;
-}
-
 const AdminReports: React.FC = () => {
-  const { message } = App.useApp();
-  const [reports, setReports] = useState<ReportFile[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { reports, loading, fetchReports, deleteReport, downloadReport } = useReports({ autoLoad: true });
 
-  // 获取所有报告文件
-  const fetchReports = async () => {
-    setLoading(true);
-    try {
-      const token = getToken();
-      const response = await axios.get('/api/report/minio_list', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.data) {
-        // 按创建时间倒序排序
-        const sorted = [...response.data].sort((a, b) => {
-          if (a.created_at && b.created_at) {
-            return b.created_at.localeCompare(a.created_at);
-          } else if (a.created_at) {
-            return -1;
-          } else if (b.created_at) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
-        setReports(sorted);
-      }
-    } catch (error: any) {
-      const errorMsg = error.response?.data?.detail || '获取报告列表失败';
-      message.error(errorMsg);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchReports();
-  }, []);
-
-  // 删除报告
   const handleDelete = async (fileName: string) => {
-    try {
-      const token = getToken();
-      const res = await axios.delete('/api/report/delete', {
-        params: { file_name: fileName },
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (res.data && res.data.success) {
-        message.success(`已删除 ${fileName}`);
-        fetchReports(); // 刷新列表
-      } else {
-        message.error(res.data?.msg || '删除失败');
-      }
-    } catch (error: any) {
-      const errorMsg = error.response?.data?.detail || error.response?.data?.msg || '删除失败';
-      message.error(errorMsg);
-    }
-  };
-
-  // 下载报告
-  const handleDownload = (url: string) => {
-    window.open(url, '_blank');
+    await deleteReport(fileName);
   };
 
   const columns: ColumnsType<ReportFile> = [
@@ -117,7 +48,7 @@ const AdminReports: React.FC = () => {
       dataIndex: 'created_at',
       key: 'created_at',
       width: 180,
-      render: (text: string) => text ? new Date(text).toLocaleString('zh-CN') : '-',
+      render: (text: string) => formatDateTimeLocal(text),
     },
     {
       title: '操作',
@@ -128,7 +59,7 @@ const AdminReports: React.FC = () => {
           <Button
             type="link"
             icon={<DownloadOutlined />}
-            onClick={() => handleDownload(record.url)}
+            onClick={() => downloadReport(record.url)}
           >
             下载
           </Button>

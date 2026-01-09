@@ -3,6 +3,7 @@ import { Card, Input, Button, Cascader, Spin, Avatar, App } from 'antd';
 import { UserOutlined, RobotOutlined, ClearOutlined, FileTextOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { getToken, getUserInfoSync } from '../auth';
+import { getErrorMessage } from '../utils/errorHandler';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -12,92 +13,7 @@ interface ChatProps {
   context?: any;
 }
 
-// 中文多级表单映射
-const cascaderOptions = [
-  {
-    label: '个股资金流',
-    value: 'Stock_Flow',
-    children: [
-      {
-        label: '全部A股', value: 'All_Stocks',
-        children: [
-          { label: '今日', value: 'Today' },
-          { label: '3日', value: '3_Day' },
-          { label: '5日', value: '5_Day' },
-          { label: '10日', value: '10_Day' },
-        ]
-      },
-      {
-        label: '沪深A股', value: 'SH&SZ_A_Shares', children: [
-          { label: '今日', value: 'Today' }, { label: '3日', value: '3_Day' }, { label: '5日', value: '5_Day' }, { label: '10日', value: '10_Day' },
-        ]
-      },
-      {
-        label: '沪市A股', value: 'SH_A_Shares', children: [
-          { label: '今日', value: 'Today' }, { label: '3日', value: '3_Day' }, { label: '5日', value: '5_Day' }, { label: '10日', value: '10_Day' },
-        ]
-      },
-      {
-        label: '科创板', value: 'STAR_Market', children: [
-          { label: '今日', value: 'Today' }, { label: '3日', value: '3_Day' }, { label: '5日', value: '5_Day' }, { label: '10日', value: '10_Day' },
-        ]
-      },
-      {
-        label: '深市A股', value: 'SZ_A_Shares', children: [
-          { label: '今日', value: 'Today' }, { label: '3日', value: '3_Day' }, { label: '5日', value: '5_Day' }, { label: '10日', value: '10_Day' },
-        ]
-      },
-      {
-        label: '创业板', value: 'ChiNext_Market', children: [
-          { label: '今日', value: 'Today' }, { label: '3日', value: '3_Day' }, { label: '5日', value: '5_Day' }, { label: '10日', value: '10_Day' },
-        ]
-      },
-      {
-        label: '沪市B股', value: 'SH_B_Shares', children: [
-          { label: '今日', value: 'Today' }, { label: '3日', value: '3_Day' }, { label: '5日', value: '5_Day' }, { label: '10日', value: '10_Day' },
-        ]
-      },
-      {
-        label: '深市B股', value: 'SZ_B_Shares', children: [
-          { label: '今日', value: 'Today' }, { label: '3日', value: '3_Day' }, { label: '5日', value: '5_Day' }, { label: '10日', value: '10_Day' },
-        ]
-      },
-    ]
-  },
-  {
-    label: '板块资金流',
-    value: 'Sector_Flow',
-    children: [
-      {
-        label: '行业板块', value: 'Industry_Flow',
-        children: [
-          { label: '今日', value: 'Today' },
-          { label: '3日', value: '3_Day' },
-          { label: '5日', value: '5_Day' },
-          { label: '10日', value: '10_Day' },
-        ]
-      },
-      {
-        label: '概念板块', value: 'Concept_Flow',
-        children: [
-          { label: '今日', value: 'Today' },
-          { label: '3日', value: '3_Day' },
-          { label: '5日', value: '5_Day' },
-          { label: '10日', value: '10_Day' },
-        ]
-      },
-      {
-        label: '区域板块', value: 'Regional_Flow',
-        children: [
-          { label: '今日', value: 'Today' },
-          { label: '3日', value: '3_Day' },
-          { label: '5日', value: '5_Day' },
-          { label: '10日', value: '10_Day' },
-        ]
-      },
-    ]
-  }
-];
+import { cascaderOptions } from '../utils/constants';
 
 const CHAT_HISTORY_KEY_PREFIX = 'financial_chat_history_';
 const LAST_USER_ID_KEY = 'last_chat_user_id';
@@ -246,7 +162,7 @@ const Chat: React.FC<ChatProps> = () => {
 
       // 使用流式请求
       const token = getToken();
-      const response = await fetch('/api/ai/advice', {
+      const response = await fetch('/api/v1/ai/advice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -378,20 +294,22 @@ const Chat: React.FC<ChatProps> = () => {
     }
     const hide = message.loading('报告生成中，请等待...', 0);
     try {
-      const res = await axios.post('/api/report/generate', {
+      const res = await axios.post('/api/v1/report/generate', {
         table_name: getTableName(selectedTableArr),
         chat_history: chatHistory
       });
       hide();
-      if (res.data && res.data.success) {
-        message.success('报告生成成功！');
+      // 后端返回的是 APIResponse 格式
+      if (res.data?.success) {
+        message.success(res.data.message || '报告生成成功！');
         window.location.href = '/reports';
       } else {
-        message.error(res.data.error || '报告生成失败');
+        message.error(res.data?.message || '报告生成失败');
       }
-    } catch (e) {
+    } catch (e: any) {
       hide();
-      message.error('报告生成失败');
+      const errorMsg = getErrorMessage(e, '报告生成失败');
+      message.error(errorMsg);
     }
   };
 

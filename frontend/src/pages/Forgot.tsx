@@ -9,6 +9,7 @@ import {
   SendOutlined
 } from '@ant-design/icons';
 import axios from 'axios';
+import { getErrorMessage } from '../utils/errorHandler';
 import './Forgot.css';
 
 const { Title, Text } = Typography;
@@ -27,13 +28,19 @@ const Forgot: React.FC = () => {
       const email = form.getFieldValue('email');
 
       setCodeLoading(true);
-      await axios.post('/api/auth/forgot', { email });
-      message.success('验证码已发送，请检查您的邮箱');
+      const response = await axios.post('/api/v1/auth/forgot', { email });
+      // 后端返回的是 APIResponse 格式
+      if (response.data?.success) {
+        message.success(response.data.message || '验证码已发送，请检查您的邮箱');
+      } else {
+        throw new Error(response.data?.message || '发送验证码失败');
+      }
     } catch (error: any) {
       if (error?.errorFields) {
         // Validation error, do nothing
       } else {
-        message.error('发送验证码失败，请重试');
+        const errorMsg = getErrorMessage(error, '发送验证码失败，请重试');
+        message.error(errorMsg);
       }
     } finally {
       setCodeLoading(false);
@@ -43,15 +50,21 @@ const Forgot: React.FC = () => {
   const onFinish = async (values: any) => {
     setLoading(true);
     try {
-      await axios.post('/api/auth/reset', {
+      const response = await axios.post('/api/v1/auth/reset', {
         email: values.email,
         new_password: values.new_password,
         code: values.code
       });
-      message.success('密码重置成功！正在跳转登录页...');
-      setTimeout(() => navigate('/login'), 1500);
-    } catch {
-      message.error('重置失败，请检查验证码是否正确');
+      // 后端返回的是 APIResponse 格式
+      if (response.data?.success) {
+        message.success(response.data.message || '密码重置成功！正在跳转登录页...');
+        setTimeout(() => navigate('/login'), 1500);
+      } else {
+        throw new Error(response.data?.message || '重置失败');
+      }
+    } catch (error: any) {
+      const errorMsg = getErrorMessage(error, '重置失败，请检查验证码是否正确');
+      message.error(errorMsg);
     } finally {
       setLoading(false);
     }

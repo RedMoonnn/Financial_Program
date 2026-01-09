@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Descriptions, Tag, Typography, Space } from 'antd';
 import { UserOutlined, MailOutlined, CrownOutlined } from '@ant-design/icons';
-import { getUserInfo, UserInfo } from '../auth';
+import { getUserInfo } from '../auth';
+import type { User } from '../types';
 
 const { Title } = Typography;
 
 const UserCenter: React.FC = () => {
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [userInfo, setUserInfo] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

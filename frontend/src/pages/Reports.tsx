@@ -1,87 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { List, Button, Popconfirm, App } from 'antd';
-import axios from 'axios';
-import { getToken } from '../auth';
-
-interface Report {
-  file_name: string;
-  url: string;
-  created_at?: string;
-}
-
-// 生成MinIO控制台API下载链接
-const getMinioDownloadUrl = (fileName: string) =>
-  `http://192.168.211.99:9001/api/v1/buckets/data-financial-agent/objects/download?prefix=${encodeURIComponent(fileName)}&version_id=null`;
+import React from 'react';
+import { List, Button, Popconfirm } from 'antd';
+import { useReports } from '../hooks/useReports';
+import { formatDateTime } from '../utils/dateUtils';
 
 const Reports: React.FC = () => {
-  const { message } = App.useApp();
-  const [reports, setReports] = useState<Report[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchReports = () => {
-    const token = getToken();
-    axios.get('/api/report/minio_list', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-      .then(res => {
-        // 严格按created_at时间戳倒序排序，无created_at的排在最后
-        const sorted = [...res.data].sort((a, b) => {
-          if (a.created_at && b.created_at) {
-            return b.created_at.localeCompare(a.created_at);
-          } else if (a.created_at) {
-            return -1;
-          } else if (b.created_at) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
-        setReports(sorted);
-      })
-      .catch(() => {
-        message.error('获取报告列表失败');
-      });
-  };
-
-  useEffect(() => {
-    fetchReports();
-  }, []);
+  const { reports, loading, deleteReport, downloadReport } = useReports({ autoLoad: true });
 
   const handleDelete = async (fileName: string) => {
-    setLoading(true);
-    try {
-      const token = getToken();
-      const res = await axios.delete('/api/report/delete', {
-        params: { file_name: fileName },
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (res.data && res.data.success) {
-        message.success('删除成功');
-        fetchReports();
-      } else {
-        message.error(res.data.msg || '删除失败');
-      }
-    } catch {
-      message.error('删除失败');
-    }
-    setLoading(false);
+    await deleteReport(fileName);
   };
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: 32 }}>
       <List
-        header={<div style={{ fontWeight: 600, fontSize: 20 }}>历史报告列表（MinIO）</div>}
+        header={<div style={{ fontWeight: 600, fontSize: 20 }}>历史报告列表</div>}
         bordered
         dataSource={reports}
         loading={loading}
         renderItem={item => (
           <List.Item
             actions={[
-              <Button type="link" href={getMinioDownloadUrl(item.file_name)} download={item.file_name} key="download">下载</Button>,
+              <Button type="link" onClick={() => downloadReport(item.url)} key="download">下载</Button>,
               <Popconfirm
                 title="确定要删除该报告吗？"
                 onConfirm={() => handleDelete(item.file_name)}
@@ -95,7 +34,7 @@ const Reports: React.FC = () => {
           >
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ fontWeight: 500 }}>{item.file_name}</span>
-              {item.created_at && <span style={{ color: '#888', fontSize: 13, marginTop: 2 }}>生成时间：{item.created_at}</span>}
+              {item.created_at && <span style={{ color: '#888', fontSize: 13, marginTop: 2 }}>生成时间：{formatDateTime(item.created_at)}</span>}
             </div>
           </List.Item>
         )}

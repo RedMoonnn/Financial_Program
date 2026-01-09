@@ -4,6 +4,8 @@ import ReactECharts from 'echarts-for-react';
 import axios from 'axios';
 import type { ColumnsType } from 'antd/es/table';
 import { isAdminSync, getUserInfo } from '../auth';
+import { getErrorMessage } from '../utils/errorHandler';
+import { useSingleCollect } from '../hooks/useCollect';
 
 // 后端参数映射 - 与后端完全对齐
 const flowTypes = [
@@ -315,9 +317,11 @@ const Home: React.FC = () => {
   const [chartOption, setChartOption] = useState<any>(getSortedChartOption([]));
   const [crawlTime, setCrawlTime] = useState<string>('');
   const [loading, setLoading] = useState(false);
-  const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string>('');
   const [isAdmin, setIsAdmin] = useState(false);
+
+  // 使用统一的采集hook
+  const { execute: executeSingleCollect, loading: collectLoading } = useSingleCollect();
 
   // 检查管理员权限
   useEffect(() => {
@@ -355,31 +359,30 @@ const Home: React.FC = () => {
       }
 
       console.log('请求参数:', params);
-      const res = await axios.get('/api/flow', { params });
+      const res = await axios.get('/api/v1/flow', { params });
 
-      if (res.data && res.data.data) {
-        setTableData(res.data.data);
-        if (res.data.data.length > 0) {
-          setCrawlTime(res.data.data[0].crawl_time || '');
+      // 后端返回的是 APIResponse 格式
+      if (res.data?.success && res.data.data?.data) {
+        const flowData = res.data.data.data;
+        setTableData(flowData);
+        if (flowData.length > 0) {
+          setCrawlTime(flowData[0].crawl_time || '');
         } else {
           setCrawlTime('');
         }
 
         // 构建Echarts配置
-        setChartOption(getSortedChartOption(res.data.data));
+        setChartOption(getSortedChartOption(flowData));
+        setError('');
       } else {
         setTableData([]);
         setChartOption(getSortedChartOption([]));
         setCrawlTime('');
-      }
-
-      // 检查是否有错误信息
-      if (res.data && res.data.error) {
-        setError(res.data.error);
+        setError(res.data?.message || '未找到数据');
       }
     } catch (e: any) {
       console.error('获取数据失败:', e);
-      const errorMsg = e.response?.data?.error || e.response?.data?.detail?.error || e.message || '获取数据失败';
+      const errorMsg = getErrorMessage(e, '获取数据失败');
       setError(errorMsg);
       setTableData([]);
       setChartOption(getSortedChartOption([]));
@@ -400,37 +403,32 @@ const Home: React.FC = () => {
       return;
     }
 
-    setUpdating(true);
     try {
-      const body: any = { flow_choice: flowChoice, pages: 1 };
+      const params: any = { flow_choice: flowChoice, pages: 1 };
       if (flowChoice === 1) {
-        body.market_choice = marketChoice + 1; // 后端从1开始
-        body.day_choice = dayChoice + 1;
+        params.market_choice = marketChoice + 1; // 后端从1开始
+        params.day_choice = dayChoice + 1;
       } else {
-        body.detail_choice = detailChoice + 1;
-        body.day_choice = dayChoice + 1;
+        params.detail_choice = detailChoice + 1;
+        params.day_choice = dayChoice + 1;
       }
 
-      console.log('采集参数:', body);
-      const res = await axios.post('/api/collect/collect_v2', body);
-      // 直接用采集返回数据渲染
-      if (res.data && res.data.data) {
-        setTableData(res.data.data);
-        if (res.data.data.length > 0) {
-          setCrawlTime(res.data.data[0].crawl_time || '');
+      const result = await executeSingleCollect(params);
+      if (result?.success && result.data) {
+        const collectData = result.data.data || [];
+        setTableData(collectData);
+        if (collectData.length > 0) {
+          setCrawlTime(collectData[0].crawl_time || '');
         } else {
           setCrawlTime('');
         }
         // 构建Echarts配置
-        setChartOption(getSortedChartOption(res.data.data));
+        setChartOption(getSortedChartOption(collectData));
       }
-      message.success('采集任务已完成');
     } catch (e: any) {
+      // 错误已在hook中处理
       console.error('采集失败:', e);
-      const errorMsg = e.response?.data?.detail || '采集失败';
-      message.error(errorMsg);
     }
-    setUpdating(false);
   };
 
   // 多级Tab渲染
@@ -482,8 +480,8 @@ const Home: React.FC = () => {
                                 {error && <span style={{ color: '#ff4d4f' }}>{error}</span>}
                               </div>
                               {isAdmin && (
-                                <Button type="primary" loading={updating} onClick={handleManualUpdate} style={{ borderRadius: 6 }}>
-                                  {updating ? '更新中' : '手动更新数据'}
+                                <Button type="primary" loading={collectLoading} onClick={handleManualUpdate} style={{ borderRadius: 6 }}>
+                                  {collectLoading ? '更新中' : '手动更新数据'}
                                 </Button>
                               )}
                             </div>
@@ -512,7 +510,7 @@ const Home: React.FC = () => {
                                   columns={columns}
                                   dataSource={tableData}
                                   rowKey="code"
-                                  variant="borderless"
+                                  bordered={false}
                                   pagination={{ pageSize: 50, showSizeChanger: true }}
                                   scroll={{ x: 'max-content' }}
                                   size="middle"

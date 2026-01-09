@@ -3,6 +3,7 @@ import { Card, Input, Button, Form, App } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { setToken, removeToken, getUserInfo } from '../auth';
+import { getErrorMessage } from '../utils/errorHandler';
 
 const Login: React.FC = () => {
   const { message } = App.useApp();
@@ -16,15 +17,20 @@ const Login: React.FC = () => {
   const onFinish = async (values: any) => {
     setLoading(true);
     try {
-      const resp = await axios.post('/api/auth/login', values);
-      setToken(resp.data.access_token);
-      // 登录成功后获取用户信息
-      await getUserInfo();
-      message.success('登录成功');
-      navigate('/');
+      const resp = await axios.post('/api/v1/auth/login', values);
+      // 后端现在返回 APIResponse 格式
+      if (resp.data?.success && resp.data.data?.access_token) {
+        setToken(resp.data.data.access_token);
+        // 登录成功后获取用户信息
+        await getUserInfo();
+        message.success(resp.data.message || '登录成功');
+        navigate('/');
+      } else {
+        throw new Error('登录响应格式错误');
+      }
     } catch (error: any) {
       removeToken();
-      const errorMsg = error.response?.data?.detail || '登录失败';
+      const errorMsg = getErrorMessage(error, '登录失败');
       message.error(errorMsg);
     }
     setLoading(false);

@@ -1,14 +1,6 @@
 // 认证相关工具函数
 import axios from 'axios';
-
-export interface UserInfo {
-  id: number;
-  email: string;
-  username: string | null;
-  is_admin: boolean;
-  is_active: boolean;
-  created_at: string | null;
-}
+import type { User } from './types';
 
 export function setToken(token: string) {
   localStorage.setItem('token', token);
@@ -28,7 +20,7 @@ export function isLogin(): boolean {
 }
 
 // 获取用户信息
-export async function getUserInfo(): Promise<UserInfo | null> {
+export async function getUserInfo(): Promise<User | null> {
   const token = getToken();
   if (!token) return null;
 
@@ -39,16 +31,13 @@ export async function getUserInfo(): Promise<UserInfo | null> {
       return JSON.parse(cached);
     }
 
-    // 从API获取
-    const response = await axios.get('/api/auth/me', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    // 从API获取（Authorization头由axios拦截器统一设置）
+    const response = await axios.get('/api/v1/auth/me');
 
-    if (response.data) {
-      localStorage.setItem('userInfo', JSON.stringify(response.data));
-      return response.data;
+    // 后端返回的是 APIResponse 格式，需要取 data 字段
+    if (response.data?.success && response.data.data) {
+      localStorage.setItem('userInfo', JSON.stringify(response.data.data));
+      return response.data.data;
     }
     return null;
   } catch (error) {
@@ -64,7 +53,7 @@ export async function isAdmin(): Promise<boolean> {
 }
 
 // 同步获取用户信息（从缓存）
-export function getUserInfoSync(): UserInfo | null {
+export function getUserInfoSync(): User | null {
   const cached = localStorage.getItem('userInfo');
   if (cached) {
     try {

@@ -9,8 +9,12 @@ const EmailPreview: React.FC = () => {
   useEffect(() => {
     const fetchTemplate = async () => {
       try {
-        const response = await axios.get('/api/auth/email-preview-template');
-        setHtmlContent(response.data.html);
+        const response = await axios.get('/api/v1/auth/email-preview-template');
+        if (response.data?.success && response.data.data?.html) {
+          setHtmlContent(response.data.data.html);
+        } else {
+          message.error('无法加载邮件模版预览');
+        }
       } catch (error) {
         console.error('Failed to fetch email template:', error);
         message.error('无法加载邮件模版预览');
