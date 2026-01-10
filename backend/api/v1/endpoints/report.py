@@ -7,7 +7,7 @@ import logging
 
 from core.cache import get_redis_client
 from core.storage import minio_storage
-from fastapi import APIRouter, Body, Depends, Query
+from fastapi import APIRouter, Body, Depends, Header, Query
 from services.ai import report
 from services.report.report_service import ReportService
 
@@ -160,12 +160,36 @@ def report_delete(
 @router.get("/download")
 def report_download(
     file_name: str = Query(..., description="文件名"),
-    user=Depends(get_current_user),
+    token: str = Query(None, description="认证Token"),
+    authorization: str = Header(None, description="Authorization Header"),
 ):
     """
     下载报告文件（后端代理下载，解决签名和跨域问题）
+    支持通过 query parameter 或 Authorization Header 传递 token
     """
-    # minio预签名方式存在跨域错误, localhost:8000 -> backend:8000
+    from jose import JWTError, jwt
+
+    from api.v1.endpoints.auth import ALGORITHM, SECRET_KEY
+
+    # 尝试从 Header 获取 token
+    if not token and authorization and authorization.startswith("Bearer "):
+        token = authorization.split("Bearer ")[1]
+        logger.info("从 Header 获取到 Token")
+
+    # 验证权限
+    try:
+        if not token:
+            logger.warning(f"下载请求未提供Token: file_name={file_name}")
+            return APIResponse.error(message="未提供认证Token", code=401)
+
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        if not payload.get("sub"):
+            logger.warning(f"Token无效(无sub): file_name={file_name}")
+            return APIResponse.error(message="无效Token", code=401)
+    except JWTError as e:
+        logger.warning(f"Token解析失败: {e}, file_name={file_name}")
+        return APIResponse.error(message="Token已过期或无效", code=401)
+
     try:
         import urllib.parse
 
