@@ -151,73 +151,125 @@
 
 ```mermaid
 flowchart TD
-    subgraph Web[🎨 Web前端层]
-        F1[React + TypeScript]
-        F2[Ant Design UI]
-        F3[ECharts 可视化]
+    %% --- User Interface Layer (Symmetrical Top) ---
+    subgraph UI ["🌐 User Interface Layer"]
+        direction LR
+        subgraph Web ["💻 Web Frontend Layer"]
+            direction LR
+            style Web fill:#f0f7ff,stroke:#005cc5,stroke-width:2px,stroke-dasharray: 5 5
+            F1(["React + TypeScript"])
+            F2["Ant Design UI"]
+            F3["ECharts Viz"]
+        end
+
+        subgraph Mobile ["📱 Mobile Layer"]
+            direction LR
+            style Mobile fill:#f5f0ff,stroke:#6f42c1,stroke-width:2px,stroke-dasharray: 5 5
+            M1(["React Native + Expo"])
+            M2["Redux Toolkit"]
+            M3["Native Components"]
+        end
     end
 
-    subgraph Mobile[📱 移动端层]
-        M1[React Native + Expo]
-        M2[Redux Toolkit]
-        M3[Native Components]
+    %% --- Backend Layer (Centralized) ---
+    subgraph Backend ["⚙️ Backend Layer"]
+        style Backend fill:#fff8f0,stroke:#d16d00,stroke-width:2px,stroke-dasharray: 5 5
+        B1{"FastAPI API Gateway"}
+
+        subgraph Core ["Control & Logic"]
+            direction LR
+            B4["Core Business Logic"]
+            B5["Task Scheduler"]
+        end
+
+        subgraph Workers ["Service Engines"]
+            direction LR
+            B2["Data Crawler"]
+            B3["AI Engine Service"]
+        end
+
+        B1 <==> B4
+        B4 --- B2
+        B4 --- B3
+        B5 -.->|Cron| B2
+        B5 -.->|Cron| B3
     end
 
-    subgraph Backend[⚙️ 后端层]
-        B1[FastAPI RESTful API]
-        B2[数据采集服务]
-        B3[AI分析服务]
-        B4[业务逻辑层]
-        B5[定时任务调度]
+    %% --- Infrastructure Layer (Symmetrical Bottom) ---
+    subgraph Infra ["🏗️ Infrastructure & Services"]
+        direction LR
+        subgraph Storage ["💾 Persistence Layer"]
+            style Storage fill:#f0fff4,stroke:#22863a,stroke-width:2px,stroke-dasharray: 5 5
+            D1[("(MySQL) Structured")]
+            D2[("(Redis) Cache/Session")]
+            D3[("(MinIO) File Store")]
+        end
+
+        subgraph External ["☁️ External Services"]
+            style External fill:#fff0f0,stroke:#cb2431,stroke-width:2px,stroke-dasharray: 5 5
+            E1{{"Finance API (EM)"}}
+            E2{{"AI API (Deepseek)"}}
+        end
     end
 
-    subgraph Storage[💾 存储层]
-        D1[(MySQL<br/>结构化数据)]
-        D2[(Redis<br/>缓存/会话)]
-        D3[(MinIO<br/>文件存储)]
-    end
+    %% --- Global Connections ---
+    F2 <==>|HTTP/SSE| B1
+    M2 <==>|HTTP/SSE| B1
 
-    subgraph External[🌐 外部服务]
-        E1[东方财富API]
-        E2[Deepseek API]
-    end
+    B4 === D1
+    B4 === D2
+    B4 === D3
 
-    F1 -->|HTTP/SSE| B1
-    M1 -->|HTTP/SSE| B1
-    B1 -->|业务逻辑| B4
-    B1 -->|数据采集| B2
-    B1 -->|AI分析| B3
-    B4 -->|数据操作| D1
-    B4 -->|缓存| D2
-    B4 -->|文件| D3
-    B2 -->|采集数据| E1
-    B3 -->|AI调用| E2
-    B5 -->|定时任务| B2
-    B5 -->|定时任务| B3
+    B2 --- E1
+    B3 --- E2
+
+    %% --- Classes & Styling ---
+    classDef web fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef mobile fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    classDef backend fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef storage fill:#f1f8e9,stroke:#33691e,stroke-width:2px;
+    classDef external fill:#ffebee,stroke:#c62828,stroke-width:2px;
+
+    class F1,F2,F3 web;
+    class M1,M2,M3 mobile;
+    class B1,B2,B3,B4,B5 backend;
+    class D1,D2,D3 storage;
+    class E1,E2 external;
 ```
 
 ### 数据流程
 
 ```mermaid
 sequenceDiagram
-    participant U as 👤 用户
-    participant W as 💻 Web前端
-    participant M as 📱 移动端
-    participant B as ⚙️ 后端API
-    participant AI as 🤖 AI服务
-    participant DB as 💾 数据库
+    autonumber
 
-    U->>W: Web操作
-    W->>B: HTTP/SSE请求
+    actor U as 👤 User
+    participant W as 💻 Web Interface
+    participant M as 📱 Mobile App
+    participant B as ⚙️ Backend API
+    participant AI as 🤖 AI Engine
+    participant DB as 💾 Data Center
 
-    U->>M: 移动端操作
-    M->>B: HTTP/SSE请求
+    rect rgb(240, 248, 255)
+    Note over U, B: Frontend Interaction
+    U->>W: Interact with UI
+    W->>B: Send Request (HTTP/SSE)
+    U->>M: Use Mobile App
+    M->>B: Send Request (HTTP/SSE)
+    end
 
-    B->>DB: 查询/写入数据
-    B->>AI: 调用分析
-    AI-->>B: 返回分析结果
-    B-->>W: 返回结果
-    B-->>M: 返回结果
+    rect rgb(255, 250, 240)
+    Note over B, DB: Internal Processing
+    B->>DB: Query/Write Data
+    B->>AI: Trigger Analysis
+    AI-->>B: Stream Results
+    end
+
+    rect rgb(240, 255, 240)
+    Note over B, W: Response Delivery
+    B-->>W: Push Update
+    B-->>M: Push Update
+    end
 ```
 
 ---
