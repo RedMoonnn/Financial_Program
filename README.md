@@ -13,6 +13,8 @@
 **🚀 企业级金融数据智能分析平台**
 **📊 数据采集 + AI分析 + 可视化展示 + 权限管理**
 
+[![Android App Repo](https://img.shields.io/badge/Link-Mobile_App_(Android)-green?style=for-the-badge&logo=android)](https://github.com/RedMoonnn/Financial_Android)
+
 [![GitHub stars](https://img.shields.io/github/stars/RedMoonnn/Financial_Program)](https://github.com/RedMoonnn/Financial_Program/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/RedMoonnn/Financial_Program)](https://github.com/RedMoonnn/Financial_Program/network)
 [![GitHub issues](https://img.shields.io/github/issues/RedMoonnn/Financial_Program)](https://github.com/RedMoonnn/Financial_Program/issues)
@@ -99,6 +101,13 @@
 - **报告管理**：查看和管理所有用户的报告
 - **系统监控**：数据采集状态监控
 
+### 📱 6. 移动端 (Android/iOS)
+
+- **多端一致性**：基于 React Native (Expo) 构建，提供与 Web 端完全一致的功能体验。
+- **随时随地分析**：支持通过手机与 AI 助手进行对话，查看最新的资金流向。
+- **离线能力**：集成了本地缓存机制，确保在各种网络环境下都能顺畅使用。
+- **管理员便捷操控**：支持在移动端直接下发采集指令，监控任务进度。
+
 ---
 
 ## 🏗️ 系统架构
@@ -142,11 +151,16 @@
 
 ```mermaid
 flowchart TD
-    subgraph Frontend[🎨 前端层]
+    subgraph Web[🎨 Web前端层]
         F1[React + TypeScript]
         F2[Ant Design UI]
         F3[ECharts 可视化]
-        F4[路由与状态管理]
+    end
+
+    subgraph Mobile[📱 移动端层]
+        M1[React Native + Expo]
+        M2[Redux Toolkit]
+        M3[Native Components]
     end
 
     subgraph Backend[⚙️ 后端层]
@@ -168,7 +182,8 @@ flowchart TD
         E2[Deepseek API]
     end
 
-    F1 -->|HTTP请求| B1
+    F1 -->|HTTP/SSE| B1
+    M1 -->|HTTP/SSE| B1
     B1 -->|业务逻辑| B4
     B1 -->|数据采集| B2
     B1 -->|AI分析| B3
@@ -186,24 +201,23 @@ flowchart TD
 ```mermaid
 sequenceDiagram
     participant U as 👤 用户
-    participant F as 🎨 前端
+    participant W as 💻 Web前端
+    participant M as 📱 移动端
     participant B as ⚙️ 后端API
-    participant C as 🕷️ 采集服务
     participant AI as 🤖 AI服务
     participant DB as 💾 数据库
 
-    U->>F: 访问首页/发起AI分析
-    F->>B: HTTP请求
-    B->>DB: 查询资金流数据
-    DB-->>B: 返回数据
-    B->>AI: 调用AI分析
-    AI-->>B: 返回分析结果
-    B-->>F: 返回JSON/SSE流
-    F-->>U: 展示数据/图表
+    U->>W: Web操作
+    W->>B: HTTP/SSE请求
 
-    Note over C: 定时任务/手动触发
-    C->>C: 采集东方财富数据
-    C->>DB: 存储到MySQL
+    U->>M: 移动端操作
+    M->>B: HTTP/SSE请求
+
+    B->>DB: 查询/写入数据
+    B->>AI: 调用分析
+    AI-->>B: 返回分析结果
+    B-->>W: 返回结果
+    B-->>M: 返回结果
 ```
 
 ---
